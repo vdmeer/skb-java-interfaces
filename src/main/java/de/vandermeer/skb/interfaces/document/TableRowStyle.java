@@ -13,22 +13,30 @@
  * limitations under the License.
  */
 
-package de.vandermeer.skb.interfaces.render;
-
-import de.vandermeer.skb.interfaces.categories.CategoryHas;
+package de.vandermeer.skb.interfaces.document;
 
 /**
- * Interface for objects that have a renderer.
- * 
+ * The style of a table row of type rule.
+ *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
  * @since      v0.0.1
  */
-public interface HasRenderer extends CategoryHas {
+public enum TableRowStyle {
 
-	/**
-	 * Returns the renderer.
-	 * @return renderer
-	 */
-	IsRenderer getRenderer();
+	/** An unknown, not set, style. */
+	UNKNOWN,
+
+	/** A row of type rule and style normal. */
+	NORMAL,
+
+	/** A row of type rule and style strong (emphasized). */
+	STRONG,
+
+	/** A row of type rule and style heavy (heavily emphasized). */
+	HEAVY,
+
+	/** A row of type rule and style light. */
+	LIGHT,
+	;
 }

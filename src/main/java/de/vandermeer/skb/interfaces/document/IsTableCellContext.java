@@ -13,22 +13,17 @@
  * limitations under the License.
  */
 
-package de.vandermeer.skb.interfaces.render;
+package de.vandermeer.skb.interfaces.document;
 
-import de.vandermeer.skb.interfaces.categories.CategoryHas;
+import de.vandermeer.skb.interfaces.objctxt.IsObjectContext;
 
 /**
- * Interface for objects that have a renderer.
- * 
+ * The context (all settings) of a table cell (part of a row with content).
+ *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
  * @since      v0.0.1
  */
-public interface HasRenderer extends CategoryHas {
+public interface IsTableCellContext extends IsObjectContext {
 
-	/**
-	 * Returns the renderer.
-	 * @return renderer
-	 */
-	IsRenderer getRenderer();
 }

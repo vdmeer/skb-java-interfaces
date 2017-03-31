@@ -16,12 +16,14 @@
 package de.vandermeer.skb.interfaces.transformers.arrays2d;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.text.StrBuilder;
 
 import de.vandermeer.skb.interfaces.transformers.IsTransformer;
 
 /**
  * Transforms a 2-dimensional array into a normalized 2-dimensional array.
  * Normalized means that all rows in the returned array have the same number of columns.
+ * Additionally, all columns will have the same length, space being added to pad.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
@@ -32,6 +34,7 @@ public interface Array2D_To_NormalizedArray extends IsTransformer<String[][], St
 	/**
 	 * Returns the number of columns,
 	 * @return number of columns
+	 * @throws {@link NullPointerException} if argument was null
 	 */
 	int getNumberOfColumns();
 
@@ -40,7 +43,7 @@ public interface Array2D_To_NormalizedArray extends IsTransformer<String[][], St
 		IsTransformer.super.transform(ar);
 
 		int rows = 0;
-		for(int row=0; row<ar.length; row++){ //TODO not null safe
+		for(int row=0; row<ar.length; row++){
 			rows = Math.max(rows, ArrayUtils.getLength(ar[row]));
 		}
 		if(rows==0){
@@ -48,7 +51,11 @@ public interface Array2D_To_NormalizedArray extends IsTransformer<String[][], St
 		}
 		String[][] ret = new String[this.getNumberOfColumns()][rows];
 
-		for(int row=0; row<ar.length; row++){ //not null safe
+		for(int row=0; row<ar.length; row++){
+			int curSize = 0;
+			if(ar[row]!=null && ar[row][0]!=null){
+				curSize = ar[row][0].length();
+			}
 			if(ar[row]==null){
 				for(int i=0; i<rows; i++){
 					ret[row][i] = null;
@@ -56,7 +63,7 @@ public interface Array2D_To_NormalizedArray extends IsTransformer<String[][], St
 			}
 			else if(ar[row].length==0){
 				for(int i=0; i<rows; i++){
-					ret[row][i] = "";
+					ret[row][i] = new StrBuilder().appendPadding(curSize, ' ').toString();
 				}
 			}
 			else{
@@ -65,7 +72,7 @@ public interface Array2D_To_NormalizedArray extends IsTransformer<String[][], St
 				}
 				if(ar[row].length<rows){
 					for(int i=ar[row].length; i<rows; i++){
-						ret[row][i] = "";
+						ret[row][i] = new StrBuilder().appendPadding(curSize, ' ').toString();
 					}
 				}
 			}

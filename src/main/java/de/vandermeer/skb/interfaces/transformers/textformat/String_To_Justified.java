@@ -22,7 +22,7 @@ import org.apache.commons.lang3.text.StrBuilder;
 import de.vandermeer.skb.interfaces.transformers.IsTransformer;
 
 /**
- * Converts a string to a justified String of given length.
+ * Converts a string to a justified string of given length.
  * If the given string length is less than the required length, it will be stretched by inserting white spaces.
  * The returned string will be of the required length, blank strings will have only blanks characters.
  * 

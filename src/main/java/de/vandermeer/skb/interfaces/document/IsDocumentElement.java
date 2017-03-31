@@ -32,7 +32,7 @@ import de.vandermeer.skb.interfaces.render.RendersToClusterWidth;
 public interface IsDocumentElement extends CategoryIs, DoesRender, DoesRenderToWidth, RendersToCluster, RendersToClusterWidth, HasToLog {
 
 	/**
-	 * Returns the raw content of the element, not processed (not rendered)
+	 * Returns the raw content of the element, not processed (not rendered).
 	 * @return raw content
 	 */
 	Object getRawContent();

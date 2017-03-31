@@ -30,7 +30,7 @@ import de.vandermeer.skb.interfaces.render.RendersToCluster;
 import de.vandermeer.skb.interfaces.render.RendersToClusterWidth;
 
 /**
- * A null-safe transformer that takes an object and tries return an {@link StrBuilder} using various strategies.
+ * A null-safe transformer that takes an object and tries return a {@link StrBuilder} using various strategies.
  * 
  * The object is processed as follows:
  * 

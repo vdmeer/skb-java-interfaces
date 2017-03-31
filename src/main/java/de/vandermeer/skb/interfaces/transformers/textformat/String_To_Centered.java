@@ -22,7 +22,7 @@ import org.apache.commons.lang3.text.StrBuilder;
 import de.vandermeer.skb.interfaces.transformers.IsTransformer;
 
 /**
- * Converts a string to a centered String of given length.
+ * Converts a string to a centered string of given length.
  * If the given string length is less than the required length, padding characters will be added to the right and to the left.
  * By default, the returned string will be of the required length, blank strings will have only left padding characters.
  * 

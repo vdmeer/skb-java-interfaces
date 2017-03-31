@@ -18,23 +18,48 @@ package de.vandermeer.skb.interfaces.document;
 import java.util.LinkedList;
 
 import de.vandermeer.skb.interfaces.objctxt.HasObjectContext;
-import de.vandermeer.skb.interfaces.render.HasRenderer;
 
 /**
- * A table as a document element.
+ * A table row.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
  * @since      v0.0.1
  */
-public interface IsTable extends IsDocumentElement, HasRenderer, HasObjectContext {
+public interface IsTableRow extends HasObjectContext {
 
 	@Override
-	IsTableContext getContext();
+	IsTableRowContext getContext();
 
-	@Override
-	LinkedList<? extends IsTableRow> getRawContent();
+	/**
+	 * Returns the style of the rule row.
+	 * @return rule row style, default is {@link TableRowStyle#UNKNOWN}
+	 */
+	default TableRowStyle getStyle(){
+		return TableRowStyle.UNKNOWN;
+	}
 
-	@Override
-	IsTableRenderer getRenderer();
+	/**
+	 * Returns the type of the rule row.
+	 * @return rule row type, default is {@link TableRowType#UNKNOWN}
+	 */
+	default TableRowType getType(){
+		return TableRowType.UNKNOWN;
+	}
+
+	/**
+	 * Returns the cells of a content row in a table.
+	 * @return cells, can be null
+	 */
+	default LinkedList<? extends IsTableCell> getCells(){
+		return null;
+	}
+
+	/**
+	 * Tests if the row has cells, if it is a content row.
+	 * @return true if it has cells (is a content row), false otherwise (then it is a row representing a rule)
+	 */
+	default boolean hasCells(){
+		return (this.getCells()==null)?false:true;
+	}
 }

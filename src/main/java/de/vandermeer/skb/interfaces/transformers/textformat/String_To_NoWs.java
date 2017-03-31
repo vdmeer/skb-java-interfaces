@@ -18,7 +18,7 @@ package de.vandermeer.skb.interfaces.transformers.textformat;
 import de.vandermeer.skb.interfaces.transformers.IsTransformer;
 
 /**
- * Converts a String to a String without any excessive whitespace characters.
+ * Converts a string to a string without any excessive whitespace characters.
  * Excessive white spaces are consecutive spaces, tabulators, and line breaks.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;

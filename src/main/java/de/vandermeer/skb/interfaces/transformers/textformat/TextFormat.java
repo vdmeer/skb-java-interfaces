@@ -16,41 +16,38 @@
 package de.vandermeer.skb.interfaces.transformers.textformat;
 
 /**
- * Options for text alignment.
+ * Options for text format.
  * 
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
  * @since      v0.0.1
  */
-public enum TextAlignment {
+public enum TextFormat {
 
-	/** Option for a justified alignment. */
-	JUSTIFIED (Text_To_FormattedText.ALIGN_JUSTIFIED),
+	/** No special formatting. */
+	NONE (Text_To_FormattedText.FORMAT_NONE),
 
-	/** Option for a justified alignment, last line right aligned. */
-	JUSTIFIED_RIGHT (Text_To_FormattedText.ALIGN_JUSTIFIED_RIGHT),
+	/** Indentation of the first line of the paragraph. */
+	FIRST_LINE (Text_To_FormattedText.FORMAT_FIRST_LINE),
 
-	/** Option for a justified alignment, last line left left aligned. */
-	JUSTIFIED_LEFT (Text_To_FormattedText.ALIGN_JUSTIFIED_LEFT),
+	/** A hanging paragraph, all but the first line with special indentation. */
+	HANGING (Text_To_FormattedText.FORMAT_HANGING_PARAGRAPH),
 
-	/** Option for paragraph alignment left. */
-	LEFT (Text_To_FormattedText.ALIGN_LEFT),
+	/** Use a dropped capital letter at the start of the paragraph. */
+	DROPCAP (Text_To_FormattedText.FORMAT_DROPCAP),
 
-	/** Option for paragraph alignment center. */
-	CENTER (Text_To_FormattedText.ALIGN_CENTER),
-
-	/** Option for paragraph alignment right. */
-	RIGHT (Text_To_FormattedText.ALIGN_RIGHT),
+	/** Use a dropped capital letter at the start of the paragraph with padding for all lines. */
+	DROPCAP_WITH_PADDING (Text_To_FormattedText.FORMAT_DROPCAP_WITH_PADDING),
 	;
 
 	/** A mapping to the alignment options in {@link Text_To_FormattedText}. */
 	protected int mapping;
 
 	/**
-	 * Creates a new alignment.
+	 * Creates a new format.
 	 * @param mapping mapping to transformer options
 	 */
-	TextAlignment(int mapping){
+	TextFormat(int mapping){
 		this.mapping = mapping;
 	}
 
@@ -61,5 +58,4 @@ public enum TextAlignment {
 	public int getMapping(){
 		return this.mapping;
 	}
-
 }

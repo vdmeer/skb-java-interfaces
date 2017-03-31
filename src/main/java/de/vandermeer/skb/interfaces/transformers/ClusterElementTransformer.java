@@ -33,7 +33,7 @@ import de.vandermeer.skb.interfaces.strategies.IsCollectionStrategy;
 public interface ClusterElementTransformer {
 
 	/**
-	 * Converts the input `iterable` to a collection applying a predicate and a transformation for each input element.
+	 * Converts the input `iterable` to a collection applying a transformation for each input element.
 	 * @param <T1> the from/source of the transformer (also the type for `iterable`)
 	 * @param <T2> the to/target of the transformer and the type of objects in the return collection
 	 * @param <T3> any type that extends T1 to no limit conversion to a single type
@@ -79,7 +79,7 @@ public interface ClusterElementTransformer {
 	}
 
 	/**
-	 * Converts the input `iterator` to a collection applying a predicate and a transformation for each input element.
+	 * Converts the input `iterator` to a collection applying a transformation for each input element.
 	 * @param <T1> the from/source of the transformer (also the type for the `iterator`)
 	 * @param <T2> the to/target of the transformer and the type of objects in the return collection
 	 * @param <T3> any type that extends T1 to no limit conversion to a single type
@@ -126,7 +126,7 @@ public interface ClusterElementTransformer {
 	}
 
 	/**
-	 * Converts the input `array` to a collection applying a predicate and a transformation for each input element.
+	 * Converts the input `array` to a collection applying a transformation for each input element.
 	 * @param <T1> the from/source of the transformer (also the type for the `array`)
 	 * @param <T2> the to/target of the transformer and the type of objects in the return collection
 	 * @param <T3> any type that extends T1 to no limit conversion to a single type
