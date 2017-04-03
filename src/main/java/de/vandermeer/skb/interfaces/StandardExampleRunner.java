@@ -19,7 +19,7 @@ package de.vandermeer.skb.interfaces;
  * Utility for running examples.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
+ * @version    v0.0.1 build 170331 (31-Mar-17) for Java 1.8
  * @since      v0.0.1
  */
 public interface StandardExampleRunner {
@@ -31,7 +31,7 @@ public interface StandardExampleRunner {
 	 */
 	default void runExampleWithCode(StandardExample example){
 		System.out.println("================================================================");
-		System.out.println(example.getClass().getSimpleName());
+		System.out.println(example.getClass().getSimpleName() + ": " + example.getDescription());
 		System.out.println("----------------------------------------------------------------");
 		System.out.println(example.getSource());
 		System.out.println("----------------------------------------------------------------");
@@ -47,7 +47,7 @@ public interface StandardExampleRunner {
 	 */
 	default void runExample(StandardExample example){
 		System.out.println("================================================================");
-		System.out.println(example.getClass().getSimpleName());
+		System.out.println(example.getClass().getSimpleName() + ": " + example.getDescription());
 		System.out.println("----------------------------------------------------------------");
 		example.showOutput();
 		System.out.println("================================================================");

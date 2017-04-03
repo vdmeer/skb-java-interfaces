@@ -23,7 +23,7 @@ import org.slf4j.helpers.MessageFormatter;
  * Wraps a formatting tuple object from SLF4J simplifying messages.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.1.10-SNAPSHOT build 160319 (19-Mar-16) for Java 1.8
+ * @version    v0.0.1 build 170331 (31-Mar-17) for Java 1.8
  * @since      v0.0.1
  */
 public interface FormattingTupleWrapper {
@@ -77,6 +77,11 @@ public interface FormattingTupleWrapper {
 			@Override
 			public FormattingTuple getTuple() {
 				return MessageFormatter.arrayFormat(msg, obj);
+			}
+
+			@Override
+			public String toString(){
+				return this.getMessage();
 			}
 		};
 	}

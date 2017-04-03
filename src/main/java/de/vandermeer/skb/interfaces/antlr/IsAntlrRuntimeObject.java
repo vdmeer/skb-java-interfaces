@@ -30,7 +30,7 @@ import de.vandermeer.skb.interfaces.render.HasText;
  * (which have source, line, column, and other characteristics).
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
+ * @version    v0.0.1 build 170331 (31-Mar-17) for Java 1.8
  * @since      v0.0.1
  */
 public interface IsAntlrRuntimeObject extends CategoryIs, HasText {

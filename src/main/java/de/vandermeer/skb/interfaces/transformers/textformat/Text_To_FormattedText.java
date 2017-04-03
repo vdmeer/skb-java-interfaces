@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.text.StrBuilder;
 import org.apache.commons.lang3.tuple.Pair;
@@ -33,7 +34,7 @@ import de.vandermeer.skb.interfaces.transformers.Transformer;
  * Swiss army knife for formatting text, with several options for alignments, formats, inserted characters, and variable width.
  * 
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
+ * @version    v0.0.1 build 170331 (31-Mar-17) for Java 1.8
  * @since      v0.0.1
  */
 public interface Text_To_FormattedText extends IsTransformer<String, Collection<StrBuilder>> {
@@ -220,6 +221,15 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 		Validate.validState(this.getFirstlineIndentation()>0, "first line indentation was less than null, setting was <" + this.getFirstlineIndentation() + ">");
 		Validate.validState(this.getCharsBetweenDroppcapAndText()>0, "characters between dropped capital letter and text lines was less than 1, setting was <" + this.getCharsBetweenDroppcapAndText() + ">");
 		Validate.validState(this.getLinesAfterDropcap()>0, "lines added after a dropped capital letter was less than 1, setting was <" + this.getLinesAfterDropcap() + ">");
+
+		Collection<StrBuilder> ret = this.getCollectionStrategy().get();
+
+		//if nothing is to be done return string with blanks
+		if(StringUtils.isBlank(s)){
+			ret.add(new StrBuilder().appendPadding(this.getTextWidth(), ' '));
+			return ret;
+		}
+
 		if(this.getFormat()==FORMAT_DROPCAP || this.getFormat()==FORMAT_DROPCAP_WITH_PADDING){
 			Validate.notNull(this.getDropCap());
 			Validate.noNullElements(this.getDropCap());
@@ -300,8 +310,10 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 				bottomTr = String_To_Justified.create(bottomWidth, this.getInnerWsChar(), null);
 				break;
 		}
+
 		Collection<StrBuilder> top = ClusterElementTransformer.create().transform(pair.getLeft(), topTr, this.getCollectionStrategy());
 		Collection<StrBuilder> bottom = ClusterElementTransformer.create().transform(pair.getRight(), bottomTr, this.getCollectionStrategy());
+
 		//adjust the last line of we had the special justified alignments
 		if(bottom.size()>0 && (this.getAlignment()==ALIGN_JUSTIFIED_LEFT || this.getAlignment()==ALIGN_JUSTIFIED_RIGHT)){
 			// remove last entry in the collection, we want to replace that one
@@ -322,7 +334,6 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 		}
 
 		//do the format post processing
-		Collection<StrBuilder> ret = this.getCollectionStrategy().get();
 		switch(this.getFormat()){
 			case FORMAT_NONE:
 				ret.addAll(top);

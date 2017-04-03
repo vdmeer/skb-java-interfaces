@@ -21,7 +21,7 @@ import java.util.Collection;
  * Takes a collection of things and returns the first non-null element of it.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
+ * @version    v0.0.1 build 170331 (31-Mar-17) for Java 1.8
  * @since      v0.0.1
  */
 public interface Collection_To_FirstElement<T> extends IsTransformer<Collection<T>, T> {

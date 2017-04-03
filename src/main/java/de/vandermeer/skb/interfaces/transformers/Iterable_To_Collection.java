@@ -25,7 +25,7 @@ import de.vandermeer.skb.interfaces.strategies.IsCollectionStrategy;
  * Transforms input provided by an `iterable` into a collection of given type.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
+ * @version    v0.0.1 build 170331 (31-Mar-17) for Java 1.8
  * @since      v0.0.1
  */
 public interface Iterable_To_Collection extends IsTransformer<Iterable<?>, Collection<?>> {

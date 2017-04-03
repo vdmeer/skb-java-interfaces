@@ -19,7 +19,7 @@ package de.vandermeer.skb.interfaces.transformers;
  * Converts a String to a Boolean.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.0.1 build 160319 (19-Mar-16) for Java 1.8
+ * @version    v0.0.1 build 170331 (31-Mar-17) for Java 1.8
  * @since      v0.0.1
  */
 public interface String_To_Boolean extends IsTransformer<String, Boolean> {
