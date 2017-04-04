@@ -22,7 +22,7 @@
       -->
     <name>SKB Interfaces</name>
     <description>Set of interfaces used by other SKB projects.</description>
-    <url>https://github.com/vdmeer/skb-interfaces</url>
+    <url>http://www.vandermeer.de/projects/skb/java/core/interfaces</url>
     <inceptionYear>2016</inceptionYear>
 
     <!--
@@ -63,7 +63,7 @@
 		<pm.version.maven-javadoc-plugin>2.10.3</pm.version.maven-javadoc-plugin>
 		<pm.version.doxia-site-renderer>1.7</pm.version.doxia-site-renderer>
 		<pm.version.maven-resources-plugin>2.4.3</pm.version.maven-resources-plugin>
-		<mp.project.url>https://github.com/vdmeer/skb-interfaces</mp.project.url>
+		<mp.project.url>http://www.vandermeer.de/projects/skb/java/core/interfaces</mp.project.url>
     </properties>
 
     <!--
