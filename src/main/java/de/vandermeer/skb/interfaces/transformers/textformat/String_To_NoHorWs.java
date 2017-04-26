@@ -35,8 +35,7 @@ public interface String_To_NoHorWs extends IsTransformer<String, String> {
 	@Override
 	default String transform(String s) {
 		IsTransformer.super.transform(s);
-		s.replaceAll("\\h+", " ");
-		return s;
+		return s.replaceAll("\\h+", " ");
 	}
 
 	/**
