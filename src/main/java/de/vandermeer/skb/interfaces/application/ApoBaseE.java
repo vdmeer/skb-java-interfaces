@@ -8,23 +8,10 @@ import org.stringtemplate.v4.STGroupFile;
 public interface ApoBaseE extends ApoBase {
 
 	/**
-	 * Tests if the option was present in the environment.
-	 * @return true if it was present, false otherwise
-	 */
-	boolean inEnvironment();
-
-	/**
 	 * Returns the environment key of the option.
 	 * @return environment key, must not be blank
 	 */
 	String getEnvironmentKey();
-
-	@Override
-	default void validate() throws IllegalStateException {
-		ApoBase.super.validate();
-		Validate.validState(!StringUtils.isBlank(this.getEnvironmentKey()), "Apo: envKey must have a value");
-	}
-
 
 	@Override
 	default ST getHelp(){
@@ -44,5 +31,18 @@ public interface ApoBaseE extends ApoBase {
 		st.add("longDescr", this.getLongDescription());
 
 		return st;
+	}
+
+
+	/**
+	 * Tests if the option was present in the environment.
+	 * @return true if it was present, false otherwise
+	 */
+	boolean inEnvironment();
+
+	@Override
+	default void validate() throws IllegalStateException {
+		ApoBase.super.validate();
+		Validate.validState(!StringUtils.isBlank(this.getEnvironmentKey()), "Apo: envKey must have a value");
 	}
 }

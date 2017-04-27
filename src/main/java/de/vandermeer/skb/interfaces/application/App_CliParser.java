@@ -7,6 +7,7 @@ public interface App_CliParser {
 	/**
 	 * Adds all options to the parser.
 	 * @param options the options to be added, ignored if null, any null element is ignored as well
+	 * @param <T> the option type, here a simple CLI option
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the option is already in use
 	 */
@@ -22,6 +23,7 @@ public interface App_CliParser {
 	/**
 	 * Adds all options to the parser.
 	 * @param options the options to be added, ignored if null, any null element is ignored as well
+	 * @param <T> the option type, here a typed CLI option
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the option is already in use
 	 */
@@ -37,6 +39,7 @@ public interface App_CliParser {
 	/**
 	 * Adds all options to the parser.
 	 * @param options the options to be added, ignored if null, any null element is ignored as well
+	 * @param <T> the option type, here a simple CLI option
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the option is already in use
 	 */
@@ -52,6 +55,7 @@ public interface App_CliParser {
 	/**
 	 * Adds all options to the parser.
 	 * @param options the options to be added, ignored if null, any null element is ignored as well
+	 * @param <T> the option type, here a typed CLI option
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the option is already in use
 	 */
@@ -67,6 +71,7 @@ public interface App_CliParser {
 	/**
 	 * Adds a new option to the parser.
 	 * @param option the option to be added, ignored if `null`
+	 * @param <T> the option type, here a simple CLI option
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the option is already in use
 	 */
@@ -75,20 +80,29 @@ public interface App_CliParser {
 	/**
 	 * Adds a new option to the parser.
 	 * @param option the option to be added, ignored if `null`
+	 * @param <T> the option type, here a typed CLI option
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the option is already in use
 	 */
 	<T extends Apo_TypedC<?>> App_CliParser addOption(T option) throws IllegalStateException;
 
 	/**
-	 * Adds a new option to the parser.
-	 * @param option the option to be added, ignored if `null`
-	 * @return self to allow chaining
-	 * @throws IllegalStateException if the option is already in use
+	 * Returns the options already added, short or long.
+	 * @return already added options, empty if none added
 	 */
-	default App_CliParser addOption(Object option) throws IllegalStateException {
-		return this;
-	}
+	Set<String> getAddedOptions();
+
+	/**
+	 * Returns all simple options added to the parser.
+	 * @return all simple options, empty array if none added
+	 */
+	Set<Apo_SimpleC> getSimpleOptions();
+
+	/**
+	 * Returns all typed options added to the parser.
+	 * @return all typed options, empty array if none added
+	 */
+	Set<Apo_TypedC<?>> getTypedOptions();
 
 	/**
 	 * Tests if an option is already added to the command line parser.
@@ -110,24 +124,6 @@ public interface App_CliParser {
 		}
 		return false;
 	}
-
-	/**
-	 * Returns the options already added, short or long.
-	 * @return already added options, empty if none added
-	 */
-	Set<String> getAddedOptions();
-
-	/**
-	 * Returns all simple options added to the parser.
-	 * @return all simple options, empty array if none added
-	 */
-	Set<Apo_SimpleC> getSimpleOptions();
-
-	/**
-	 * Returns all typed options added to the parser.
-	 * @return all typed options, empty array if none added
-	 */
-	Set<Apo_TypedC<?>> getTypedOptions();
 
 	/**
 	 * Parses command line arguments set values for CLI options.

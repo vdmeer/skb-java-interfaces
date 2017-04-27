@@ -10,10 +10,12 @@ import de.vandermeer.skb.interfaces.categories.has.HasDescription;
 public interface ApoBase extends CategoryIs, HasDescription {
 
 	/**
-	 * Tests if the option is set.
-	 * @return true if set, false otherwise
+	 * Returns help information for the option.
+	 * The information contains all possible settings.
+	 * This might include CLI, property, environment, and other settings.
+	 * @return help information, must not be null
 	 */
-	boolean isSet();
+	ST getHelp();
 
 	/**
 	 * Returns a long description of the option.
@@ -23,12 +25,22 @@ public interface ApoBase extends CategoryIs, HasDescription {
 	String getLongDescription();
 
 	/**
-	 * Returns help information for the option.
-	 * The information contains all possible settings.
-	 * This might include CLI, property, environment, and other settings.
-	 * @return help information, must not be null
+	 * Tests if the option is set.
+	 * @return true if set, false otherwise
 	 */
-	ST getHelp();
+	boolean isSet();
+
+	/**
+	 * Sets the long description.
+	 * @param description new description, ignored if null or blank
+	 */
+	void setLongDescription(ST description);
+
+	/**
+	 * Sets the long description.
+	 * @param description new description, ignored if null or blank
+	 */
+	void setLongDescription(String description);
 
 	/**
 	 * Validates the option.
@@ -36,7 +48,5 @@ public interface ApoBase extends CategoryIs, HasDescription {
 	 */
 	default void validate() throws IllegalStateException {
 		Validate.validState(!StringUtils.isBlank(this.getDescription()), "Apo: description cannot be blank");
-		Validate.validState(!StringUtils.isBlank(this.getLongDescription()), "Apo: long description cannot be blank");
-		//Validate.validState(this.getHelp()!=null, "Apo: getHelp() cannot be null");
 	}
 }

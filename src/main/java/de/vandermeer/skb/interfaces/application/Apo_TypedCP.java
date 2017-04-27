@@ -5,9 +5,11 @@ import org.stringtemplate.v4.ST;
 public interface Apo_TypedCP<T> extends Apo_TypedC<T>, Apo_TypedP<T> {
 
 	@Override
-	default void validate() throws IllegalStateException {
-		Apo_TypedC.super.validate();
-		Apo_TypedP.super.validate();
+	default ST getHelp(){
+		ST st = Apo_TypedC.super.getHelpCli();
+		st.add("propertyKey", this.getPropertyKey());
+
+		return st;
 	}
 
 	/**
@@ -38,10 +40,8 @@ public interface Apo_TypedCP<T> extends Apo_TypedC<T>, Apo_TypedP<T> {
 	}
 
 	@Override
-	default ST getHelp(){
-		ST st = Apo_TypedC.super.getHelpCli();
-		st.add("propertyKey", this.getPropertyKey());
-
-		return st;
+	default void validate() throws IllegalStateException {
+		Apo_TypedC.super.validate();
+		Apo_TypedP.super.validate();
 	}
 }

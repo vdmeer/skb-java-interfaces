@@ -7,24 +7,6 @@ import org.stringtemplate.v4.STGroupFile;
 
 public interface ApoBaseP extends ApoBase {
 
-	/**
-	 * Tests if the option was present in properties.
-	 * @return true if it was present, false otherwise
-	 */
-	boolean inProperties();
-
-	/**
-	 * Returns the property key of the option.
-	 * @return property key, must not be blank
-	 */
-	String getPropertyKey();
-
-	@Override
-	default void validate() throws IllegalStateException {
-		ApoBase.super.validate();
-		Validate.validState(!StringUtils.isBlank(this.getPropertyKey()), "Apo: propertyKey must have a value");
-	}
-
 	@Override
 	default ST getHelp(){
 		return this.getHelpProperty();
@@ -43,5 +25,23 @@ public interface ApoBaseP extends ApoBase {
 		st.add("longDescr", this.getLongDescription());
 
 		return st;
+	}
+
+	/**
+	 * Returns the property key of the option.
+	 * @return property key, must not be blank
+	 */
+	String getPropertyKey();
+
+	/**
+	 * Tests if the option was present in properties.
+	 * @return true if it was present, false otherwise
+	 */
+	boolean inProperties();
+
+	@Override
+	default void validate() throws IllegalStateException {
+		ApoBase.super.validate();
+		Validate.validState(!StringUtils.isBlank(this.getPropertyKey()), "Apo: propertyKey must have a value");
 	}
 }

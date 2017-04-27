@@ -8,22 +8,10 @@ import org.stringtemplate.v4.STGroupFile;
 public interface ApoBaseC extends ApoBase {
 
 	/**
-	 * Tests if the option was present in a parsed command line.
-	 * @return true if it was present, false otherwise
+	 * Tests if the CLI option is required meaning it must be used in the command line.
+	 * @return true if required, false otherwise
 	 */
-	boolean inCli();
-
-	/**
-	 * Sets the option flag for being in a command line.
-	 * @param inCli true if in a command line, false otherwise
-	 */
-	void setInCLi(boolean inCli);
-
-	/**
-	 * Returns the short CLI option.
-	 * @return short CLI option, null if none set
-	 */
-	Character getCliShort();
+	boolean cliIsRequired();
 
 	/**
 	 * Returns the long CLI option.
@@ -31,11 +19,11 @@ public interface ApoBaseC extends ApoBase {
 	 */
 	String getCliLong();
 
-	@Override
-	default void validate() throws IllegalStateException {
-		ApoBase.super.validate();
-		Validate.validState(!StringUtils.isBlank(this.getCliShortLong()), "Apo: cliShor or cliLong must have a value");
-	}
+	/**
+	 * Returns the short CLI option.
+	 * @return short CLI option, null if none set
+	 */
+	Character getCliShort();
 
 	/**
 	 * Returns a CLI option either short or long.
@@ -47,12 +35,6 @@ public interface ApoBaseC extends ApoBase {
 		}
 		return this.getCliLong();
 	}
-
-	/**
-	 * Tests if the CLI option is required meaning it must be used in the command line.
-	 * @return true if required, false otherwise
-	 */
-	boolean cliIsRequired();
 
 	@Override
 	default ST getHelp(){
@@ -77,5 +59,23 @@ public interface ApoBaseC extends ApoBase {
 		st.add("longDescr", this.getLongDescription());
 
 		return st;
+	}
+
+	/**
+	 * Tests if the option was present in a parsed command line.
+	 * @return true if it was present, false otherwise
+	 */
+	boolean inCli();
+
+	/**
+	 * Sets the option flag for being in a command line.
+	 * @param inCli true if in a command line, false otherwise
+	 */
+	void setInCLi(boolean inCli);
+
+	@Override
+	default void validate() throws IllegalStateException {
+		ApoBase.super.validate();
+		Validate.validState(!StringUtils.isBlank(this.getCliShortLong()), "Apo: cliShor or cliLong must have a value");
 	}
 }
