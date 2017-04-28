@@ -69,7 +69,7 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 	/** Format option combining a first line indentation with a hanging paragraph. */
 	static int FORMAT_FIRSTLINE_AND_HANGINGPARAGRAPH = 103;
 
-	/** Format option for text using a dropped capital letter replacing the first character of the first word of the first sentence, requries a special library of those letters. */
+	/** Format option for text using a dropped capital letter replacing the first character of the first word of the first sentence, requires a special library of those letters. */
 	static int FORMAT_DROPCAP = 120;
 
 	/** Format option for text with a dropped capital letter using a padding. */

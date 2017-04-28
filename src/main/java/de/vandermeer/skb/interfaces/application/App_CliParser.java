@@ -15,7 +15,20 @@
 
 package de.vandermeer.skb.interfaces.application;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
+
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.text.StrBuilder;
+import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroupFile;
+
+import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedText;
 
 /**
  * Base for a CLI parser.
@@ -27,15 +40,26 @@ import java.util.Set;
 public interface App_CliParser {
 
 	/**
+	 * Statistic method: returns number of CLI arguments with short option.
+	 * @return number of CLI arguments with short option
+	 */
+	int numberShort();
+
+	/**
+	 * Statistic method: returns number of CLI arguments with long option.
+	 * @return number of CLI arguments with long option
+	 */
+	int numberLong();
+
+	/**
 	 * Adds all options to the parser.
 	 * @param options the options to be added, ignored if null, any null element is ignored as well
-	 * @param <T> the option type, here a simple CLI option
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the option is already in use
 	 */
-	default <T extends Apo_SimpleC> App_CliParser addAllOptions(T[] options) throws IllegalStateException{
+	default App_CliParser addAllOptions(Object[] options) throws IllegalStateException{
 		if(options!=null){
-			for(T opt : options){
+			for(Object opt : options){
 				this.addOption(opt);
 			}
 		}
@@ -45,45 +69,12 @@ public interface App_CliParser {
 	/**
 	 * Adds all options to the parser.
 	 * @param options the options to be added, ignored if null, any null element is ignored as well
-	 * @param <T> the option type, here a typed CLI option
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the option is already in use
 	 */
-	default <T extends Apo_TypedC<?>> App_CliParser addAllOptions(T[] options) throws IllegalStateException{
+	default App_CliParser addAllOptions(Iterable<?> options) throws IllegalStateException{
 		if(options!=null){
-			for(T opt : options){
-				this.addOption(opt);
-			}
-		}
-		return this;
-	}
-
-	/**
-	 * Adds all options to the parser.
-	 * @param options the options to be added, ignored if null, any null element is ignored as well
-	 * @param <T> the option type, here a simple CLI option
-	 * @return self to allow chaining
-	 * @throws IllegalStateException if the option is already in use
-	 */
-	default <T extends Apo_SimpleC> App_CliParser addAllSimpleOptions(Iterable<T> options) throws IllegalStateException{
-		if(options!=null){
-			for(T opt : options){
-				this.addOption(opt);
-			}
-		}
-		return this;
-	}
-
-	/**
-	 * Adds all options to the parser.
-	 * @param options the options to be added, ignored if null, any null element is ignored as well
-	 * @param <T> the option type, here a typed CLI option
-	 * @return self to allow chaining
-	 * @throws IllegalStateException if the option is already in use
-	 */
-	default <T extends Apo_TypedC<?>> App_CliParser addAllTypedOptions(Iterable<T> options) throws IllegalStateException{
-		if(options!=null){
-			for(T opt : options){
+			for(Object opt : options){
 				this.addOption(opt);
 			}
 		}
@@ -93,20 +84,10 @@ public interface App_CliParser {
 	/**
 	 * Adds a new option to the parser.
 	 * @param option the option to be added, ignored if `null`
-	 * @param <T> the option type, here a simple CLI option
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the option is already in use
 	 */
-	<T extends Apo_SimpleC> App_CliParser addOption(T option) throws IllegalStateException;
-
-	/**
-	 * Adds a new option to the parser.
-	 * @param option the option to be added, ignored if `null`
-	 * @param <T> the option type, here a typed CLI option
-	 * @return self to allow chaining
-	 * @throws IllegalStateException if the option is already in use
-	 */
-	<T extends Apo_TypedC<?>> App_CliParser addOption(T option) throws IllegalStateException;
+	App_CliParser addOption(Object option) throws IllegalStateException;
 
 	/**
 	 * Returns the options already added, short or long.
@@ -125,6 +106,12 @@ public interface App_CliParser {
 	 * @return all typed options, empty array if none added
 	 */
 	Set<Apo_TypedC<?>> getTypedOptions();
+
+	/**
+	 * Returns a set of all options.
+	 * @return set of all options, empty if none set
+	 */
+	Set<ApoBaseC> getAllOptions();
 
 	/**
 	 * Tests if an option is already added to the command line parser.
@@ -150,13 +137,73 @@ public interface App_CliParser {
 	/**
 	 * Parses command line arguments set values for CLI options.
 	 * @param args command line arguments
+	 * @throws CliParseException if a parsing error happened, for instance a required option was not present in the arguments
 	 * @throws IllegalStateException if a parsing error happened, for instance a required option was not present in the arguments
 	 */
-	void parse(String[] args) throws IllegalStateException;
+	void parse(String[] args) throws CliParseException, IllegalStateException;
 
 	/**
 	 * Prints usage information for the CLI parser including all CLI options.
-	 * @param appName the name of the application for usage, must not be blank
+	 * @param width the console columns or width of each output line
+	 * @return list of lines with usage information
 	 */
-	void usage(String appName);
+	default ArrayList<StrBuilder> usage(int width){
+		TreeMap<String, ApoBaseC> map = CliOptionList.sortedMap(this.getAllOptions(), this.numberShort(), this.numberLong());
+		Map<String, String> helpMap = new LinkedHashMap<>();
+		int length = 0;
+		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/help.stg");
+		for(Object option : map.values()){
+			ST sto = stg.getInstanceOf("option");
+			String description = null;
+			if(ClassUtils.isAssignable(option.getClass(), Apo_SimpleC.class)){
+				sto.add("cliShort", ((Apo_SimpleC)option).getCliShort());
+				sto.add("cliLong", ((Apo_SimpleC)option).getCliLong());
+				description = ((Apo_SimpleC)option).getDescription();
+			}
+			if(ClassUtils.isAssignable(option.getClass(), Apo_TypedC.class)){
+				sto.add("cliShort", ((Apo_TypedC<?>)option).getCliShort());
+				sto.add("cliLong", ((Apo_TypedC<?>)option).getCliLong());
+				sto.add("argName", ((Apo_TypedC<?>)option).getCliArgumentName());
+				sto.add("argOptional", ((Apo_TypedC<?>)option).cliArgIsOptional());
+				description = ((Apo_TypedC<?>)option).getDescription();
+			}
+			String line = sto.render();
+			if(line.length()>length){
+				length = line.length();
+			}
+			helpMap.put(line, description);
+		}
+		length += 4;
+
+		ArrayList<StrBuilder> ret = new ArrayList<>();
+		for(Entry<String, String> entry : helpMap.entrySet()){
+			StrBuilder argLine = new StrBuilder();
+			argLine.append(entry.getKey()).appendPadding(length-argLine.length(), ' ');
+			StrBuilder padLine = new StrBuilder();
+			padLine.appendPadding(length, ' ');
+
+			Collection<StrBuilder> text = Text_To_FormattedText.left(entry.getValue(), width-length);
+			int i = 0;
+			for(StrBuilder b : text){
+				if(i==0){
+					b.insert(0, argLine);
+				}
+				else{
+					b.insert(0, padLine);
+				}
+				ret.add(b);
+				i++;
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * Prints usage information for the CLI parser including all CLI options.
+	 * @return list of lines with usage information
+	 */
+	default ArrayList<StrBuilder> usage(){
+		return this.usage(80);
+	}
+
 }

@@ -95,9 +95,10 @@ public interface Apo_TypedC<T> extends ApoBaseTyped<T>, ApoBaseC {
 	/**
 	 * Sets the CLI value of the option.
 	 * @param value the value read from the command line, must not be null (or blank in case of a string)
+	 * @throws CliParseException if the argument was blank (string) or otherwise problematic
 	 * @throws IllegalStateException if the argument was blank (string) or otherwise problematic
 	 */
-	void setCliValue(Object value) throws IllegalStateException;
+	void setCliValue(Object value) throws CliParseException, IllegalStateException;
 
 	@Override
 	default void validate() throws IllegalStateException {
