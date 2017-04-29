@@ -16,24 +16,46 @@
 package de.vandermeer.skb.interfaces.application;
 
 /**
- * A parse exception for the CLI parser with error code as return value.
+ * General application exception.
  * 
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.1 build 170404 (04-Apr-17) for Java 1.8
  * @since      v0.0.2
  */
-public class CliParseException extends ApplicationException {
+public class ApplicationException extends Exception {
 
 	/** Serial version UID. */
-	private static final long serialVersionUID = 717498044288446962L;
+	private static final long serialVersionUID = 8635326284951337092L;
+
+	/** The exception error code. */
+	private final int errorCode;
 
 	/**
 	 * Creates a new exception with message and error code.
 	 * @param errorCode the error code as return value for an application
 	 * @param message a message for the exception
 	 */
-	public CliParseException(final int errorCode, final String message){
-		super(errorCode, message);
+	public ApplicationException(final int errorCode, final String message){
+		super(message);
+		this.errorCode = errorCode;
+	}
+
+	/**
+	 * Creates a new exception.
+	 * @param errorCode the exception error code
+	 * @param args the arguments for the error code
+	 */
+	public ApplicationException(ApplicationErrorCode errorCode, Object ... args){
+		super(errorCode.getMessage(args));
+		this.errorCode = errorCode.getCode();
+	}
+
+	/**
+	 * Returns the error code.
+	 * @return error code
+	 */
+	public int getErrorCode(){
+		return this.errorCode;
 	}
 
 }
