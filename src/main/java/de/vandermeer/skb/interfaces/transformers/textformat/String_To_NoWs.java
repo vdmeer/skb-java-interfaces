@@ -35,8 +35,7 @@ public interface String_To_NoWs extends IsTransformer<String, String> {
 	@Override
 	default String transform(String s) {
 		IsTransformer.super.transform(s);
-		s.replaceAll("\\s+", " ");
-		return s;
+		return s.replaceAll("\\s+", " ");
 	}
 
 	/**

@@ -1,4 +1,4 @@
-/* Copyright 2016 Sven van der Meer <vdmeer.sven@mykolab.com>
+/* Copyright 2017 Sven van der Meer <vdmeer.sven@mykolab.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,11 @@
  * limitations under the License.
  */
 
-package de.vandermeer.skb.interfaces.categories.has;
-
-import de.vandermeer.skb.interfaces.categories.CategoryHas;
-
 /**
- * Interface of objects that have a description.
- *
+ * Base for applications, with options, CLI parser, and applications.
+ * 
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.1 build 170404 (04-Apr-17) for Java 1.8
- * @since      v0.0.1
+ * @since      v0.0.2
  */
-public interface HasDescription extends CategoryHas {
-
-//	/**
-//	 * A default description.
-//	 */
-//	static final String DEFAULT_DESCRIPTION = "##default description##";
-
-	/**
-	 * Returns the description of an object.
-	 * @return description
-	 */
-	String getDescription();
-//	default Object getDescription(){
-//		return HasDescription.DEFAULT_DESCRIPTION;
-//	}
-
-}
+package de.vandermeer.skb.interfaces.application;

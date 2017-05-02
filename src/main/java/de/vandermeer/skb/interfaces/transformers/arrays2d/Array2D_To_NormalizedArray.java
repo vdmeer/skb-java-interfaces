@@ -34,7 +34,7 @@ public interface Array2D_To_NormalizedArray extends IsTransformer<String[][], St
 	/**
 	 * Returns the number of columns,
 	 * @return number of columns
-	 * @throws {@link NullPointerException} if argument was null
+	 * @throws NullPointerException if argument was null
 	 */
 	int getNumberOfColumns();
 
