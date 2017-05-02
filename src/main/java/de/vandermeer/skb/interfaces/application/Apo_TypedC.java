@@ -61,12 +61,13 @@ public interface Apo_TypedC<T> extends ApoBaseTyped<T>, ApoBaseC {
 	T getCliValue();
 
 	@Override
-	default ST getHelpCli(){
-		ST st = ApoBaseC.super.getHelpCli();
+	default ST getHelp(){
+		ST st = ApoBaseC.super.getHelp();
+		ST cliST = (ST)st.getAttribute("cli");
+		cliST.add("cliArgName", this.getCliArgumentName());
+		cliST.add("cliArgOptional", this.cliArgIsOptional());
+		cliST.add("cliArgDescr", this.getCliArgumentDescription());
 
-		st.add("cliArgName", this.getCliArgumentName());
-		st.add("cliArgOptional", this.cliArgIsOptional());
-		st.add("cliArgDescr", this.getCliArgumentDescription());
 		st.add("defaultValue", this.getDefaultValue());
 
 		return st;
@@ -106,4 +107,5 @@ public interface Apo_TypedC<T> extends ApoBaseTyped<T>, ApoBaseC {
 		Validate.validState(!StringUtils.isBlank(this.getCliArgumentName()), "Apo: CLI argName cannot be blank");
 		Validate.validState(!StringUtils.isBlank(this.getCliArgumentDescription()), "Apo: CLI argDescr cannot be blank");
 	}
+
 }

@@ -24,50 +24,38 @@
  * @since      v0.0.2
  */
 
-optionHelp(shortDescr, LongDescr, defaultValue, cliShort, cliLong, cliArgName, cliArgOptional, cliArgDescr, cliRequired, propKey, envKey) ::= <<
-<if(cliLong)>
-<shortDescription>
- - usage:    <if(shortOption)>-<shortOption>, <endif>--<longOption><if(argumentName)> \<<argumentName>\><endif>
- <if(argumentDescription)>
- - argument: <argumentDescription>
+optionHelp(displayName, shortDescr, longDescr, defaultValue, cli, propKey, envKey, strongLine, line) ::= <<
+
+<displayName> - <shortDescr>
+<strongLine>
+<if(cli)>
+<cli>
+<line>
 <endif>
- - required: <if(required)>yes<else>no<endif>
+<if(propKey)>
+Property key:    <propertyKey>
+<line>
+<endif>
+<if(envKey)>
+Environment key: <envKey>
+<line>
+<endif>
 <if(defaultValue)>
- - default value: <defaultValue>
+Default value:   <defaultValue>
+<line>
 <endif>
-<if(propertyKey)>
- - property key : <propertyKey>
-<endif>
-<if(propertyKey)>
- - env key      : <envKey>
-<endif>
+<if(longDescr)>
 
+<longDescr>
 
-<longDescription>
-
-
-
-<else if(propKey)>
-Property key: <propertyKey>  -  <shortDescription>
-<if(defaultValue)>
- - default value: <defaultValue>
 <endif>
 
-
-<longDescription>
-
+>>
 
 
-<else if(envKey)>
-Environment key: <envKey>  -  <shortDescription>
-<if(defaultValue)>
- - default value: <defaultValue>
-<endif>
-
-
-<longDescription>
-
-
-
-<endif>
+cliHelp(cliShort, cliLong, cliArgName, cliArgOptional, cliArgDescr, cliRequired) ::= <<
+CLI usage:   <if(cliShort)>-<cliShort><if(cliLong)>, <endif><endif><if(cliLong)>--<cliLong><endif><if(cliArgName)> \<<cliArgName>\><endif>
+ - required: <if(cliRequired)>yes<else>no<endif>
+<if(cliArgName)>
+ - argument: <cliArgName> - <cliArgDescr><endif>
 >>

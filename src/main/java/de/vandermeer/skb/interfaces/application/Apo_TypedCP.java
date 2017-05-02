@@ -28,8 +28,8 @@ public interface Apo_TypedCP<T> extends Apo_TypedC<T>, Apo_TypedP<T> {
 
 	@Override
 	default ST getHelp(){
-		ST st = Apo_TypedC.super.getHelpCli();
-		st.add("propertyKey", this.getPropertyKey());
+		ST st = Apo_TypedC.super.getHelp();
+		st.add("propKey", this.getPropertyKey());
 
 		return st;
 	}

@@ -34,15 +34,7 @@ public interface Apo_TypedE<T> extends ApoBaseE, ApoBaseTyped<T> {
 
 	@Override
 	default ST getHelp(){
-		return this.getHelpEnv();
-	}
-
-	/**
-	 * Returns an ST with a help information for the option.
-	 * @return ST with help information, must not be null
-	 */
-	default ST getHelpEnv(){
-		ST st = ApoBaseE.super.getHelpEnv();
+		ST st = ApoBaseE.super.getHelp();
 		st.add("defaultValue", this.getDefaultValue());
 		return st;
 	}

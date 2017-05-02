@@ -30,15 +30,7 @@ public interface Apo_TypedP<T> extends ApoBaseP, ApoBaseTyped<T> {
 
 	@Override
 	default ST getHelp(){
-		return this.getHelpProperty();
-	}
-
-	/**
-	 * Returns an ST with a help information for the option.
-	 * @return ST with help information, must not be null
-	 */
-	default ST getHelpProperty(){
-		ST st = ApoBaseP.super.getHelpProperty();
+		ST st = ApoBaseP.super.getHelp();
 		st.add("defaultValue", this.getDefaultValue());
 		return st;
 	}

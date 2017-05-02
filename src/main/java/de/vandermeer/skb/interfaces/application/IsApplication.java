@@ -24,6 +24,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.text.StrBuilder;
 import org.stringtemplate.v4.ST;
@@ -208,31 +209,51 @@ public interface IsApplication extends CategoryIs, HasDescription {
 	 * @param arg the command line argument specific help is requested for
 	 */
 	default void appHelpScreen(String arg){
-//		if(arg==null){
-//			return;
-//		}
-//
-//		ApplicationOption<?>[] options = this.getAppOptions();
-//		if(options!=null){
-//			boolean found = false;
-//			for(ApplicationOption<?> opt : options){
-//				if(opt.getCliOption()!=null){
-//					if(arg.equals(opt.getCliOption().getOpt()) || arg.equals(opt.getCliOption().getLongOpt())){
-//						System.out.println(opt.getCliLongHelp());
-//						found = true;
-//					}
-//				}
-//				else if(opt.getOptionKey()!=null){
-//					if(arg.equals(opt.getOptionKey())){
-//						System.out.println(opt.getKeyLongHelp());
-//						found = true;
-//					}
-//				}
-//			}
-//			if(found==false){
-//				System.err.println(this.getAppName() + ": unknown CLI argument / option key -> " + arg);
-//			}
-//		}
+		if(StringUtils.isBlank(arg)){
+			return;
+		}
+
+		ApoBase opt = null;
+		for(ApoBaseC cliOpt : this.getCLiALlOptions()){
+			if(cliOpt.getCliShort()!=null){
+				if(arg.equals(cliOpt.getCliShort().toString())){
+					opt = cliOpt;
+					break;
+				}
+			}
+			if(arg.equals(cliOpt.getCliLong())){
+				opt = cliOpt;
+				break;
+			}
+		}
+		if(opt==null){
+			for(Apo_TypedP<?> propOpt : this.getPropertyOptions()){
+				if(arg.equals(propOpt.getPropertyKey())){
+					opt = propOpt;
+					break;
+				}
+			}
+		}
+
+		if(opt==null){
+			for(Apo_TypedE<?> envOpt : this.getEnvironmentOptions()){
+				if(arg.equals(envOpt.getEnvironmentKey())){
+					opt = envOpt;
+					break;
+				}
+			}
+		}
+
+		if(opt==null){
+			System.err.println(this.getAppName() + ": unknown option -> " + arg);//TODO Error Code
+		}
+		else{
+			ST st = opt.getHelp();
+			st.add("longDescr", this.longDescriptionString(opt.getLongDescription()));
+			st.add("strongLine", new StrBuilder().appendPadding(this.getConsoleWidth(), '=' ));
+			st.add("line", new StrBuilder().appendPadding(this.getConsoleWidth(), '-' ));
+			System.out.println(st.render());
+		}
 	}
 
 	/**
@@ -399,4 +420,10 @@ public interface IsApplication extends CategoryIs, HasDescription {
 	 */
 	Set<Apo_TypedP<?>> getPropertyOptions();
 
+	/**
+	 * Translates an option's long help object into a string.
+	 * @param longDescription the original long description of an option to translate
+	 * @return the options long help, null and blank strings mean no long help available
+	 */
+	String longDescriptionString(Object longDescription);
 }

@@ -60,26 +60,14 @@ public interface ApoBaseC extends ApoBase {
 
 	@Override
 	default ST getHelp(){
-		return this.getHelpCli();
-	}
-
-	/**
-	 * Returns an ST with help information for the option.
-	 * @return ST with help information, must not be null
-	 */
-	default ST getHelpCli(){
 		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/option-help.stg");
-		ST st = stg.getInstanceOf("optionHelp");
+		ST cliST = stg.getInstanceOf("cliHelp");
+		cliST.add("cliShort", this.getCliShort());
+		cliST.add("cliLong", this.getCliLong());
+		cliST.add("cliRequired", this.cliIsRequired());
 
-		st.add("cliShort", this.getCliShort());
-		st.add("cliLong", this.getCliLong());
-
-		if(this.cliIsRequired()){
-			st.add("cliRequired", "true");
-		}
-		st.add("shortDescr", this.getDescription());
-		st.add("longDescr", this.getLongDescription());
-
+		ST st = ApoBase.super.getHelp();
+		st.add("cli", cliST);
 		return st;
 	}
 

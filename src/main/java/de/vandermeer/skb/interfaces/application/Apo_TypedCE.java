@@ -28,7 +28,7 @@ public interface Apo_TypedCE<T> extends Apo_TypedC<T>, Apo_TypedE<T> {
 
 	@Override
 	default ST getHelp(){
-		ST st = Apo_TypedC.super.getHelpCli();
+		ST st = Apo_TypedC.super.getHelp();
 		st.add("envKey", this.getEnvironmentKey());
 
 		return st;
