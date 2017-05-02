@@ -26,7 +26,7 @@ import org.apache.commons.lang3.ClassUtils;
  * A list of CLI options.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.4.0 build 170413 (13-Apr-17) for Java 1.8
+ * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
 public interface CliOptionList {

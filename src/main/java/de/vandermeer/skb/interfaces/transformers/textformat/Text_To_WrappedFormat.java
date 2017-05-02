@@ -30,7 +30,7 @@ import de.vandermeer.skb.interfaces.transformers.IsTransformer;
  * Takes some text and returns formatted text with optionally different width for top/bottom.
  * 
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.0.1 build 170404 (04-Apr-17) for Java 1.8
+ * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
 public interface Text_To_WrappedFormat extends IsTransformer<String, Pair<ArrayList<String>, ArrayList<String>>> {

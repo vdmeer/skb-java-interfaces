@@ -19,7 +19,7 @@ package de.vandermeer.skb.interfaces.application;
  * A category for an application error code.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v2.1.0-SNAPSHOT build 170420 (20-Apr-17) for Java 1.8
+ * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
 public interface ErrorCodeCategory {
