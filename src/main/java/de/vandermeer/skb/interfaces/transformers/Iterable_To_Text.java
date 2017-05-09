@@ -31,19 +31,6 @@ public interface Iterable_To_Text<T> extends IsTransformer<Iterable<T>, String> 
 	/** The String Template for an iterator to text translation. */
 	static String TO_STRING_ST = "toText(entries) ::= <<\n    <entries:{n | - <n>}; separator=\"\n\">\n>>";
 
-	@Override
-	default String transform(Iterable<T> it){
-		IsTransformer.super.transform(it);
-
-		STGroup stg = new STGroupString(TO_STRING_ST);
-		ST ret = stg.getInstanceOf("toText");
-
-		for(Object obj : it){
-			ret.add("entries", obj);
-		}
-		return ret.render();
-	}
-
 	/**
 	 * Creates a new transformer.
 	 * @param <T> type for `iterable`
@@ -61,5 +48,18 @@ public interface Iterable_To_Text<T> extends IsTransformer<Iterable<T>, String> 
 	 */
 	static <T> Iterable_To_Text<T> create(Class<T> clazz){
 		return new Iterable_To_Text<T>() {};
+	}
+
+	@Override
+	default String transform(Iterable<T> it){
+		IsTransformer.super.transform(it);
+
+		STGroup stg = new STGroupString(TO_STRING_ST);
+		ST ret = stg.getInstanceOf("toText");
+
+		for(Object obj : it){
+			ret.add("entries", obj);
+		}
+		return ret.render();
 	}
 }

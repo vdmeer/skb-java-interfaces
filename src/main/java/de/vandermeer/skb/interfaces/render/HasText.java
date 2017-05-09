@@ -29,12 +29,6 @@ import de.vandermeer.skb.interfaces.categories.CategoryHas;
 public interface HasText extends CategoryHas {
 
 	/**
-	 * Returns text representation of an object.
-	 * @return text, should not be blank
-	 */
-	String getText();
-
-	/**
 	 * Creates a new simple text object.
 	 * @param text input text, cannot be blank
 	 * @return new simple text object
@@ -50,4 +44,10 @@ public interface HasText extends CategoryHas {
 			}
 		};
 	}
+
+	/**
+	 * Returns text representation of an object.
+	 * @return text, should not be blank
+	 */
+	String getText();
 }

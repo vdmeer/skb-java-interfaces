@@ -32,6 +32,14 @@ import de.vandermeer.skb.interfaces.strategies.maps.IsHashtableStrategy;
  */
 public interface PropertiesStrategy extends IsHashtableStrategy<Object, Object> {
 
+	/**
+	 * Creates a property map strategy.
+	 * @return property map strategy
+	 */
+	static PropertiesStrategy create(){
+		return new PropertiesStrategy() {};
+	}
+
 	@Override
 	default Hashtable<Object, Object> get() {
 		return new Properties();
@@ -49,13 +57,5 @@ public interface PropertiesStrategy extends IsHashtableStrategy<Object, Object> 
 	 */
 	default Properties get(Properties prop){
 		return new Properties(prop);
-	}
-
-	/**
-	 * Creates a property map strategy.
-	 * @return property map strategy
-	 */
-	static PropertiesStrategy create(){
-		return new PropertiesStrategy() {};
 	}
 }

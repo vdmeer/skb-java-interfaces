@@ -36,10 +36,32 @@ import de.vandermeer.skb.interfaces.messagesets.errors.Templates_STG;
 public interface IsSTErrorListener extends CategoryIs, STErrorListener {
 
 	/**
-	 * Returns the errors the listener has collected.
-	 * @return set of errors, ordered in time of arrival, must not be null
+	 * Creates a new error listener.
+	 * @param appName the application (or object/class) name for the listener, must not be blank
+	 * @return a new listener
 	 */
-	Set<IsError> getErrors();
+	static IsSTErrorListener create(final String appName){
+		Validate.notBlank(appName);
+
+		return new IsSTErrorListener() {
+			final Set<IsError> errors = new LinkedHashSet<>();
+
+			@Override
+			public String getAppName() {
+				return appName;
+			}
+
+			@Override
+			public Set<IsError> getErrors() {
+				return errors;
+			}
+		};
+	}
+
+	@Override
+	default void compileTimeError(STMessage msg){
+		this.getErrors().add(Templates_STG.ST_COMPILE_TIME.getError(this.getAppName(), msg));
+	}
 
 	/**
 	 * Returns the application (or object/class) name the listener is running for.
@@ -47,10 +69,11 @@ public interface IsSTErrorListener extends CategoryIs, STErrorListener {
 	 */
 	String getAppName();
 
-	@Override
-	default void compileTimeError(STMessage msg){
-		this.getErrors().add(Templates_STG.ST_COMPILE_TIME.getError(this.getAppName(), msg));
-	}
+	/**
+	 * Returns the errors the listener has collected.
+	 * @return set of errors, ordered in time of arrival, must not be null
+	 */
+	Set<IsError> getErrors();
 
 	@Override
 	default void internalError(STMessage msg){
@@ -65,28 +88,5 @@ public interface IsSTErrorListener extends CategoryIs, STErrorListener {
 	@Override
 	default void runTimeError(STMessage msg){
 		this.getErrors().add(Templates_STG.ST_RUNTIME.getError(this.getAppName(), msg));
-	}
-
-	/**
-	 * Creates a new error listener.
-	 * @param appName the application (or object/class) name for the listener, must not be blank
-	 * @return a new listener
-	 */
-	static IsSTErrorListener create(final String appName){
-		Validate.notBlank(appName);
-
-		return new IsSTErrorListener() {
-			final Set<IsError> errors = new LinkedHashSet<>();
-
-			@Override
-			public Set<IsError> getErrors() {
-				return errors;
-			}
-
-			@Override
-			public String getAppName() {
-				return appName;
-			}
-		};
 	}
 }

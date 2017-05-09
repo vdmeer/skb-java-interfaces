@@ -56,125 +56,6 @@ public interface String_To_Centered extends IsTransformer<String, StrBuilder> {
 	static char DEFAULT_INNER_WHITESPACE_CHARACTER = ' ';
 
 	/**
-	 * Returns the required length for the conversion.
-	 * @return length, default is {@link #DEFAULT_LENGTH}
-	 */
-	default int getLength(){
-		return DEFAULT_LENGTH;
-	}
-
-	/**
-	 * Returns the white space replacement character.
-	 * @return white space replacement character, default is {@link #DEFAULT_INNER_WHITESPACE_CHARACTER}
-	 */
-	default Character getInnerWsChar(){
-		return DEFAULT_INNER_WHITESPACE_CHARACTER;
-	}
-
-	/**
-	 * Returns the right padding character for the conversion.
-	 * @return right padding character, cannot be null, default is {@link #DEFAULT_RIGHT_PADDING_CHARACTER}
-	 */
-	default Character getRightPaddingChar(){
-		return DEFAULT_RIGHT_PADDING_CHARACTER;
-	}
-
-	/**
-	 * Returns the left padding character for the conversion.
-	 * @return left padding character, cannot be null, default is {@link #DEFAULT_LEFT_PADDING_CHARACTER}
-	 */
-	default Character getLeftPaddingChar(){
-		return DEFAULT_LEFT_PADDING_CHARACTER;
-	}
-
-	/**
-	 * Returns a builder to append the centered string to, rather than creating a new builder.
-	 * @return builder, can be null, if not null the centered string will be appended to it
-	 */
-	default StrBuilder getBuilderForAppend(){
-		return null;
-	}
-
-	@Override
-	default StrBuilder transform(String s) {
-		IsTransformer.super.transform(s);
-		StrBuilder ret = (this.getBuilderForAppend()==null)?new StrBuilder(this.getLength()):this.getBuilderForAppend();
-
-		// set string and replace all inner ws with required character
-		String center = (s==null)?"":s;
-		center = center.replace(' ', this.getInnerWsChar());
-
-		//get a char[] with a centered string, using paddingLedft in left and right side
-		char[] car = StringUtils.center(center, this.getLength()).toCharArray();
-
-		//change all right padding chars to the actual right padding char
-		for(int i = car.length-1; i>0; i--){
-			if(car[i]==' '){
-				car[i] = this.getRightPaddingChar();
-			}
-			else{
-				break;
-			}
-		}
-
-		//change all remaining tmp padding chars to the actual left padding char
-		for(int i = 0; i<car.length; i++){
-			if(car[i]==' '){
-				car[i] = this.getLeftPaddingChar();
-			}
-			else{
-				break;
-			}
-		}
-
-		//add this new string to the render object
-		ret.append(car);
-		return ret;
-	}
-
-	/**
-	 * Creates a transformer that converts a string to a centered string of given length.
-	 * @param length the required length (must be &gt;0)
-	 * @param leftPaddingChar the left padding character, default is used if null
-	 * @param rightPaddingChar the right padding character, default is used if null
-	 * @param innerWsChar inner white space replacement character
-	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
-	 * @return new transformer
-	 * @see String_To_Centered interface description for how the converter works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static String_To_Centered create(int length, Character leftPaddingChar, Character rightPaddingChar, Character innerWsChar, StrBuilder builder){
-		Validate.validState(length>0, "cannot work with lenght of less than 1");
-		return new String_To_Centered() {
-			@Override
-			public Character getInnerWsChar() {
-				return (innerWsChar==null)?String_To_Centered.super.getInnerWsChar():innerWsChar;
-			}
-
-			@Override
-			public int getLength(){
-				return (length<1)?String_To_Centered.super.getLength():length;
-			}
-
-			@Override
-			public Character getLeftPaddingChar(){
-				return (leftPaddingChar==null)?String_To_Centered.super.getLeftPaddingChar():leftPaddingChar;
-			}
-
-			@Override
-			public Character getRightPaddingChar(){
-				return (rightPaddingChar==null)?String_To_Centered.super.getRightPaddingChar():rightPaddingChar;
-			}
-
-			@Override
-			public StrBuilder getBuilderForAppend(){
-				return builder;
-			}
-		};
-	}
-
-	/**
 	 * Returns centered string of given length using default padding characters.
 	 * @param s input string
 	 * @param length the required length (must be &gt;0)
@@ -185,20 +66,6 @@ public interface String_To_Centered extends IsTransformer<String, StrBuilder> {
 	 */
 	static StrBuilder convert(String s, int length){
 		return String_To_Centered.create(length, null, null, null, null).transform(s);
-	}
-
-	/**
-	 * Returns centered string of given length using default padding characters.
-	 * @param s input string
-	 * @param length the required length (must be &gt;0)
-	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
-	 * @return centered string
-	 * @see String_To_Centered interface description for how the conversion works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static StrBuilder convert(String s, int length, StrBuilder builder){
-		return String_To_Centered.create(length, null, null, null, builder).transform(s);
 	}
 
 	/**
@@ -213,21 +80,6 @@ public interface String_To_Centered extends IsTransformer<String, StrBuilder> {
 	 */
 	static StrBuilder convert(String s, int length, Character paddingChar){
 		return String_To_Centered.create(length, paddingChar, paddingChar, null, null).transform(s);
-	}
-
-	/**
-	 * Returns centered string of given length using the same padding character on both sides.
-	 * @param s input string
-	 * @param length the required length (must be &gt;0)
-	 * @param paddingChar the padding character for left and right padding, default is used if null
-	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
-	 * @return centered string
-	 * @see String_To_Centered interface description for how the conversion works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static StrBuilder convert(String s, int length, Character paddingChar, StrBuilder builder){
-		return String_To_Centered.create(length, paddingChar, paddingChar, null, builder).transform(s);
 	}
 
 	/**
@@ -267,6 +119,23 @@ public interface String_To_Centered extends IsTransformer<String, StrBuilder> {
 	 * @param length the required length (must be &gt;0)
 	 * @param leftPaddingChar the left padding character, default is used if null
 	 * @param rightPaddingChar the right padding character, default is used if null
+	 * @param innerWsChar inner white space replacement character, default is used if null
+	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
+	 * @return centered string
+	 * @see String_To_Centered interface description for how the conversion works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
+	 */
+	static StrBuilder convert(String s, int length, Character leftPaddingChar, Character rightPaddingChar, Character innerWsChar, StrBuilder builder){
+		return String_To_Centered.create(length, leftPaddingChar, rightPaddingChar, innerWsChar, builder).transform(s);
+	}
+
+	/**
+	 * Returns centered string of given length with specific padding characters.
+	 * @param s input string
+	 * @param length the required length (must be &gt;0)
+	 * @param leftPaddingChar the left padding character, default is used if null
+	 * @param rightPaddingChar the right padding character, default is used if null
 	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
 	 * @return centered string
 	 * @see String_To_Centered interface description for how the conversion works
@@ -278,19 +147,150 @@ public interface String_To_Centered extends IsTransformer<String, StrBuilder> {
 	}
 
 	/**
-	 * Returns centered string of given length with specific padding characters.
+	 * Returns centered string of given length using the same padding character on both sides.
 	 * @param s input string
 	 * @param length the required length (must be &gt;0)
-	 * @param leftPaddingChar the left padding character, default is used if null
-	 * @param rightPaddingChar the right padding character, default is used if null
-	 * @param innerWsChar inner white space replacement character, default is used if null
+	 * @param paddingChar the padding character for left and right padding, default is used if null
 	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
 	 * @return centered string
 	 * @see String_To_Centered interface description for how the conversion works
 	 * @throws NullPointerException if an argument was unexpectedly null
 	 * @throws IllegalArgumentException if an argument was illegal
 	 */
-	static StrBuilder convert(String s, int length, Character leftPaddingChar, Character rightPaddingChar, Character innerWsChar, StrBuilder builder){
-		return String_To_Centered.create(length, leftPaddingChar, rightPaddingChar, innerWsChar, builder).transform(s);
+	static StrBuilder convert(String s, int length, Character paddingChar, StrBuilder builder){
+		return String_To_Centered.create(length, paddingChar, paddingChar, null, builder).transform(s);
+	}
+
+	/**
+	 * Returns centered string of given length using default padding characters.
+	 * @param s input string
+	 * @param length the required length (must be &gt;0)
+	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
+	 * @return centered string
+	 * @see String_To_Centered interface description for how the conversion works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
+	 */
+	static StrBuilder convert(String s, int length, StrBuilder builder){
+		return String_To_Centered.create(length, null, null, null, builder).transform(s);
+	}
+
+	/**
+	 * Creates a transformer that converts a string to a centered string of given length.
+	 * @param length the required length (must be &gt;0)
+	 * @param leftPaddingChar the left padding character, default is used if null
+	 * @param rightPaddingChar the right padding character, default is used if null
+	 * @param innerWsChar inner white space replacement character
+	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
+	 * @return new transformer
+	 * @see String_To_Centered interface description for how the converter works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
+	 */
+	static String_To_Centered create(int length, Character leftPaddingChar, Character rightPaddingChar, Character innerWsChar, StrBuilder builder){
+		Validate.validState(length>0, "cannot work with lenght of less than 1");
+		return new String_To_Centered() {
+			@Override
+			public StrBuilder getBuilderForAppend(){
+				return builder;
+			}
+
+			@Override
+			public Character getInnerWsChar() {
+				return (innerWsChar==null)?String_To_Centered.super.getInnerWsChar():innerWsChar;
+			}
+
+			@Override
+			public Character getLeftPaddingChar(){
+				return (leftPaddingChar==null)?String_To_Centered.super.getLeftPaddingChar():leftPaddingChar;
+			}
+
+			@Override
+			public int getLength(){
+				return (length<1)?String_To_Centered.super.getLength():length;
+			}
+
+			@Override
+			public Character getRightPaddingChar(){
+				return (rightPaddingChar==null)?String_To_Centered.super.getRightPaddingChar():rightPaddingChar;
+			}
+		};
+	}
+
+	/**
+	 * Returns a builder to append the centered string to, rather than creating a new builder.
+	 * @return builder, can be null, if not null the centered string will be appended to it
+	 */
+	default StrBuilder getBuilderForAppend(){
+		return null;
+	}
+
+	/**
+	 * Returns the white space replacement character.
+	 * @return white space replacement character, default is {@link #DEFAULT_INNER_WHITESPACE_CHARACTER}
+	 */
+	default Character getInnerWsChar(){
+		return DEFAULT_INNER_WHITESPACE_CHARACTER;
+	}
+
+	/**
+	 * Returns the left padding character for the conversion.
+	 * @return left padding character, cannot be null, default is {@link #DEFAULT_LEFT_PADDING_CHARACTER}
+	 */
+	default Character getLeftPaddingChar(){
+		return DEFAULT_LEFT_PADDING_CHARACTER;
+	}
+
+	/**
+	 * Returns the required length for the conversion.
+	 * @return length, default is {@link #DEFAULT_LENGTH}
+	 */
+	default int getLength(){
+		return DEFAULT_LENGTH;
+	}
+
+	/**
+	 * Returns the right padding character for the conversion.
+	 * @return right padding character, cannot be null, default is {@link #DEFAULT_RIGHT_PADDING_CHARACTER}
+	 */
+	default Character getRightPaddingChar(){
+		return DEFAULT_RIGHT_PADDING_CHARACTER;
+	}
+
+	@Override
+	default StrBuilder transform(String s) {
+		IsTransformer.super.transform(s);
+		StrBuilder ret = (this.getBuilderForAppend()==null)?new StrBuilder(this.getLength()):this.getBuilderForAppend();
+
+		// set string and replace all inner ws with required character
+		String center = (s==null)?"":s;
+		center = center.replace(' ', this.getInnerWsChar());
+
+		//get a char[] with a centered string, using paddingLedft in left and right side
+		char[] car = StringUtils.center(center, this.getLength()).toCharArray();
+
+		//change all right padding chars to the actual right padding char
+		for(int i = car.length-1; i>0; i--){
+			if(car[i]==' '){
+				car[i] = this.getRightPaddingChar();
+			}
+			else{
+				break;
+			}
+		}
+
+		//change all remaining tmp padding chars to the actual left padding char
+		for(int i = 0; i<car.length; i++){
+			if(car[i]==' '){
+				car[i] = this.getLeftPaddingChar();
+			}
+			else{
+				break;
+			}
+		}
+
+		//add this new string to the render object
+		ret.append(car);
+		return ret;
 	}
 }

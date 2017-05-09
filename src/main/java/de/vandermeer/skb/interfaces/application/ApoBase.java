@@ -36,6 +36,12 @@ public interface ApoBase extends CategoryIs, HasDescription {
 	static final String STG_FILE = "de/vandermeer/skb/interfaces/application/long-help.stg";
 
 	/**
+	 * Returns the display name of the option.
+	 * @return display name, must not be blank
+	 */
+	String getDisplayName();
+
+	/**
 	 * Returns help information for the option.
 	 * The information contains all possible settings, except the long description.
 	 * This might include CLI, property, environment, and other settings.
@@ -71,11 +77,5 @@ public interface ApoBase extends CategoryIs, HasDescription {
 		Validate.validState(!StringUtils.isBlank(this.getDisplayName()), "Apo: displayName cannot be blank");
 		Validate.validState(!StringUtils.isBlank(this.getDescription()), "Apo: description cannot be blank");
 	}
-
-	/**
-	 * Returns the display name of the option.
-	 * @return display name, must not be blank
-	 */
-	String getDisplayName();
 
 }

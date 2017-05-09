@@ -31,9 +31,19 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface ArrayBlockingQueueStrategy<T> extends IsQueueStrategy<ArrayBlockingQueue<T>, T> {
 
-	@Override
-	default ArrayBlockingQueue<T> get(Collection<T> collection) {
-		throw new NotImplementedException("cannot implement get(collection) on array blocking queue w/o capacity, see interface for alternative");
+	/**
+	 * Creates a new array blocking queue strategy (as queue).
+	 * @param <T> type for the objects in the queue
+	 * @param capacity the queue's capacity
+	 * @return new array blocking queue strategy
+	 */
+	static <T> ArrayBlockingQueueStrategy<T> create(final int capacity){
+		return new ArrayBlockingQueueStrategy<T>(){
+			@Override
+			public int getCapacity(){
+				return capacity;
+			}
+		};
 	}
 
 	@Override
@@ -41,11 +51,19 @@ public interface ArrayBlockingQueueStrategy<T> extends IsQueueStrategy<ArrayBloc
 		throw new NotImplementedException("cannot implement get() on array blocking queue w/o capacity, see interface for alternative");
 	}
 
+	@Override
+	default ArrayBlockingQueue<T> get(Collection<T> collection) {
+		throw new NotImplementedException("cannot implement get(collection) on array blocking queue w/o capacity, see interface for alternative");
+	}
+
 	/**
-	 * Returns the capacity of the strategy.
-	 * @return capacity, all created array blocking queues will have this capacity set
+	 * Returns a new collection for the given collection.
+	 * @param capacity the queue's capacity
+	 * @return new collection
 	 */
-	int getCapacity();
+	default ArrayBlockingQueue<T> get(int capacity) {
+		return new ArrayBlockingQueue<T>(capacity);
+	}
 
 	/**
 	 * Returns a new collection for the given collection.
@@ -62,26 +80,8 @@ public interface ArrayBlockingQueueStrategy<T> extends IsQueueStrategy<ArrayBloc
 	}
 
 	/**
-	 * Returns a new collection for the given collection.
-	 * @param capacity the queue's capacity
-	 * @return new collection
+	 * Returns the capacity of the strategy.
+	 * @return capacity, all created array blocking queues will have this capacity set
 	 */
-	default ArrayBlockingQueue<T> get(int capacity) {
-		return new ArrayBlockingQueue<T>(capacity);
-	}
-
-	/**
-	 * Creates a new array blocking queue strategy (as queue).
-	 * @param <T> type for the objects in the queue
-	 * @param capacity the queue's capacity
-	 * @return new array blocking queue strategy
-	 */
-	static <T> ArrayBlockingQueueStrategy<T> create(final int capacity){
-		return new ArrayBlockingQueueStrategy<T>(){
-			@Override
-			public int getCapacity(){
-				return capacity;
-			}
-		};
-	}
+	int getCapacity();
 }

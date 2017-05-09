@@ -33,6 +33,20 @@ import org.slf4j.helpers.MessageFormatter;
 public interface IsInfoSet_FT extends IsInfoSet<FormattingTuple> {
 
 	/**
+	 * Creates a new info set.
+	 * @return new info set
+	 */
+	static IsInfoSet_FT create(){
+		return new IsInfoSet_FT() {
+			final Set<FormattingTuple> infoSet = new LinkedHashSet<>();
+			@Override
+			public Set<FormattingTuple> getInfoMessages() {
+				return this.infoSet;
+			}
+		};
+	}
+
+	/**
 	 * Adds all infos from given info set.
 	 * @param infos infos to add
 	 */
@@ -77,19 +91,5 @@ public interface IsInfoSet_FT extends IsInfoSet<FormattingTuple> {
 			ret.append(ft.getMessage()).appendNewLine();
 		}
 		return ret.toString();
-	}
-
-	/**
-	 * Creates a new info set.
-	 * @return new info set
-	 */
-	static IsInfoSet_FT create(){
-		return new IsInfoSet_FT() {
-			final Set<FormattingTuple> infoSet = new LinkedHashSet<>();
-			@Override
-			public Set<FormattingTuple> getInfoMessages() {
-				return this.infoSet;
-			}
-		};
 	}
 }

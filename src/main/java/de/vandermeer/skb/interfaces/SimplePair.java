@@ -1,4 +1,4 @@
-/* Copyright 2016 Sven van der Meer <vdmeer.sven@mykolab.com>
+ /* Copyright 2016 Sven van der Meer <vdmeer.sven@mykolab.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,36 +25,6 @@ package de.vandermeer.skb.interfaces;
 public interface SimplePair<LHS, RHS> {
 
 	/**
-	 * Returns the value of the right hand side of the pair.
-	 * @return right hand side value
-	 */
-	RHS rhs();
-
-	/**
-	 * Returns the value of the right hand side of the pair.
-	 * @return right hand side value
-	 */
-	RHS right();
-
-	/**
-	 * Returns the value of the left hand side of the pair.
-	 * @return left had side value
-	 */
-	LHS lhs();
-
-	/**
-	 * Returns the value of the left hand side of the pair.
-	 * @return left had side value
-	 */
-	LHS left();
-
-	/**
-	 * Returns the description of an object.
-	 * @return description
-	 */
-	String getDescription();
-
-	/**
 	 * Returns a new Pair of given type with default description.
 	 * @param <LHS> type for left hand site
 	 * @param <RHS> type for right hand site
@@ -78,18 +48,8 @@ public interface SimplePair<LHS, RHS> {
 	static <LHS, RHS> SimplePair<LHS, RHS> create(final LHS lhs, final RHS rhs, final String description){
 		return new SimplePair<LHS, RHS> (){
 			@Override
-			public RHS rhs() {
-				return rhs;
-			}
-
-			@Override
-			public RHS right() {
-				return rhs;
-			}
-
-			@Override
-			public LHS lhs() {
-				return lhs;
+			public String getDescription() {
+				return description;
 			}
 
 			@Override
@@ -98,10 +58,50 @@ public interface SimplePair<LHS, RHS> {
 			}
 
 			@Override
-			public String getDescription() {
-				return description;
+			public LHS lhs() {
+				return lhs;
+			}
+
+			@Override
+			public RHS rhs() {
+				return rhs;
+			}
+
+			@Override
+			public RHS right() {
+				return rhs;
 			}
 		};
 	}
+
+	/**
+	 * Returns the description of an object.
+	 * @return description
+	 */
+	String getDescription();
+
+	/**
+	 * Returns the value of the left hand side of the pair.
+	 * @return left had side value
+	 */
+	LHS left();
+
+	/**
+	 * Returns the value of the left hand side of the pair.
+	 * @return left had side value
+	 */
+	LHS lhs();
+
+	/**
+	 * Returns the value of the right hand side of the pair.
+	 * @return right hand side value
+	 */
+	RHS rhs();
+
+	/**
+	 * Returns the value of the right hand side of the pair.
+	 * @return right hand side value
+	 */
+	RHS right();
 
 }

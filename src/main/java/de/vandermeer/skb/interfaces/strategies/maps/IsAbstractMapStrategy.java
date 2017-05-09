@@ -30,18 +30,14 @@ import de.vandermeer.skb.interfaces.strategies.IsMapStrategy;
 public interface IsAbstractMapStrategy<K, V> extends IsMapStrategy<K, V> {
 
 	@Override
+	AbstractMap<K, V> get();
+
+	@Override
+	AbstractMap<K, V> get(Map<K, V> map);
+
+	@Override
 	default boolean isAbstractMap() {
 		return true;
-	}
-
-	@Override
-	default boolean isSortedMap() {
-		return false;
-	}
-
-	@Override
-	default boolean isNavigableMap(){
-		return false;
 	}
 
 	@Override
@@ -55,9 +51,13 @@ public interface IsAbstractMapStrategy<K, V> extends IsMapStrategy<K, V> {
 	}
 
 	@Override
-	AbstractMap<K, V> get();
+	default boolean isNavigableMap(){
+		return false;
+	}
 
 	@Override
-	AbstractMap<K, V> get(Map<K, V> map);
+	default boolean isSortedMap() {
+		return false;
+	}
 
 }

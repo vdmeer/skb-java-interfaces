@@ -33,6 +33,20 @@ import org.slf4j.helpers.MessageFormatter;
 public interface IsErrorSet_FT extends IsErrorSet<FormattingTuple> {
 
 	/**
+	 * Creates a new error set.
+	 * @return new error set
+	 */
+	static IsErrorSet_FT create(){
+		return new IsErrorSet_FT() {
+			final Set<FormattingTuple> errorSet = new LinkedHashSet<>();
+			@Override
+			public Set<FormattingTuple> getErrorMessages() {
+				return this.errorSet;
+			}
+		};
+	}
+
+	/**
 	 * Adds a new error.
 	 * @param error the error message, should not be blank
 	 * @throws NullPointerException if `error` was null
@@ -69,19 +83,5 @@ public interface IsErrorSet_FT extends IsErrorSet<FormattingTuple> {
 			ret.append(ft.getMessage()).appendNewLine();
 		}
 		return ret.toString();
-	}
-
-	/**
-	 * Creates a new error set.
-	 * @return new error set
-	 */
-	static IsErrorSet_FT create(){
-		return new IsErrorSet_FT() {
-			final Set<FormattingTuple> errorSet = new LinkedHashSet<>();
-			@Override
-			public Set<FormattingTuple> getErrorMessages() {
-				return this.errorSet;
-			}
-		};
 	}
 }

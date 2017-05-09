@@ -26,13 +26,6 @@ public interface CombinedTranslator extends CharacterTranslator, HtmlElementTran
 
 	/**
 	 * Translates HTML Elements and characters from a source to a target representation.
-	 * @param input string
-	 * @return translated string
-	 */
-	String translate(String input);
-
-	/**
-	 * Translates HTML Elements and characters from a source to a target representation.
 	 * @param input object (toString is used)
 	 * @return translated string
 	 */
@@ -42,4 +35,11 @@ public interface CombinedTranslator extends CharacterTranslator, HtmlElementTran
 		}
 		return null;
 	}
+
+	/**
+	 * Translates HTML Elements and characters from a source to a target representation.
+	 * @param input string
+	 * @return translated string
+	 */
+	String translate(String input);
 }

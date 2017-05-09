@@ -29,16 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.maps.IsNavigableMapStrategy;
  */
 public interface ConcurrentSkipListMapStrategy<K extends Comparable<K>, V> extends IsNavigableMapStrategy<K, V> {
 
-	@Override
-	default ConcurrentSkipListMap<K, V> get() {
-		return new ConcurrentSkipListMap<>();
-	}
-
-	@Override
-	default ConcurrentSkipListMap<K, V> get(Map<K, V> map){
-		return new ConcurrentSkipListMap<>(map);
-	}
-
 	/**
 	 * Creates a new concurrent skip list map strategy.
 	 * @param <K> type of the keys in the map
@@ -47,5 +37,15 @@ public interface ConcurrentSkipListMapStrategy<K extends Comparable<K>, V> exten
 	 */
 	static <K extends Comparable<K>, V> ConcurrentSkipListMapStrategy<K, V> create(){
 		return new ConcurrentSkipListMapStrategy<K, V>() {};
+	}
+
+	@Override
+	default ConcurrentSkipListMap<K, V> get() {
+		return new ConcurrentSkipListMap<>();
+	}
+
+	@Override
+	default ConcurrentSkipListMap<K, V> get(Map<K, V> map){
+		return new ConcurrentSkipListMap<>(map);
 	}
 }

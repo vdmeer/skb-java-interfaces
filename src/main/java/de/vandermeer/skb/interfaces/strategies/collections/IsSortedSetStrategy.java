@@ -29,28 +29,10 @@ import java.util.SortedSet;
 public interface IsSortedSetStrategy<S extends SortedSet<T>, T extends Comparable<T>> extends IsSetStrategy<S, T> {
 
 	/**
-	 * Test if the collection is a list.
-	 * @return true if list, false otherwise
+	 * Returns a new collection of requested type.
+	 * @return new collection
 	 */
-	default boolean isList(){
-		return false;
-	}
-
-	/**
-	 * Test if the collection is a set.
-	 * @return true if set, false otherwise
-	 */
-	default boolean isSet(){
-		return true;
-	}
-
-	/**
-	 * Test if the collection is a queue.
-	 * @return true if queue, false otherwise
-	 */
-	default boolean isQueue(){
-		return false;
-	}
+	S get();
 
 	/**
 	 * Returns a new collection for the given collection.
@@ -69,14 +51,32 @@ public interface IsSortedSetStrategy<S extends SortedSet<T>, T extends Comparabl
 
 	/**
 	 * Returns a new collection of requested type.
-	 * @return new collection
-	 */
-	S get();
-
-	/**
-	 * Returns a new collection of requested type.
 	 * @param comparator comparator for objects
 	 * @return new collection
 	 */
 	S get(Comparator<T> comparator);
+
+	/**
+	 * Test if the collection is a list.
+	 * @return true if list, false otherwise
+	 */
+	default boolean isList(){
+		return false;
+	}
+
+	/**
+	 * Test if the collection is a queue.
+	 * @return true if queue, false otherwise
+	 */
+	default boolean isQueue(){
+		return false;
+	}
+
+	/**
+	 * Test if the collection is a set.
+	 * @return true if set, false otherwise
+	 */
+	default boolean isSet(){
+		return true;
+	}
 }

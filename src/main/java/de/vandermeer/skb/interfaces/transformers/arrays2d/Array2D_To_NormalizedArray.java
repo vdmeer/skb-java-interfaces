@@ -32,6 +32,20 @@ import de.vandermeer.skb.interfaces.transformers.IsTransformer;
 public interface Array2D_To_NormalizedArray extends IsTransformer<String[][], String[][]> {
 
 	/**
+	 * Creates a new transformer.
+	 * @param columns number of columns
+	 * @return new transformer
+	 */
+	static Array2D_To_NormalizedArray create(final int columns){
+		return new Array2D_To_NormalizedArray() {
+			@Override
+			public int getNumberOfColumns() {
+				return columns;
+			}
+		};
+	}
+
+	/**
 	 * Returns the number of columns,
 	 * @return number of columns
 	 * @throws NullPointerException if argument was null
@@ -78,19 +92,5 @@ public interface Array2D_To_NormalizedArray extends IsTransformer<String[][], St
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Creates a new transformer.
-	 * @param columns number of columns
-	 * @return new transformer
-	 */
-	static Array2D_To_NormalizedArray create(final int columns){
-		return new Array2D_To_NormalizedArray() {
-			@Override
-			public int getNumberOfColumns() {
-				return columns;
-			}
-		};
 	}
 }

@@ -29,19 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsSetStrategy;
  */
 public interface HashSetStrategy<T> extends IsSetStrategy<HashSet<T>, T> {
 
-	@Override
-	default HashSet<T> get(Collection<T> collection) {
-		if(collection==null){
-			return new HashSet<T>();
-		}
-		return new HashSet<T>(collection);
-	}
-
-	@Override
-	default HashSet<T> get(){
-		return new HashSet<T>();
-	}
-
 	/**
 	 * Creates a new hash set strategy.
 	 * @param <T> type for the objects in the set
@@ -49,5 +36,18 @@ public interface HashSetStrategy<T> extends IsSetStrategy<HashSet<T>, T> {
 	 */
 	static <T> HashSetStrategy<T> create(){
 		return new HashSetStrategy<T>(){};
+	}
+
+	@Override
+	default HashSet<T> get(){
+		return new HashSet<T>();
+	}
+
+	@Override
+	default HashSet<T> get(Collection<T> collection) {
+		if(collection==null){
+			return new HashSet<T>();
+		}
+		return new HashSet<T>(collection);
 	}
 }

@@ -34,6 +34,14 @@ import org.stringtemplate.v4.STGroupString;
 public interface Map_To_Text extends IsTransformer<Map<?, ?>, String> {
 
 	/**
+	 * Creates a transformer that transforms a map into a textual representation, for instance for debug output.
+	 * @return new transformer
+	 */
+	static Map_To_Text create(){
+		return new Map_To_Text() {};
+	}
+
+	/**
 	 * Transforms a map into a textual representation, for instance for debug output.
 	 * @param map input collection
 	 * @return textual representation of the map, empty string as default
@@ -67,13 +75,5 @@ public interface Map_To_Text extends IsTransformer<Map<?, ?>, String> {
 		}
 		ret.add("tree", tree);
 		return ret.render();
-	}
-
-	/**
-	 * Creates a transformer that transforms a map into a textual representation, for instance for debug output.
-	 * @return new transformer
-	 */
-	static Map_To_Text create(){
-		return new Map_To_Text() {};
 	}
 }

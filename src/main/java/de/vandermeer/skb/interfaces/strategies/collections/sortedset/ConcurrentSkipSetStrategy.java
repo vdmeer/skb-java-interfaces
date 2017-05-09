@@ -30,6 +30,20 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsSortedSetStrategy;
  */
 public interface ConcurrentSkipSetStrategy<T extends Comparable<T>> extends IsSortedSetStrategy<ConcurrentSkipListSet<T>, T> {
 
+	/**
+	 * Creates a new concurrent skip set strategy.
+	 * @param <T> type for the objects in the sorted set
+	 * @return new concurrent skip set strategy
+	 */
+	static <T extends Comparable<T>> ConcurrentSkipSetStrategy<T> create(){
+		return new ConcurrentSkipSetStrategy<T>(){};
+	}
+
+	@Override
+	default ConcurrentSkipListSet<T> get(){
+		return new ConcurrentSkipListSet<T>();
+	}
+
 	@Override
 	default ConcurrentSkipListSet<T> get(Collection<T> collection) {
 		return new ConcurrentSkipListSet<T>(collection);
@@ -44,21 +58,7 @@ public interface ConcurrentSkipSetStrategy<T extends Comparable<T>> extends IsSo
 	}
 
 	@Override
-	default ConcurrentSkipListSet<T> get(){
-		return new ConcurrentSkipListSet<T>();
-	}
-
-	@Override
 	default ConcurrentSkipListSet<T> get(Comparator<T> comparator) {
 		return new ConcurrentSkipListSet<T>(comparator);
-	}
-
-	/**
-	 * Creates a new concurrent skip set strategy.
-	 * @param <T> type for the objects in the sorted set
-	 * @return new concurrent skip set strategy
-	 */
-	static <T extends Comparable<T>> ConcurrentSkipSetStrategy<T> create(){
-		return new ConcurrentSkipSetStrategy<T>(){};
 	}
 }

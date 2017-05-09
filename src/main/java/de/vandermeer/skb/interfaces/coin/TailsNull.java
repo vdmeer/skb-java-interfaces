@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+
 package de.vandermeer.skb.interfaces.coin;
 
 /**
@@ -24,16 +25,16 @@ package de.vandermeer.skb.interfaces.coin;
  */
 public interface TailsNull extends TailsCoin<Object> {
 
-	@Override
-	default Object getReturn() {
-		return null;
-	}
-
 	/**
 	 * Creates a new null coin with given value.
 	 * @return new null coin
 	 */
 	static TailsNull create(){
 		return new TailsNull() {};
+	}
+
+	@Override
+	default Object getReturn() {
+		return null;
 	}
 }

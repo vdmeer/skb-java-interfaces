@@ -29,6 +29,11 @@ import org.apache.commons.lang3.Validate;
  */
 public interface Transformer <FROM, TO> extends Function<FROM, TO> {
 
+	@Override
+	default TO apply(FROM from){
+		return transform(from);
+	}
+
 	/**
 	 * Transforms from one representation to another.
 	 * @param from input representation
@@ -38,11 +43,6 @@ public interface Transformer <FROM, TO> extends Function<FROM, TO> {
 	default TO transform(FROM from){
 		Validate.notNull(from);
 		return null;
-	}
-
-	@Override
-	default TO apply(FROM from){
-		return transform(from);
 	}
 
 	/**

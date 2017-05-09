@@ -30,20 +30,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface DelayQueueStrategy<T extends Delayed> extends IsQueueStrategy<DelayQueue<T>, T> {
 
-	@Override
-	default DelayQueue<T> get(Collection<T> collection) {
-		DelayQueue<T> ret = new DelayQueue<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default DelayQueue<T> get() {
-		return new DelayQueue<T>();
-	}
-
 	/**
 	 * Creates a new delay queue strategy.
 	 * @param <T> type for the objects in the queue
@@ -51,5 +37,19 @@ public interface DelayQueueStrategy<T extends Delayed> extends IsQueueStrategy<D
 	 */
 	static <T  extends Delayed> DelayQueueStrategy<T> create(){
 		return new DelayQueueStrategy<T>(){};
+	}
+
+	@Override
+	default DelayQueue<T> get() {
+		return new DelayQueue<T>();
+	}
+
+	@Override
+	default DelayQueue<T> get(Collection<T> collection) {
+		DelayQueue<T> ret = new DelayQueue<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

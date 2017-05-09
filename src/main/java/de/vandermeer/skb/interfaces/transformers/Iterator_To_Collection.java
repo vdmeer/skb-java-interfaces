@@ -32,6 +32,14 @@ import de.vandermeer.skb.interfaces.strategies.IsCollectionStrategy;
 public interface Iterator_To_Collection extends IsTransformer<Iterable<?>, Collection<?>> {
 
 	/**
+	 * Creates a new transformer.
+	 * @return new transformer
+	 */
+	static Iterator_To_Collection create(){
+		return new Iterator_To_Collection() {};
+	}
+
+	/**
 	 * Converts an iterator into a collection of given type.
 	 * @param <T> type of the objects in the returned collection
 	 * @param <S> type of the returned collection
@@ -49,13 +57,5 @@ public interface Iterator_To_Collection extends IsTransformer<Iterable<?>, Colle
 			ret.add(input.next());
 		}
 		return ret;
-	}
-
-	/**
-	 * Creates a new transformer.
-	 * @return new transformer
-	 */
-	static Iterator_To_Collection create(){
-		return new Iterator_To_Collection() {};
 	}
 }

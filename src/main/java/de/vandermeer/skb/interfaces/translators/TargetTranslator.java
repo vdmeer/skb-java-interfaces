@@ -31,14 +31,14 @@ public interface TargetTranslator {
 	CharacterTranslator getCharacterTranslator();
 
 	/**
-	 * Returns an HTML Element translator.
-	 * @return character translator, null if none set or required
-	 */
-	HtmlElementTranslator getHtmlElementTanslator();
-
-	/**
 	 * Returns a combined translator.
 	 * @return combined translator, null if none set or required
 	 */
 	CombinedTranslator getCombinedTranslator();
+
+	/**
+	 * Returns an HTML Element translator.
+	 * @return character translator, null if none set or required
+	 */
+	HtmlElementTranslator getHtmlElementTanslator();
 }

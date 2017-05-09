@@ -32,9 +32,26 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  */
 public interface TailsErrorWithErrors<R, M> extends TailsError<R>, IsErrorSet<M> {
 
-	@Override
-	default boolean reportsErrors(){
-		return true;
+	/**
+	 * Creates a new error coin with given value and errors.
+	 * @param <R> type of the return value
+	 * @param <M> the message type for the set
+	 * @param value the actual return value
+	 * @return new error coin
+	 */
+	static <R, M> TailsErrorWithErrors<R, M> create(final R value){
+		return new TailsErrorWithErrors<R, M>() {
+			final Set<M> errorSet = new LinkedHashSet<>();
+			@Override
+			public Set<M> getErrorMessages() {
+				return this.errorSet;
+			}
+
+			@Override
+			public R getReturn() {
+				return value;
+			}
+		};
 	}
 
 	@Override
@@ -64,25 +81,8 @@ public interface TailsErrorWithErrors<R, M> extends TailsError<R>, IsErrorSet<M>
 		return ret.toString();
 	}
 
-	/**
-	 * Creates a new error coin with given value and errors.
-	 * @param <R> type of the return value
-	 * @param <M> the message type for the set
-	 * @param value the actual return value
-	 * @return new error coin
-	 */
-	static <R, M> TailsErrorWithErrors<R, M> create(final R value){
-		return new TailsErrorWithErrors<R, M>() {
-			final Set<M> errorSet = new LinkedHashSet<>();
-			@Override
-			public Set<M> getErrorMessages() {
-				return this.errorSet;
-			}
-
-			@Override
-			public R getReturn() {
-				return value;
-			}
-		};
+	@Override
+	default boolean reportsErrors(){
+		return true;
 	}
 }

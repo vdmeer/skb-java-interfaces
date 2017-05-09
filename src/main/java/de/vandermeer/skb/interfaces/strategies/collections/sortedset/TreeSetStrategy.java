@@ -30,6 +30,20 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsSortedSetStrategy;
  */
 public interface TreeSetStrategy<T extends Comparable<T>> extends IsSortedSetStrategy<TreeSet<T>, T> {
 
+	/**
+	 * Creates a new tree set strategy.
+	 * @param <T> type for the objects in the sorted set
+	 * @return new tree set strategy
+	 */
+	static <T extends Comparable<T>> TreeSetStrategy<T> create(){
+		return new TreeSetStrategy<T>(){};
+	}
+
+	@Override
+	default TreeSet<T> get(){
+		return new TreeSet<T>();
+	}
+
 	@Override
 	default TreeSet<T> get(Collection<T> collection) {
 		if(collection==null){
@@ -52,21 +66,7 @@ public interface TreeSetStrategy<T extends Comparable<T>> extends IsSortedSetStr
 	}
 
 	@Override
-	default TreeSet<T> get(){
-		return new TreeSet<T>();
-	}
-
-	@Override
 	default TreeSet<T> get(Comparator<T> comparator) {
 		return new TreeSet<T>(comparator);
-	}
-
-	/**
-	 * Creates a new tree set strategy.
-	 * @param <T> type for the objects in the sorted set
-	 * @return new tree set strategy
-	 */
-	static <T extends Comparable<T>> TreeSetStrategy<T> create(){
-		return new TreeSetStrategy<T>(){};
 	}
 }

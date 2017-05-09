@@ -30,22 +30,23 @@ import de.vandermeer.skb.interfaces.categories.CategoryIs;
 public interface IsMapStrategy<K, V> extends CategoryIs {
 
 	/**
+	 * Returns a new map for the used strategy.
+	 * @return new map for the given class
+	 */
+	Map<K, V> get();
+
+	/**
+	 * Returns a new map for the used strategy initialized with the elements of another map.
+	 * @param map input map
+	 * @return new map view
+	 */
+	Map<K, V> get(Map<K, V> map);
+
+	/**
 	 * Test if the map is an abstract map (an implementation of an {@link AbstractMap} hat does not require special keys.
 	 * @return true if abstract map, false otherwise
 	 */
 	boolean isAbstractMap();
-
-	/**
-	 * Test if the map is a sorted map.
-	 * @return true if sorted map, false otherwise
-	 */
-	boolean isSortedMap();
-
-	/**
-	 * Test if the map is a navigable map.
-	 * @return true if navigable map, false otherwise
-	 */
-	boolean isNavigableMap();
 
 	/**
 	 * Test if the map is a concurrent map.
@@ -60,16 +61,15 @@ public interface IsMapStrategy<K, V> extends CategoryIs {
 	boolean isHashtable();
 
 	/**
-	 * Returns a new map for the used strategy.
-	 * @return new map for the given class
+	 * Test if the map is a navigable map.
+	 * @return true if navigable map, false otherwise
 	 */
-	Map<K, V> get();
+	boolean isNavigableMap();
 
 	/**
-	 * Returns a new map for the used strategy initialized with the elements of another map.
-	 * @param map input map
-	 * @return new map view
+	 * Test if the map is a sorted map.
+	 * @return true if sorted map, false otherwise
 	 */
-	Map<K, V> get(Map<K, V> map);
+	boolean isSortedMap();
 
 }

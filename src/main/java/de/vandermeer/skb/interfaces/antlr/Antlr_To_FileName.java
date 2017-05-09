@@ -26,15 +26,6 @@ import de.vandermeer.skb.interfaces.transformers.IsTransformer;
  */
 public interface Antlr_To_FileName extends IsTransformer<Object, String> {
 
-	@Override
-	default String transform(Object obj){
-		IsTransformer.super.transform(obj);
-		if(obj instanceof IsAntlrRuntimeObject){
-			return ((IsAntlrRuntimeObject)obj).getFilename();
-		}
-		return IsAntlrRuntimeObject.create(obj).getFilename();
-	}
-
 	/**
 	 * Creates a transformer that takes an ANTLR object and returns the file name where the first token was found.
 	 * The returned transformer will throw runtime exceptions (null pointer, illegal argument) if the given object was not an ANTLR runtime object.
@@ -43,5 +34,14 @@ public interface Antlr_To_FileName extends IsTransformer<Object, String> {
 	 */
 	static Antlr_To_FileName create(){
 		return new Antlr_To_FileName() {};
+	}
+
+	@Override
+	default String transform(Object obj){
+		IsTransformer.super.transform(obj);
+		if(obj instanceof IsAntlrRuntimeObject){
+			return ((IsAntlrRuntimeObject)obj).getFilename();
+		}
+		return IsAntlrRuntimeObject.create(obj).getFilename();
 	}
 }

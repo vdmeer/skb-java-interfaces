@@ -43,10 +43,212 @@ import de.vandermeer.skb.interfaces.messagesets.errors.Templates_STG;
 public interface IsSTGroup extends CategoryIs {
 
 	/**
-	 * Returns the STGroup object.
-	 * @return STGroup object
+	 * Creates a new object from ST templates read from a directory.
+	 * @param dirname the directory name, must not be blank
+	 * @param delimiterStartChar the start delimiter
+	 * @param delimiterStopChar the end delimiter
+	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
 	 */
-	STGroup getSTGroup();
+	static IsSTGroup fromDir(final String dirname, final char delimiterStartChar, final char delimiterStopChar, final Map<String, String[]> expectedChunks, final String appName){
+		Validate.notBlank(appName);
+		if(expectedChunks!=null){
+			Validate.noNullElements(expectedChunks.keySet());
+			Validate.noNullElements(expectedChunks.values());
+		}
+
+		final IsSTErrorListener errorListener = IsSTErrorListener.create(appName);
+		final STGroupDir stg = new STGroupDir(dirname, delimiterStartChar, delimiterStopChar);
+		stg.setListener(errorListener);
+		stg.load();
+		Validate.notNull(stg);
+
+		return new IsSTGroup() {
+			@Override
+			public String getAppName() {
+				return appName;
+			}
+
+			@Override
+			public IsSTErrorListener getErrorListener() {
+				return errorListener;
+			}
+
+			@Override
+			public Map<String, String[]> getExpectedChunks() {
+				return expectedChunks;
+			}
+
+			@Override
+			public STGroup getSTGroup() {
+				return stg;
+			}
+		};
+	}
+
+	/**
+	 * Creates a new object from ST templates read from a directory with default delimiters.
+	 * @param dirname the directory name, must not be blank
+	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
+	 */
+	static IsSTGroup fromDir(final String dirname, final Map<String, String[]> expectedChunks, final String appName){
+		return fromDir(dirname, '<', '>', expectedChunks, appName);
+	}
+
+	/**
+	 * Creates a new object from ST templates read from a directory with default delimiters and no expected chunks.
+	 * @param dirname the directory name, must not be blank
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
+	 */
+	static IsSTGroup fromDir(final String dirname, final String appName){
+		return fromDir(dirname, '<', '>', null, appName);
+	}
+
+	/**
+	 * Creates a new object from an STG file.
+	 * @param filename the file name, must not be blank
+	 * @param delimiterStartChar the start delimiter
+	 * @param delimiterStopChar the end delimiter
+	 * @param expectedChunks the expected chunks, null if not required
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
+	 */
+	static IsSTGroup fromFile(final String filename, final char delimiterStartChar, final char delimiterStopChar, final Map<String, String[]> expectedChunks, final String appName){
+		Validate.notBlank(appName);
+		if(expectedChunks!=null){
+			Validate.noNullElements(expectedChunks.keySet());
+			Validate.noNullElements(expectedChunks.values());
+		}
+
+		final IsSTErrorListener errorListener = IsSTErrorListener.create(appName);
+		final STGroupFile stg = new STGroupFile(filename, delimiterStartChar, delimiterStopChar);
+		stg.setListener(errorListener);
+		stg.load();
+		Validate.notNull(stg);
+
+		return new IsSTGroup() {
+			@Override
+			public String getAppName() {
+				return appName;
+			}
+
+			@Override
+			public IsSTErrorListener getErrorListener() {
+				return errorListener;
+			}
+
+			@Override
+			public Map<String, String[]> getExpectedChunks() {
+				return expectedChunks;
+			}
+
+			@Override
+			public STGroup getSTGroup() {
+				return stg;
+			}
+		};
+	}
+
+	/**
+	 * Creates a new object from an STG file with default delimiters.
+	 * @param filename the file name, must not be blank
+	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
+	 */
+	static IsSTGroup fromFile(final String filename, final Map<String, String[]> expectedChunks, final String appName){
+		return fromFile(filename, '<', '>', expectedChunks, appName);
+	}
+
+	/**
+	 * Creates a new object from an STG file with default delimiters and no expected chunks.
+	 * @param filename the file name, must not be blank
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
+	 */
+	static IsSTGroup fromFile(final String filename, final String appName){
+		return fromFile(filename, '<', '>', null, appName);
+	}
+
+	/**
+	 * Creates a new object from a string.
+	 * @param sourceName the source name, must not be blank
+	 * @param text the ST text, must not be blank
+	 * @param delimiterStartChar the start delimiter
+	 * @param delimiterStopChar the end delimiter
+	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
+	 */
+	static IsSTGroup fromString(final String sourceName, final String text, final char delimiterStartChar, final char delimiterStopChar, final Map<String, String[]> expectedChunks, final String appName){
+		Validate.notBlank(sourceName);
+		Validate.notBlank(text);
+		Validate.notBlank(appName);
+		if(expectedChunks!=null){
+			Validate.noNullElements(expectedChunks.keySet());
+			Validate.noNullElements(expectedChunks.values());
+		}
+
+		final IsSTErrorListener errorListener = IsSTErrorListener.create(appName);
+		final STGroupString stg = new STGroupString(sourceName, text, delimiterStartChar, delimiterStopChar);
+		stg.setListener(errorListener);
+		stg.load();
+		Validate.notNull(stg);
+
+		return new IsSTGroup() {
+			@Override
+			public String getAppName() {
+				return appName;
+			}
+
+			@Override
+			public IsSTErrorListener getErrorListener() {
+				return errorListener;
+			}
+
+			@Override
+			public Map<String, String[]> getExpectedChunks() {
+				return expectedChunks;
+			}
+
+			@Override
+			public STGroup getSTGroup() {
+				return stg;
+			}
+		};
+	}
+
+	/**
+	 * Creates a new object from a string with default delimiters.
+	 * @param sourceName the source name, must not be blank
+	 * @param text the ST text, must not be blank
+	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
+	 */
+	static IsSTGroup fromString(final String sourceName, final String text, final Map<String, String[]> expectedChunks, final String appName){
+		return fromString(sourceName, text, '<', '>', expectedChunks, appName);
+	}
+
+	/**
+	 * Creates a new object from a string with default delimiters and no expected chunks.
+	 * @param sourceName the source name, must not be blank
+	 * @param text the ST text, must not be blank
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
+	 */
+	static IsSTGroup fromString(final String sourceName, final String text, final String appName){
+		return fromString(sourceName, text, '<', '>', null, appName);
+	}
+
+	//TODO
+	//STGroupFile(String fullyQualifiedFileName, String encoding) 
+	//STGroupFile(String fullyQualifiedFileName, String encoding, char delimiterStartChar, char delimiterStopChar) 
+	//STGroupFile(URL url, String encoding, char delimiterStartChar, char delimiterStopChar)
 
 	/**
 	 * An application (or object or class) name for error messages.
@@ -59,6 +261,17 @@ public interface IsSTGroup extends CategoryIs {
 	 * @return error listener, must not be null
 	 */
 	IsSTErrorListener getErrorListener();
+
+	/**
+	 * Returns the chunks expected to be defined in the STGroup object.
+	 * @return expected chunks as mapping from method name to set of method arguments
+	 */
+	Map<String, String[]> getExpectedChunks();
+
+	//TODO
+	//STGroupDir(String dirName, String encoding) 
+	//STGroupDir(String dirName, String encoding, char delimiterStartChar, char delimiterStopChar) 
+	//STGroupDir(URL root, String encoding, char delimiterStartChar, char delimiterStopChar) 
 
 	/**
 	 * Returns the name of the STGroup object (file name, source name, or group directory name).
@@ -81,10 +294,20 @@ public interface IsSTGroup extends CategoryIs {
 	}
 
 	/**
-	 * Returns the chunks expected to be defined in the STGroup object.
-	 * @return expected chunks as mapping from method name to set of method arguments
+	 * Creates a new object from ST templates read from a directory.
+	 * @param dirname the directory name, must not be blank
+	 * @param delimiterStartChar the start delimiter
+	 * @param delimiterStopChar the end delimiter
+	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
+	 * @param appName the name of the application (or object/class) using this object
+	 * @return new object
 	 */
-	Map<String, String[]> getExpectedChunks();
+
+	/**
+	 * Returns the STGroup object.
+	 * @return STGroup object
+	 */
+	STGroup getSTGroup();
 
 	/**
 	 * Validates the STGroup for expected chunks.
@@ -122,228 +345,5 @@ public interface IsSTGroup extends CategoryIs {
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Creates a new object from a string.
-	 * @param sourceName the source name, must not be blank
-	 * @param text the ST text, must not be blank
-	 * @param delimiterStartChar the start delimiter
-	 * @param delimiterStopChar the end delimiter
-	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-	static IsSTGroup fromString(final String sourceName, final String text, final char delimiterStartChar, final char delimiterStopChar, final Map<String, String[]> expectedChunks, final String appName){
-		Validate.notBlank(sourceName);
-		Validate.notBlank(text);
-		Validate.notBlank(appName);
-		if(expectedChunks!=null){
-			Validate.noNullElements(expectedChunks.keySet());
-			Validate.noNullElements(expectedChunks.values());
-		}
-
-		final IsSTErrorListener errorListener = IsSTErrorListener.create(appName);
-		final STGroupString stg = new STGroupString(sourceName, text, delimiterStartChar, delimiterStopChar);
-		stg.setListener(errorListener);
-		stg.load();
-		Validate.notNull(stg);
-
-		return new IsSTGroup() {
-			@Override
-			public STGroup getSTGroup() {
-				return stg;
-			}
-
-			@Override
-			public Map<String, String[]> getExpectedChunks() {
-				return expectedChunks;
-			}
-
-			@Override
-			public IsSTErrorListener getErrorListener() {
-				return errorListener;
-			}
-
-			@Override
-			public String getAppName() {
-				return appName;
-			}
-		};
-	}
-
-	/**
-	 * Creates a new object from a string with default delimiters.
-	 * @param sourceName the source name, must not be blank
-	 * @param text the ST text, must not be blank
-	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-	static IsSTGroup fromString(final String sourceName, final String text, final Map<String, String[]> expectedChunks, final String appName){
-		return fromString(sourceName, text, '<', '>', expectedChunks, appName);
-	}
-
-	/**
-	 * Creates a new object from a string with default delimiters and no expected chunks.
-	 * @param sourceName the source name, must not be blank
-	 * @param text the ST text, must not be blank
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-	static IsSTGroup fromString(final String sourceName, final String text, final String appName){
-		return fromString(sourceName, text, '<', '>', null, appName);
-	}
-
-	//TODO
-	//STGroupFile(String fullyQualifiedFileName, String encoding) 
-	//STGroupFile(String fullyQualifiedFileName, String encoding, char delimiterStartChar, char delimiterStopChar) 
-	//STGroupFile(URL url, String encoding, char delimiterStartChar, char delimiterStopChar)
-
-	/**
-	 * Creates a new object from an STG file.
-	 * @param filename the file name, must not be blank
-	 * @param delimiterStartChar the start delimiter
-	 * @param delimiterStopChar the end delimiter
-	 * @param expectedChunks the expected chunks, null if not required
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-	static IsSTGroup fromFile(final String filename, final char delimiterStartChar, final char delimiterStopChar, final Map<String, String[]> expectedChunks, final String appName){
-		Validate.notBlank(appName);
-		if(expectedChunks!=null){
-			Validate.noNullElements(expectedChunks.keySet());
-			Validate.noNullElements(expectedChunks.values());
-		}
-
-		final IsSTErrorListener errorListener = IsSTErrorListener.create(appName);
-		final STGroupFile stg = new STGroupFile(filename, delimiterStartChar, delimiterStopChar);
-		stg.setListener(errorListener);
-		stg.load();
-		Validate.notNull(stg);
-
-		return new IsSTGroup() {
-			@Override
-			public STGroup getSTGroup() {
-				return stg;
-			}
-
-			@Override
-			public Map<String, String[]> getExpectedChunks() {
-				return expectedChunks;
-			}
-
-			@Override
-			public IsSTErrorListener getErrorListener() {
-				return errorListener;
-			}
-
-			@Override
-			public String getAppName() {
-				return appName;
-			}
-		};
-	}
-
-	/**
-	 * Creates a new object from an STG file with default delimiters.
-	 * @param filename the file name, must not be blank
-	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-	static IsSTGroup fromFile(final String filename, final Map<String, String[]> expectedChunks, final String appName){
-		return fromFile(filename, '<', '>', expectedChunks, appName);
-	}
-
-	/**
-	 * Creates a new object from an STG file with default delimiters and no expected chunks.
-	 * @param filename the file name, must not be blank
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-	static IsSTGroup fromFile(final String filename, final String appName){
-		return fromFile(filename, '<', '>', null, appName);
-	}
-
-	//TODO
-	//STGroupDir(String dirName, String encoding) 
-	//STGroupDir(String dirName, String encoding, char delimiterStartChar, char delimiterStopChar) 
-	//STGroupDir(URL root, String encoding, char delimiterStartChar, char delimiterStopChar) 
-
-	/**
-	 * Creates a new object from ST templates read from a directory.
-	 * @param dirname the directory name, must not be blank
-	 * @param delimiterStartChar the start delimiter
-	 * @param delimiterStopChar the end delimiter
-	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-	static IsSTGroup fromDir(final String dirname, final char delimiterStartChar, final char delimiterStopChar, final Map<String, String[]> expectedChunks, final String appName){
-		Validate.notBlank(appName);
-		if(expectedChunks!=null){
-			Validate.noNullElements(expectedChunks.keySet());
-			Validate.noNullElements(expectedChunks.values());
-		}
-
-		final IsSTErrorListener errorListener = IsSTErrorListener.create(appName);
-		final STGroupDir stg = new STGroupDir(dirname, delimiterStartChar, delimiterStopChar);
-		stg.setListener(errorListener);
-		stg.load();
-		Validate.notNull(stg);
-
-		return new IsSTGroup() {
-			@Override
-			public STGroup getSTGroup() {
-				return stg;
-			}
-
-			@Override
-			public Map<String, String[]> getExpectedChunks() {
-				return expectedChunks;
-			}
-
-			@Override
-			public IsSTErrorListener getErrorListener() {
-				return errorListener;
-			}
-
-			@Override
-			public String getAppName() {
-				return appName;
-			}
-		};
-	}
-
-	/**
-	 * Creates a new object from ST templates read from a directory.
-	 * @param dirname the directory name, must not be blank
-	 * @param delimiterStartChar the start delimiter
-	 * @param delimiterStopChar the end delimiter
-	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-
-	/**
-	 * Creates a new object from ST templates read from a directory with default delimiters.
-	 * @param dirname the directory name, must not be blank
-	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-	static IsSTGroup fromDir(final String dirname, final Map<String, String[]> expectedChunks, final String appName){
-		return fromDir(dirname, '<', '>', expectedChunks, appName);
-	}
-
-	/**
-	 * Creates a new object from ST templates read from a directory with default delimiters and no expected chunks.
-	 * @param dirname the directory name, must not be blank
-	 * @param appName the name of the application (or object/class) using this object
-	 * @return new object
-	 */
-	static IsSTGroup fromDir(final String dirname, final String appName){
-		return fromDir(dirname, '<', '>', null, appName);
 	}
 }

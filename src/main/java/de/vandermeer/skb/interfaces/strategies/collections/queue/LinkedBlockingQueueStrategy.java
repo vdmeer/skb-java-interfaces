@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface LinkedBlockingQueueStrategy<T> extends IsQueueStrategy<LinkedBlockingQueue<T>, T> {
 
-	@Override
-	default LinkedBlockingQueue<T> get(Collection<T> collection) {
-		LinkedBlockingQueue<T> ret = new LinkedBlockingQueue<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default LinkedBlockingQueue<T> get() {
-		return new LinkedBlockingQueue<T>();
-	}
-
 	/**
 	 * Creates a new linked blocking queue strategy.
 	 * @param <T> type for the objects in the queue
@@ -50,5 +36,19 @@ public interface LinkedBlockingQueueStrategy<T> extends IsQueueStrategy<LinkedBl
 	 */
 	static <T> LinkedBlockingQueueStrategy<T> create(){
 		return new LinkedBlockingQueueStrategy<T>(){};
+	}
+
+	@Override
+	default LinkedBlockingQueue<T> get() {
+		return new LinkedBlockingQueue<T>();
+	}
+
+	@Override
+	default LinkedBlockingQueue<T> get(Collection<T> collection) {
+		LinkedBlockingQueue<T> ret = new LinkedBlockingQueue<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

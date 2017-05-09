@@ -29,16 +29,93 @@ import org.apache.commons.lang3.ClassUtils;
 public interface Object_To_Target<T> extends IsTransformer<Object, T> {
 
 	/**
+	 * Type safe casting or conversion from Object to target class, special processing for Object[] and Collections.
+	 * This is a convenient method for {@link #convert(Object, Class, Object, Object, boolean)} with both return values set to null and
+	 * the last argument set to true (i.e. special processing of collections).
+	 * @see #convert(Object, Class, Object, Object, boolean)
+	 * @param <T> type of the return object
+	 * @param value the value that should be converted
+	 * @param clazz the requested type of the return value, needed for initialization
+	 * @return a value of type `T` if a conversion was successful, `nullValue` if `null` was tested successfully, `falseValue` in all other cases
+	 */
+	static <T> T convert(Object value, Class<T> clazz){
+		return Object_To_Target.convert(value, clazz, null, null, true);
+	}
+
+	/**
+	 * Type safe casting or conversion from Object to target class, special processing for Object[] and Collections.
+	 * This is a convenient method for {@link #convert(Object, Class, Object, Object, boolean)} with the last 
+	 * argument set to true (i.e. special processing of collections).
+	 * @see #convert(Object, Class, Object, Object, boolean)
+	 * @param <T> type of the return object
+	 * @param value the value that should be converted
+	 * @param clazz the requested type of the return value, needed for initialization
+	 * @param nullValue the value to be used if a null test succeeds
+	 * @param falseValue the value to be used in case no test succeeds
+	 * @return a value of type `T` if a conversion was successful, `nullValue` if `null` was tested successfully, `falseValue` in all other cases
+	 */
+	static <T> T convert(Object value, Class<T> clazz, T nullValue, T falseValue){
+		return Object_To_Target.convert(value, clazz, nullValue, falseValue, true);
+	}
+
+	/**
+	 * Type safe casting or conversion from Object to target class, with optional special processing for Object[] and Collections.
+	 * @see #create
+	 * @param <T> type of the return object
+	 * @param value the value that should be converted
+	 * @param clazz the requested type of the return value, needed for initialization
+	 * @param nullValue the value to be used if a null test succeeds
+	 * @param falseValue the value to be used in case no test succeeds
+	 * @param collFirst if set true, collections will be processed and the first element returned, no special collection processing otherwise
+	 * @return a value of type `T` if a conversion was successful, `nullValue` if `null` was tested successfully, `falseValue` in all other cases
+	 */
+	static <T> T convert(Object value, Class<T> clazz, T nullValue, T falseValue, boolean collFirst){
+		return Object_To_Target.create(clazz, nullValue, falseValue, collFirst).transform(value);
+	}
+
+	/**
+	 * Creates a transformer that takes an Object and returns a target type.
+	 * @param <T> target type for the transformation
+	 * @param clazz the requested type of the return value, required for initialization
+	 * @param nullValue the value to be used if a null test succeeds
+	 * @param falseValue the value to be used in case no test succeeds
+	 * @param collFirst if set true, collections will be processed and the first element returned, no special collection processing otherwise
+	 * @return new transformer that returns a value of type `T` if a conversion was successful, `nullValue` if `null` was tested successfully, `falseValue` in all other cases
+	 */
+	static <T> Object_To_Target<T> create(final Class<T> clazz, final T nullValue, final T falseValue, final boolean collFirst){
+		return new Object_To_Target<T>() {
+			@Override
+			public Class<T> getClazzT() {
+				return clazz;
+			}
+
+			@Override
+			public boolean getCollFirstFlag() {
+				return collFirst;
+			}
+
+			@Override
+			public T getFalseValue() {
+				return falseValue;
+			}
+
+			@Override
+			public T getNullValue() {
+				return nullValue;
+			}};
+	}
+
+	/**
 	 * Returns the class for of the target type.
 	 * @return target type class, should not be `null`
 	 */
 	Class<T> getClazzT();
 
 	/**
-	 * Returns the null value for the transformation, used if a null test succeeds
-	 * @return null value, can be `null` (then `null` is the null value)
+	 * Returns a flag that say if, when the transform object is a collection, only the first non-null element should be used as return value.
+	 * @return use collection first element only flag, defaults to `false`
 	 */
-	T getNullValue();
+	boolean getCollFirstFlag();
 
 	/**
 	 * Returns the false value for the transformation, used in case no test succeeds.
@@ -47,10 +124,10 @@ public interface Object_To_Target<T> extends IsTransformer<Object, T> {
 	T getFalseValue();
 
 	/**
-	 * Returns a flag that say if, when the transform object is a collection, only the first non-null element should be used as return value.
-	 * @return use collection first element only flag, defaults to `false`
+	 * Returns the null value for the transformation, used if a null test succeeds
+	 * @return null value, can be `null` (then `null` is the null value)
 	 */
-	boolean getCollFirstFlag();
+	T getNullValue();
 
 	/**
 	 * Type safe transformation from Object to target class, with optional special processing for `Object[]` and `Collection`.
@@ -138,82 +215,5 @@ public interface Object_To_Target<T> extends IsTransformer<Object, T> {
 
 		//no other option, return falseValue
 		return this.getFalseValue();
-	}
-
-	/**
-	 * Creates a transformer that takes an Object and returns a target type.
-	 * @param <T> target type for the transformation
-	 * @param clazz the requested type of the return value, required for initialization
-	 * @param nullValue the value to be used if a null test succeeds
-	 * @param falseValue the value to be used in case no test succeeds
-	 * @param collFirst if set true, collections will be processed and the first element returned, no special collection processing otherwise
-	 * @return new transformer that returns a value of type `T` if a conversion was successful, `nullValue` if `null` was tested successfully, `falseValue` in all other cases
-	 */
-	static <T> Object_To_Target<T> create(final Class<T> clazz, final T nullValue, final T falseValue, final boolean collFirst){
-		return new Object_To_Target<T>() {
-			@Override
-			public Class<T> getClazzT() {
-				return clazz;
-			}
-
-			@Override
-			public T getNullValue() {
-				return nullValue;
-			}
-
-			@Override
-			public T getFalseValue() {
-				return falseValue;
-			}
-
-			@Override
-			public boolean getCollFirstFlag() {
-				return collFirst;
-			}};
-	}
-
-	/**
-	 * Type safe casting or conversion from Object to target class, special processing for Object[] and Collections.
-	 * This is a convenient method for {@link #convert(Object, Class, Object, Object, boolean)} with both return values set to null and
-	 * the last argument set to true (i.e. special processing of collections).
-	 * @see #convert(Object, Class, Object, Object, boolean)
-	 * @param <T> type of the return object
-	 * @param value the value that should be converted
-	 * @param clazz the requested type of the return value, needed for initialization
-	 * @return a value of type `T` if a conversion was successful, `nullValue` if `null` was tested successfully, `falseValue` in all other cases
-	 */
-	static <T> T convert(Object value, Class<T> clazz){
-		return Object_To_Target.convert(value, clazz, null, null, true);
-	}
-
-	/**
-	 * Type safe casting or conversion from Object to target class, special processing for Object[] and Collections.
-	 * This is a convenient method for {@link #convert(Object, Class, Object, Object, boolean)} with the last 
-	 * argument set to true (i.e. special processing of collections).
-	 * @see #convert(Object, Class, Object, Object, boolean)
-	 * @param <T> type of the return object
-	 * @param value the value that should be converted
-	 * @param clazz the requested type of the return value, needed for initialization
-	 * @param nullValue the value to be used if a null test succeeds
-	 * @param falseValue the value to be used in case no test succeeds
-	 * @return a value of type `T` if a conversion was successful, `nullValue` if `null` was tested successfully, `falseValue` in all other cases
-	 */
-	static <T> T convert(Object value, Class<T> clazz, T nullValue, T falseValue){
-		return Object_To_Target.convert(value, clazz, nullValue, falseValue, true);
-	}
-
-	/**
-	 * Type safe casting or conversion from Object to target class, with optional special processing for Object[] and Collections.
-	 * @see #create
-	 * @param <T> type of the return object
-	 * @param value the value that should be converted
-	 * @param clazz the requested type of the return value, needed for initialization
-	 * @param nullValue the value to be used if a null test succeeds
-	 * @param falseValue the value to be used in case no test succeeds
-	 * @param collFirst if set true, collections will be processed and the first element returned, no special collection processing otherwise
-	 * @return a value of type `T` if a conversion was successful, `nullValue` if `null` was tested successfully, `falseValue` in all other cases
-	 */
-	static <T> T convert(Object value, Class<T> clazz, T nullValue, T falseValue, boolean collFirst){
-		return Object_To_Target.create(clazz, nullValue, falseValue, collFirst).transform(value);
 	}
 }

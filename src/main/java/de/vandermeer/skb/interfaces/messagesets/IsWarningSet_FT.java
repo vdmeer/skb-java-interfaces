@@ -33,6 +33,20 @@ import org.slf4j.helpers.MessageFormatter;
 public interface IsWarningSet_FT extends IsWarningSet<FormattingTuple> {
 
 	/**
+	 * Creates a new warning set.
+	 * @return new warning set
+	 */
+	static IsWarningSet_FT create(){
+		return new IsWarningSet_FT() {
+			final Set<FormattingTuple> warningSet = new LinkedHashSet<>();
+			@Override
+			public Set<FormattingTuple> getWarningMessages() {
+				return this.warningSet;
+			}
+		};
+	}
+
+	/**
 	 * Adds all warnings from given warning set.
 	 * @param warnings warnings to add
 	 */
@@ -77,19 +91,5 @@ public interface IsWarningSet_FT extends IsWarningSet<FormattingTuple> {
 			ret.append(ft.getMessage()).appendNewLine();
 		}
 		return ret.toString();
-	}
-
-	/**
-	 * Creates a new warning set.
-	 * @return new warning set
-	 */
-	static IsWarningSet_FT create(){
-		return new IsWarningSet_FT() {
-			final Set<FormattingTuple> warningSet = new LinkedHashSet<>();
-			@Override
-			public Set<FormattingTuple> getWarningMessages() {
-				return this.warningSet;
-			}
-		};
 	}
 }

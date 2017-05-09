@@ -32,32 +32,19 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  */
 public interface IsInfoSet<M> extends IsMessageSet {
 
-	@Override
-	default boolean isInfoSet(){
-		return true;
-	}
-
 	/**
-	 * Clears all infos.
+	 * Creates a new info set.
+	 * @param <M> type of the messages in the set
+	 * @return new info set
 	 */
-	default void clearInfoMessages(){
-		this.getInfoMessages().clear();
-	}
-
-	/**
-	 * Returns the info set.
-	 * @return info set, should not be null
-	 */
-	Set<M> getInfoMessages();
-
-	/**
-	 * Adds a new info.
-	 * @param info info to add, ignored if null
-	 */
-	default void addInfo(M info){
-		if(info!=null){
-			this.getInfoMessages().add(info);
-		}
+	static <M> IsInfoSet<M> create(){
+		return new IsInfoSet<M>() {
+			final Set<M> infoSet = new LinkedHashSet<>();
+			@Override
+			public Set<M> getInfoMessages() {
+				return this.infoSet;
+			}
+		};
 	}
 
 	/**
@@ -83,11 +70,39 @@ public interface IsInfoSet<M> extends IsMessageSet {
 	}
 
 	/**
+	 * Adds a new info.
+	 * @param info info to add, ignored if null
+	 */
+	default void addInfo(M info){
+		if(info!=null){
+			this.getInfoMessages().add(info);
+		}
+	}
+
+	/**
+	 * Clears all infos.
+	 */
+	default void clearInfoMessages(){
+		this.getInfoMessages().clear();
+	}
+
+	/**
+	 * Returns the info set.
+	 * @return info set, should not be null
+	 */
+	Set<M> getInfoMessages();
+
+	/**
 	 * Tests if infos have been added.
 	 * @return true if infos are in the set, false otherwise
 	 */
 	default boolean hasInformation(){
 		return (this.getInfoMessages().size()==0)?false:true;
+	}
+
+	@Override
+	default boolean isInfoSet(){
+		return true;
 	}
 
 	/**
@@ -109,20 +124,5 @@ public interface IsInfoSet<M> extends IsMessageSet {
 			ret.appendNewLine();
 		}
 		return ret.toString();
-	}
-
-	/**
-	 * Creates a new info set.
-	 * @param <M> type of the messages in the set
-	 * @return new info set
-	 */
-	static <M> IsInfoSet<M> create(){
-		return new IsInfoSet<M>() {
-			final Set<M> infoSet = new LinkedHashSet<>();
-			@Override
-			public Set<M> getInfoMessages() {
-				return this.infoSet;
-			}
-		};
 	}
 }

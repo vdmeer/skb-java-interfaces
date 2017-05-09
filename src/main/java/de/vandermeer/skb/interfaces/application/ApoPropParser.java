@@ -42,18 +42,58 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  */
 public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> {
 
+	static ApoPropParser create(final String appName, final boolean unknownKeyIsError){
+		return new ApoPropParser() {
+			protected final transient ApoPropOptions options = ApoPropOptions.create();
+
+			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
+
+			protected transient int errNo;
+
+			@Override
+			public String getAppName() {
+				return appName;
+			}
+			
+			@Override
+			public int getErrNo() {
+				return this.errNo;
+			}
+			
+			@Override
+			public IsErrorSet_IsError getErrorSet() {
+				return this.errorSet;
+			}
+			
+			@Override
+			public ApoPropOptions getOptions() {
+				return this.options;
+			}
+			
+			@Override
+			public void setErrno(int errorNumber) {
+				this.errNo = errorNumber;
+			}
+
+			@Override
+			public boolean unknownKeyIsError(){
+				return unknownKeyIsError;
+			}
+		};
+	}
+
 	/**
 	 * Returns the application name.
 	 * @return application name, must not be null
 	 */
 	String getAppName();
 
+
 	/**
 	 * Returns the number of the last error, 0 if none occurred.
 	 * @return last error number
 	 */
 	int getErrNo();
-
 
 	/**
 	 * Returns all options added to the parser.
@@ -127,6 +167,21 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 	}
 
 	/**
+	 * Treat unknown (unrecognized) keys as error.
+	 * @return true if unrecognized keys are an error, false otherwise (default implementation is false)
+	 */
+	default boolean unknownKeyIsError(){
+		return false;
+	}
+
+	/**
+	 * Prints usage information for the CLI parser including all CLI options.
+	 * @return list of lines with usage information
+	 */
+	default ArrayList<StrBuilder> usage(){
+		return this.usage(80);
+	}
+	/**
 	 * Prints usage information for the parser including all options.
 	 * @param width the console columns or width of each output line
 	 * @return list of lines with usage information
@@ -164,60 +219,5 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Prints usage information for the CLI parser including all CLI options.
-	 * @return list of lines with usage information
-	 */
-	default ArrayList<StrBuilder> usage(){
-		return this.usage(80);
-	}
-
-	/**
-	 * Treat unknown (unrecognized) keys as error.
-	 * @return true if unrecognized keys are an error, false otherwise (default implementation is false)
-	 */
-	default boolean unknownKeyIsError(){
-		return false;
-	}
-	static ApoPropParser create(final String appName, final boolean unknownKeyIsError){
-		return new ApoPropParser() {
-			protected final transient ApoPropOptions options = ApoPropOptions.create();
-
-			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
-
-			protected transient int errNo;
-
-			@Override
-			public void setErrno(int errorNumber) {
-				this.errNo = errorNumber;
-			}
-			
-			@Override
-			public IsErrorSet_IsError getErrorSet() {
-				return this.errorSet;
-			}
-			
-			@Override
-			public ApoPropOptions getOptions() {
-				return this.options;
-			}
-			
-			@Override
-			public int getErrNo() {
-				return this.errNo;
-			}
-			
-			@Override
-			public String getAppName() {
-				return appName;
-			}
-
-			@Override
-			public boolean unknownKeyIsError(){
-				return unknownKeyIsError;
-			}
-		};
 	}
 }

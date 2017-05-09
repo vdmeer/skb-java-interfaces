@@ -29,6 +29,25 @@ import org.apache.commons.lang3.text.StrTokenizer;
 public interface String_To_ConditionalBreak extends IsTransformer<String, String[]> {
 
 	/**
+	 * Returns a string array with conditional line breaks processed.
+	 * Conditional line breaks are CR LF, CR, LF, &lt;br&gt;, and &lt;br/&gt;.
+	 * @param s input string
+	 * @return array with conditional line breaks converted to empty entries, `null` if `s` was `null`
+	 */
+	static String[] convert(String s){
+		return String_To_ConditionalBreak.create().transform(s);
+	}
+
+	/**
+	 * Creates a transformer that takes a String and returns a String[] with conditional line breaks being processed.
+	 * Conditional line breaks are CR LF, CR, LF, &lt;br&gt;, and &lt;br/&gt;.
+	 * @return new transformer
+	 */
+	static String_To_ConditionalBreak create(){
+		return new String_To_ConditionalBreak() {};
+	}
+
+	/**
 	 * Transforms a String to a String[] processing conditional line breaks.
 	 * Conditional line breaks are CR LF, CR, LF, &lt;br&gt;, and &lt;br/&gt;.
 	 * 
@@ -66,25 +85,6 @@ public interface String_To_ConditionalBreak extends IsTransformer<String, String
 		lfRep = StringUtils.replace(lfRep, "<br/>", "<br />");
 		StrTokenizer tok = new StrTokenizer(lfRep, "<br />").setIgnoreEmptyTokens(false);
 		return tok.getTokenArray();
-	}
-
-	/**
-	 * Creates a transformer that takes a String and returns a String[] with conditional line breaks being processed.
-	 * Conditional line breaks are CR LF, CR, LF, &lt;br&gt;, and &lt;br/&gt;.
-	 * @return new transformer
-	 */
-	static String_To_ConditionalBreak create(){
-		return new String_To_ConditionalBreak() {};
-	}
-
-	/**
-	 * Returns a string array with conditional line breaks processed.
-	 * Conditional line breaks are CR LF, CR, LF, &lt;br&gt;, and &lt;br/&gt;.
-	 * @param s input string
-	 * @return array with conditional line breaks converted to empty entries, `null` if `s` was `null`
-	 */
-	static String[] convert(String s){
-		return String_To_ConditionalBreak.create().transform(s);
 	}
 
 }

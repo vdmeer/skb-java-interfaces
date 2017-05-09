@@ -26,6 +26,15 @@ import java.util.Collection;
  */
 public interface Collection_To_FirstElement<T> extends IsTransformer<Collection<T>, T> {
 
+	/**
+	 * Creates a new transformer.
+	 * @param <T> type for objects in the collection
+	 * @return new transformer
+	 */
+	static <T> Collection_To_FirstElement<T> create(){
+		return new Collection_To_FirstElement<T>() {};
+	}
+
 	@Override
 	default T transform(Collection<T> collection){
 		IsTransformer.super.transform(collection);
@@ -36,14 +45,5 @@ public interface Collection_To_FirstElement<T> extends IsTransformer<Collection<
 			}
 		};
 		return null;
-	}
-
-	/**
-	 * Creates a new transformer.
-	 * @param <T> type for objects in the collection
-	 * @return new transformer
-	 */
-	static <T> Collection_To_FirstElement<T> create(){
-		return new Collection_To_FirstElement<T>() {};
 	}
 }

@@ -31,14 +31,19 @@ import de.vandermeer.skb.interfaces.strategies.maps.IsAbstractMapStrategy;
  */
 public interface EnumMapStrategy<K extends Enum<K>,V> extends IsAbstractMapStrategy<K, V> {
 
-	@Override
-	default EnumMap<K, V> get() {
-		throw new NotImplementedException("cannot implement get() on enum map w/o enum key, see interface for alternative");
+	/**
+	 * Creates a new hash map strategy.
+	 * @param <K> type of the keys in the map
+	 * @param <V> type of the values in the map
+	 * @return hash map strategy
+	 */
+	static <K extends Enum<K>,V> EnumMapStrategy<K, V> create(){
+		return new EnumMapStrategy<K, V>() {};
 	}
 
 	@Override
-	default EnumMap<K, V> get(Map<K, V> map){
-		return new EnumMap<>(map);
+	default EnumMap<K, V> get() {
+		throw new NotImplementedException("cannot implement get() on enum map w/o enum key, see interface for alternative");
 	}
 
 	/**
@@ -50,13 +55,8 @@ public interface EnumMapStrategy<K extends Enum<K>,V> extends IsAbstractMapStrat
 		return new EnumMap<>(keyType);
 	}
 
-	/**
-	 * Creates a new hash map strategy.
-	 * @param <K> type of the keys in the map
-	 * @param <V> type of the values in the map
-	 * @return hash map strategy
-	 */
-	static <K extends Enum<K>,V> EnumMapStrategy<K, V> create(){
-		return new EnumMapStrategy<K, V>() {};
+	@Override
+	default EnumMap<K, V> get(Map<K, V> map){
+		return new EnumMap<>(map);
 	}
 }

@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface ArrayDequeStrategy<T> extends IsQueueStrategy<ArrayDeque<T>, T> {
 
-	@Override
-	default ArrayDeque<T> get(Collection<T> collection) {
-		ArrayDeque<T> ret = new ArrayDeque<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default ArrayDeque<T> get() {
-		return new ArrayDeque<T>();
-	}
-
 	/**
 	 * Creates a new array deque strategy (as queue).
 	 * @param <T> type for the objects in the queue
@@ -50,5 +36,19 @@ public interface ArrayDequeStrategy<T> extends IsQueueStrategy<ArrayDeque<T>, T>
 	 */
 	static <T> ArrayDequeStrategy<T> create(){
 		return new ArrayDequeStrategy<T>(){};
+	}
+
+	@Override
+	default ArrayDeque<T> get() {
+		return new ArrayDeque<T>();
+	}
+
+	@Override
+	default ArrayDeque<T> get(Collection<T> collection) {
+		ArrayDeque<T> ret = new ArrayDeque<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

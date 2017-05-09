@@ -31,6 +31,38 @@ public interface Coin<R> {
 	R getReturn();
 
 	/**
+	 * Tests if the coin has errors to report.
+	 * @return true if it has errors to report, false otherwise
+	 */
+	default boolean hasErrorReports(){
+		return false;
+	}
+
+	/**
+	 * Tests if the coin has information to report.
+	 * @return true if it has information to report, false otherwise
+	 */
+	default boolean hasInfoReports(){
+		return false;
+	}
+
+	/**
+	 * Tests if the coin has warnings to report.
+	 * @return true if it has warnings to report, false otherwise
+	 */
+	default boolean hasWarningReports(){
+		return false;
+	}
+
+	/**
+	 * Tests if the coin is tails (positive return).
+	 * @return true if it is tails, false otherwise
+	 */
+	default boolean isError(){
+		return this.isTails();
+	}
+
+	/**
 	 * Tests if the coin is heads (positive return).
 	 * @return true if it is heads, false otherwise
 	 */
@@ -55,26 +87,10 @@ public interface Coin<R> {
 	}
 
 	/**
-	 * Tests if the coin is tails (positive return).
-	 * @return true if it is tails, false otherwise
-	 */
-	default boolean isError(){
-		return this.isTails();
-	}
-
-	/**
 	 * Tests if the coin reports errors.
 	 * @return true if coin reports errors, false otherwise
 	 */
 	default boolean reportsErrors(){
-		return false;
-	}
-
-	/**
-	 * Tests if the coin has errors to report.
-	 * @return true if it has errors to report, false otherwise
-	 */
-	default boolean hasErrorReports(){
 		return false;
 	}
 
@@ -87,26 +103,10 @@ public interface Coin<R> {
 	}
 
 	/**
-	 * Tests if the coin has information to report.
-	 * @return true if it has information to report, false otherwise
-	 */
-	default boolean hasInfoReports(){
-		return false;
-	}
-
-	/**
 	 * Tests if the coin reports warnings.
 	 * @return true if coin reports warnings, false otherwise
 	 */
 	default boolean reportsWarnings(){
-		return false;
-	}
-
-	/**
-	 * Tests if the coin has warnings to report.
-	 * @return true if it has warnings to report, false otherwise
-	 */
-	default boolean hasWarningReports(){
 		return false;
 	}
 }

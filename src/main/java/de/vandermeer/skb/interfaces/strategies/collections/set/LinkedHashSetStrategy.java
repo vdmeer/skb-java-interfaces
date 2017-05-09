@@ -29,19 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsSetStrategy;
  */
 public interface LinkedHashSetStrategy<T> extends IsSetStrategy<LinkedHashSet<T>, T> {
 
-	@Override
-	default LinkedHashSet<T> get(Collection<T> collection) {
-		if(collection==null){
-			return new LinkedHashSet<T>();
-		}
-		return new LinkedHashSet<T>(collection);
-	}
-
-	@Override
-	default LinkedHashSet<T> get(){
-		return new LinkedHashSet<T>();
-	}
-
 	/**
 	 * Creates a new linked hash set strategy.
 	 * @param <T> type for the objects in the set
@@ -49,5 +36,18 @@ public interface LinkedHashSetStrategy<T> extends IsSetStrategy<LinkedHashSet<T>
 	 */
 	static <T> LinkedHashSetStrategy<T> create(){
 		return new LinkedHashSetStrategy<T>(){};
+	}
+
+	@Override
+	default LinkedHashSet<T> get(){
+		return new LinkedHashSet<T>();
+	}
+
+	@Override
+	default LinkedHashSet<T> get(Collection<T> collection) {
+		if(collection==null){
+			return new LinkedHashSet<T>();
+		}
+		return new LinkedHashSet<T>(collection);
 	}
 }

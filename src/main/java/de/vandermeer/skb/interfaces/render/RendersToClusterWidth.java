@@ -28,6 +28,15 @@ import java.util.Iterator;
 public interface RendersToClusterWidth {
 
 	/**
+	 * Returns an `array` view of the rendered object.
+	 * @param width the maximum line width
+	 * @return `array` view, should not be null and have no blank elements
+	 */
+	default String[] renderAsArray(int width){
+		return this.renderAsCollection(width).toArray(new String[0]);
+	}
+
+	/**
 	 * Returns a `collection` view of the rendered object.
 	 * @param width the maximum line width
 	 * @return `collection` view, should not be null and have no blank elements
@@ -50,14 +59,5 @@ public interface RendersToClusterWidth {
 	 */
 	default Iterator<String> renderAsIterator(int width){
 		return this.renderAsCollection(width).iterator();
-	}
-
-	/**
-	 * Returns an `array` view of the rendered object.
-	 * @param width the maximum line width
-	 * @return `array` view, should not be null and have no blank elements
-	 */
-	default String[] renderAsArray(int width){
-		return this.renderAsCollection(width).toArray(new String[0]);
 	}
 }

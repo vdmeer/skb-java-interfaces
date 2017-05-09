@@ -29,16 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.maps.IsAbstractMapStrategy;
  */
 public interface HashMapStrategy<K, V> extends IsAbstractMapStrategy<K, V> {
 
-	@Override
-	default HashMap<K, V> get() {
-		return new HashMap<>();
-	}
-
-	@Override
-	default HashMap<K, V> get(Map<K, V> map){
-		return new HashMap<>(map);
-	}
-
 	/**
 	 * Creates a new hash map strategy.
 	 * @param <K> type of the keys in the map
@@ -47,5 +37,15 @@ public interface HashMapStrategy<K, V> extends IsAbstractMapStrategy<K, V> {
 	 */
 	static <K, V> HashMapStrategy<K, V> create(){
 		return new HashMapStrategy<K, V>() {};
+	}
+
+	@Override
+	default HashMap<K, V> get() {
+		return new HashMap<>();
+	}
+
+	@Override
+	default HashMap<K, V> get(Map<K, V> map){
+		return new HashMap<>(map);
 	}
 }

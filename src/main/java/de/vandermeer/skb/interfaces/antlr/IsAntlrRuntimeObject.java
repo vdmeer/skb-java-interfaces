@@ -36,161 +36,6 @@ import de.vandermeer.skb.interfaces.render.HasText;
 public interface IsAntlrRuntimeObject extends CategoryIs, HasText {
 
 	/**
-	 * Returns the ANTLR runtime object.
-	 * @return ANTLR runtime object
-	 */
-	Object getAntlrObject();
-
-	/**
-	 * Returns the column (character position in line) for the ANTLR object.
-	 * @return column, -1 if none found or the object wasn't an ANTLR object with a column
-	 */
-	default int getColumn(){
-		Integer ret = -1;
-		Object o = this.getAntlrObject();
-		if(o==null){
-			return ret;
-		}
-		else if(o instanceof RecognitionException){
-			try{
-				ret = ((RecognitionException)o).getOffendingToken().getCharPositionInLine();
-			}
-			catch(Exception ignore){}
-		}
-		else if(o instanceof Token){
-			ret = ((Token)o).getCharPositionInLine();
-		}
-		else if(o instanceof ParserRuleContext){
-			try{
-				ret = ((ParserRuleContext)o).getStart().getCharPositionInLine();
-			}
-			catch(Exception ignore){}
-		}
-		else if(o instanceof TerminalNode){
-			try{
-				ret = ((TerminalNode)o).getSymbol().getCharPositionInLine();
-			}
-			catch(Exception ignore){}
-		}
-		return ret;
-	}
-
-	/**
-	 * Returns the line for the ANTLR object.
-	 * @return line, -1 if none found or the object wasn't an ANTLR object with a line
-	 */
-	default int getLine(){
-		Integer ret = -1;
-		Object o = this.getAntlrObject();
-		if(o==null){
-			return ret;
-		}
-		else if(o instanceof RecognitionException){
-			try{
-				ret = ((RecognitionException)o).getOffendingToken().getLine();
-			}
-			catch(Exception ignore){}
-		}
-		else if(o instanceof Token){
-			ret = ((Token)o).getLine();
-		}
-		else if(o instanceof ParserRuleContext){
-			try{
-				ret = ((ParserRuleContext)o).getStart().getLine();
-			}
-			catch(Exception ignore){}
-		}
-		else if(o instanceof TerminalNode){
-			try{
-				ret = ((TerminalNode)o).getSymbol().getLine();
-			}
-			catch(Exception ignore){}
-		}
-		return ret;
-	}
-
-	/**
-	 * Returns the source file of the ANTLR object.
-	 * @return source file
-	 */
-	default String getFilename(){
-		String ret = null;
-		Object o = this.getAntlrObject();
-		if(o==null){
-			return ret;
-		}
-		else if(o instanceof RecognitionException){
-			try{
-				ret = ((RecognitionException)o).getOffendingToken().getTokenSource().getSourceName();
-			}
-			catch(Exception ignore){}
-			ret = (ret==null)?"":ret;
-		}
-		else if(o instanceof Token){
-			try{
-				ret = ((Token)o).getTokenSource().getSourceName();
-			}
-			catch(Exception ignore){}
-			ret = (ret==null)?"":ret;
-		}
-		else if(o instanceof ParserRuleContext){
-			ret = ((ParserRuleContext)o).getStart().getTokenSource().getSourceName();
-			ret = (ret==null)?"":ret;
-		}
-		else if(o instanceof TerminalNode){
-			try{
-				ret = ((TerminalNode)o).getSymbol().getTokenSource().getSourceName();
-			}
-			catch(Exception ignore){}
-			ret = (ret==null)?"":ret;
-		}
-		return ret;
-	}
-
-	@Override
-	default String getText(){
-		String ret = null;
-		Object o = this.getAntlrObject();
-
-		if(o==null){
-			return ret;
-		}
-		else if(o instanceof RecognitionException){
-			try{
-				ret = ((RecognitionException)o).toString();
-			}
-			catch(Exception ignore){}
-			ret = (ret==null)?"":ret;
-		}
-		else if(o instanceof Token){
-			try{
-				ret = ((Token)o).getText();
-			}
-			catch(Exception ignore){}
-			ret = (ret==null)?"":ret;
-		}
-		else if(o instanceof ParserRuleContext){
-			ret = ((ParserRuleContext)o).getText();
-			ret = (ret==null)?"":ret;
-		}
-		else if(o instanceof ParseTree){
-			try{
-				ret = ((ParseTree)o).getText();
-			}
-			catch(Exception ignore){}
-			ret = (ret==null)?"":ret;
-		}
-		else if(o instanceof TerminalNode){
-			try{
-				ret = ((TerminalNode)o).getText();
-			}
-			catch(Exception ignore){}
-			ret = (ret==null)?"":ret;
-		}
-		return ret;
-	}
-
-	/**
 	 * Creates a new object from an object.
 	 * @param obj the object for creation
 	 * @return new object
@@ -241,5 +86,160 @@ public interface IsAntlrRuntimeObject extends CategoryIs, HasText {
 		}
 
 		throw new IllegalArgumentException("expected ANTLR runtime object, found <" + obj.getClass().getSimpleName() +">");
+	}
+
+	/**
+	 * Returns the ANTLR runtime object.
+	 * @return ANTLR runtime object
+	 */
+	Object getAntlrObject();
+
+	/**
+	 * Returns the column (character position in line) for the ANTLR object.
+	 * @return column, -1 if none found or the object wasn't an ANTLR object with a column
+	 */
+	default int getColumn(){
+		Integer ret = -1;
+		Object o = this.getAntlrObject();
+		if(o==null){
+			return ret;
+		}
+		else if(o instanceof RecognitionException){
+			try{
+				ret = ((RecognitionException)o).getOffendingToken().getCharPositionInLine();
+			}
+			catch(Exception ignore){}
+		}
+		else if(o instanceof Token){
+			ret = ((Token)o).getCharPositionInLine();
+		}
+		else if(o instanceof ParserRuleContext){
+			try{
+				ret = ((ParserRuleContext)o).getStart().getCharPositionInLine();
+			}
+			catch(Exception ignore){}
+		}
+		else if(o instanceof TerminalNode){
+			try{
+				ret = ((TerminalNode)o).getSymbol().getCharPositionInLine();
+			}
+			catch(Exception ignore){}
+		}
+		return ret;
+	}
+
+	/**
+	 * Returns the source file of the ANTLR object.
+	 * @return source file
+	 */
+	default String getFilename(){
+		String ret = null;
+		Object o = this.getAntlrObject();
+		if(o==null){
+			return ret;
+		}
+		else if(o instanceof RecognitionException){
+			try{
+				ret = ((RecognitionException)o).getOffendingToken().getTokenSource().getSourceName();
+			}
+			catch(Exception ignore){}
+			ret = (ret==null)?"":ret;
+		}
+		else if(o instanceof Token){
+			try{
+				ret = ((Token)o).getTokenSource().getSourceName();
+			}
+			catch(Exception ignore){}
+			ret = (ret==null)?"":ret;
+		}
+		else if(o instanceof ParserRuleContext){
+			ret = ((ParserRuleContext)o).getStart().getTokenSource().getSourceName();
+			ret = (ret==null)?"":ret;
+		}
+		else if(o instanceof TerminalNode){
+			try{
+				ret = ((TerminalNode)o).getSymbol().getTokenSource().getSourceName();
+			}
+			catch(Exception ignore){}
+			ret = (ret==null)?"":ret;
+		}
+		return ret;
+	}
+
+	/**
+	 * Returns the line for the ANTLR object.
+	 * @return line, -1 if none found or the object wasn't an ANTLR object with a line
+	 */
+	default int getLine(){
+		Integer ret = -1;
+		Object o = this.getAntlrObject();
+		if(o==null){
+			return ret;
+		}
+		else if(o instanceof RecognitionException){
+			try{
+				ret = ((RecognitionException)o).getOffendingToken().getLine();
+			}
+			catch(Exception ignore){}
+		}
+		else if(o instanceof Token){
+			ret = ((Token)o).getLine();
+		}
+		else if(o instanceof ParserRuleContext){
+			try{
+				ret = ((ParserRuleContext)o).getStart().getLine();
+			}
+			catch(Exception ignore){}
+		}
+		else if(o instanceof TerminalNode){
+			try{
+				ret = ((TerminalNode)o).getSymbol().getLine();
+			}
+			catch(Exception ignore){}
+		}
+		return ret;
+	}
+
+	@Override
+	default String getText(){
+		String ret = null;
+		Object o = this.getAntlrObject();
+
+		if(o==null){
+			return ret;
+		}
+		else if(o instanceof RecognitionException){
+			try{
+				ret = ((RecognitionException)o).toString();
+			}
+			catch(Exception ignore){}
+			ret = (ret==null)?"":ret;
+		}
+		else if(o instanceof Token){
+			try{
+				ret = ((Token)o).getText();
+			}
+			catch(Exception ignore){}
+			ret = (ret==null)?"":ret;
+		}
+		else if(o instanceof ParserRuleContext){
+			ret = ((ParserRuleContext)o).getText();
+			ret = (ret==null)?"":ret;
+		}
+		else if(o instanceof ParseTree){
+			try{
+				ret = ((ParseTree)o).getText();
+			}
+			catch(Exception ignore){}
+			ret = (ret==null)?"":ret;
+		}
+		else if(o instanceof TerminalNode){
+			try{
+				ret = ((TerminalNode)o).getText();
+			}
+			catch(Exception ignore){}
+			ret = (ret==null)?"":ret;
+		}
+		return ret;
 	}
 }

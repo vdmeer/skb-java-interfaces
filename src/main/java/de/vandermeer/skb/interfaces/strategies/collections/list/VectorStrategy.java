@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsListStrategy;
  */
 public interface VectorStrategy<T> extends IsListStrategy<Vector<T>, T> {
 
-	@Override
-	default Vector<T> get(Collection<T> collection) {
-		Vector<T> ret = new Vector<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default Vector<T> get(){
-		return  new Vector<T>();
-	}
-
 	/**
 	 * Creates a new vector strategy.
 	 * @param <T> type for the objects in the list
@@ -50,5 +36,19 @@ public interface VectorStrategy<T> extends IsListStrategy<Vector<T>, T> {
 	 */
 	static <T> VectorStrategy<T> create(){
 		return new VectorStrategy<T>(){};
+	}
+
+	@Override
+	default Vector<T> get(){
+		return  new Vector<T>();
+	}
+
+	@Override
+	default Vector<T> get(Collection<T> collection) {
+		Vector<T> ret = new Vector<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

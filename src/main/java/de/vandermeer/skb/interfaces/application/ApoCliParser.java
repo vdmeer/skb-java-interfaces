@@ -53,6 +53,94 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
 public interface ApoCliParser extends HasErrorSet<IsErrorSet_IsError> {
 
 	/**
+	 * Creates a new default parser using Apache CLI.
+	 * @param appName the application name for error messages, must not be blank
+	 * @return new default parser
+	 */
+	static ApoCliParser defaultParser(final String appName){
+		return new ApoCliParser() {
+			protected final transient ApoCliOptionSet options = ApoCliOptionSet.setApacheOptions();
+
+			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
+
+			protected transient int errNo;
+
+			@Override
+			public String getAppName() {
+				return appName;
+			}
+
+			@Override
+			public int getErrNo() {
+				return this.errNo;
+			}
+
+			@Override
+			public IsErrorSet_IsError getErrorSet() {
+				return this.errorSet;
+			}
+
+			@Override
+			public ApoCliOptionSet getOptions() {
+				return this.options;
+			}
+
+			@Override
+			public void parse(String[] args) {
+				final CommandLineParser parser = new DefaultParser();
+				final Options options = new Options();
+				for(final Object obj : this.getOptions().getSimpleMap().values()){
+					options.addOption((Option)obj);
+				}
+				for(final Object obj : this.getOptions().getTypedMap().values()){
+					options.addOption((Option)obj);
+				}
+
+				CommandLine cmdLine = null;
+				try {
+					cmdLine = parser.parse(options, args, true);
+				}
+				catch(AlreadySelectedException ase){
+					this.getErrorSet().addError(Templates_CliGeneral.ALREADY_SELECTED.getError(this.getAppName(), ase.getMessage()));
+					this.errNo = Templates_CliGeneral.ALREADY_SELECTED.getCode();
+				}
+				catch(MissingArgumentException mae){
+					this.getErrorSet().addError(Templates_CliGeneral.MISSING_ARGUMENT.getError(this.getAppName(), mae.getMessage()));
+					this.errNo = Templates_CliGeneral.MISSING_ARGUMENT.getCode();
+				}
+				catch(MissingOptionException moe){
+					this.getErrorSet().addError(Templates_CliGeneral.MISSING_OPTION.getError(this.getAppName(), moe.getMessage()));
+					this.errNo = Templates_CliGeneral.MISSING_OPTION.getCode();
+				}
+				catch(UnrecognizedOptionException uoe){
+					this.getErrorSet().addError(Templates_CliGeneral.UNRECOGNIZED_OPTION.getError(this.getAppName(), uoe.getMessage()));
+					this.errNo = Templates_CliGeneral.UNRECOGNIZED_OPTION.getCode();
+				}
+				catch (ParseException ex) {
+					this.getErrorSet().addError(Templates_CliGeneral.PARSE_EXCEPTION.getError(this.getAppName(), ex.getMessage()));
+					this.errNo = Templates_CliGeneral.PARSE_EXCEPTION.getCode();
+				}
+
+				if(cmdLine!=null){
+					for(final Apo_SimpleC simple : this.getOptions().getSimpleMap().keySet()){
+						simple.setInCLi(cmdLine.hasOption((simple.getCliShort()==null)?simple.getCliLong():simple.getCliShort().toString()));
+					}
+					for(final Apo_TypedC<?> typed : this.getOptions().getTypedMap().keySet()){
+						typed.setInCLi(cmdLine.hasOption((typed.getCliShort()==null)?typed.getCliLong():typed.getCliShort().toString()));
+						if(typed.inCli()){
+							IsError error = typed.setCliValue(cmdLine.getOptionValue((typed.getCliShort()==null)?typed.getCliLong():typed.getCliShort().toString()));
+							if(error!=null){
+								this.errorSet.addError(error);
+								this.errNo = error.getErrorCode();
+							}
+						}
+					}
+				}
+			}
+		};
+	}
+
+	/**
 	 * Returns the application name.
 	 * @return application name, must not be null
 	 */
@@ -77,6 +165,14 @@ public interface ApoCliParser extends HasErrorSet<IsErrorSet_IsError> {
 	 * @param args command line arguments
 	 */
 	void parse(String[] args);
+
+	/**
+	 * Prints usage information for the CLI parser including all CLI options.
+	 * @return list of lines with usage information
+	 */
+	default ArrayList<StrBuilder> usage(){
+		return this.usage(80);
+	}
 
 	/**
 	 * Prints usage information for the CLI parser including all CLI options.
@@ -132,101 +228,5 @@ public interface ApoCliParser extends HasErrorSet<IsErrorSet_IsError> {
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Prints usage information for the CLI parser including all CLI options.
-	 * @return list of lines with usage information
-	 */
-	default ArrayList<StrBuilder> usage(){
-		return this.usage(80);
-	}
-
-	/**
-	 * Creates a new default parser using Apache CLI.
-	 * @param appName the application name for error messages, must not be blank
-	 * @return new default parser
-	 */
-	static ApoCliParser defaultParser(final String appName){
-		return new ApoCliParser() {
-			protected final transient ApoCliOptionSet options = ApoCliOptionSet.setApacheOptions();
-
-			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
-
-			protected transient int errNo;
-
-			@Override
-			public IsErrorSet_IsError getErrorSet() {
-				return this.errorSet;
-			}
-
-			@Override
-			public String getAppName() {
-				return appName;
-			}
-
-			@Override
-			public int getErrNo() {
-				return this.errNo;
-			}
-
-			@Override
-			public ApoCliOptionSet getOptions() {
-				return this.options;
-			}
-
-			@Override
-			public void parse(String[] args) {
-				final CommandLineParser parser = new DefaultParser();
-				final Options options = new Options();
-				for(final Object obj : this.getOptions().getSimpleMap().values()){
-					options.addOption((Option)obj);
-				}
-				for(final Object obj : this.getOptions().getTypedMap().values()){
-					options.addOption((Option)obj);
-				}
-
-				CommandLine cmdLine = null;
-				try {
-					cmdLine = parser.parse(options, args, true);
-				}
-				catch(AlreadySelectedException ase){
-					this.getErrorSet().addError(Templates_CliGeneral.ALREADY_SELECTED.getError(this.getAppName(), ase.getMessage()));
-					this.errNo = Templates_CliGeneral.ALREADY_SELECTED.getCode();
-				}
-				catch(MissingArgumentException mae){
-					this.getErrorSet().addError(Templates_CliGeneral.MISSING_ARGUMENT.getError(this.getAppName(), mae.getMessage()));
-					this.errNo = Templates_CliGeneral.MISSING_ARGUMENT.getCode();
-				}
-				catch(MissingOptionException moe){
-					this.getErrorSet().addError(Templates_CliGeneral.MISSING_OPTION.getError(this.getAppName(), moe.getMessage()));
-					this.errNo = Templates_CliGeneral.MISSING_OPTION.getCode();
-				}
-				catch(UnrecognizedOptionException uoe){
-					this.getErrorSet().addError(Templates_CliGeneral.UNRECOGNIZED_OPTION.getError(this.getAppName(), uoe.getMessage()));
-					this.errNo = Templates_CliGeneral.UNRECOGNIZED_OPTION.getCode();
-				}
-				catch (ParseException ex) {
-					this.getErrorSet().addError(Templates_CliGeneral.PARSE_EXCEPTION.getError(this.getAppName(), ex.getMessage()));
-					this.errNo = Templates_CliGeneral.PARSE_EXCEPTION.getCode();
-				}
-
-				if(cmdLine!=null){
-					for(final Apo_SimpleC simple : this.getOptions().getSimpleMap().keySet()){
-						simple.setInCLi(cmdLine.hasOption(simple.getCliShortLong()));
-					}
-					for(final Apo_TypedC<?> typed : this.getOptions().getTypedMap().keySet()){
-						typed.setInCLi(cmdLine.hasOption(typed.getCliShortLong()));
-						if(typed.inCli()){
-							IsError error = typed.setCliValue(cmdLine.getOptionValue(typed.getCliShortLong()));
-							if(error!=null){
-								this.errorSet.addError(error);
-								this.errNo = error.getErrorCode();
-							}
-						}
-					}
-				}
-			}
-		};
 	}
 }

@@ -25,13 +25,6 @@ package de.vandermeer.skb.interfaces.translators;
 public interface CharacterTranslator {
 
 	/**
-	 * Translates characters found in an input string to a target representation.
-	 * @param input string
-	 * @return translated string
-	 */
-	String translateCharacters(String input);
-
-	/**
 	 * Translates characters found in an input object to a target representation.
 	 * @param input object (toString is used)
 	 * @return translated string
@@ -42,4 +35,11 @@ public interface CharacterTranslator {
 		}
 		return null;
 	}
+
+	/**
+	 * Translates characters found in an input string to a target representation.
+	 * @param input string
+	 * @return translated string
+	 */
+	String translateCharacters(String input);
 }

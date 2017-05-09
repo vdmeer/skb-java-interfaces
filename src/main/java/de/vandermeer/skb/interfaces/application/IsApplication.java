@@ -207,11 +207,6 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	}
 
 	/**
-	 * The main method for the application, called after {@link #executeApplication(String[])} is finished
-	 */
-	void runApplication();
-
-	/**
 	 * Returns a 1 line description of the application, should not be null.
 	 * @return 1-line application description, mainly used in default help screen implementation
 	 */
@@ -363,6 +358,11 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	}
 
 	/**
+	 * The main method for the application, called after {@link #executeApplication(String[])} is finished
+	 */
+	void runApplication();
+
+	/**
 	 * Sets an error number.
 	 * @param errorNumber the new number for the error
 	 */
@@ -398,4 +398,3 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	}
 
 }
-

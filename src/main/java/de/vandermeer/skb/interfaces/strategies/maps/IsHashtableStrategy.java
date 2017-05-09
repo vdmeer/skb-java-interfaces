@@ -30,18 +30,14 @@ import de.vandermeer.skb.interfaces.strategies.IsMapStrategy;
 public interface IsHashtableStrategy<K, V> extends IsMapStrategy<K, V> {
 
 	@Override
+	Hashtable<K, V> get();
+
+	@Override
+	Hashtable<K, V> get(Map<K, V> map);
+
+	@Override
 	default boolean isAbstractMap() {
 		return true;
-	}
-
-	@Override
-	default boolean isSortedMap() {
-		return false;
-	}
-
-	@Override
-	default boolean isNavigableMap(){
-		return false;
 	}
 
 	@Override
@@ -55,9 +51,13 @@ public interface IsHashtableStrategy<K, V> extends IsMapStrategy<K, V> {
 	}
 
 	@Override
-	Hashtable<K, V> get();
+	default boolean isNavigableMap(){
+		return false;
+	}
 
 	@Override
-	Hashtable<K, V> get(Map<K, V> map);
+	default boolean isSortedMap() {
+		return false;
+	}
 
 }

@@ -30,12 +30,13 @@ import de.vandermeer.skb.interfaces.strategies.IsCollectionStrategy;
 public interface IsDequeStrategy<D extends Deque<T>, T> extends IsCollectionStrategy<D, T> {
 
 	@Override
-	default boolean isList() {
-		return false;
-	}
+	D get();
 
 	@Override
-	default boolean isSet() {
+	D get(Collection<T> collection);
+
+	@Override
+	default boolean isList() {
 		return false;
 	}
 
@@ -45,8 +46,7 @@ public interface IsDequeStrategy<D extends Deque<T>, T> extends IsCollectionStra
 	}
 
 	@Override
-	D get(Collection<T> collection);
-
-	@Override
-	D get();
+	default boolean isSet() {
+		return false;
+	}
 }

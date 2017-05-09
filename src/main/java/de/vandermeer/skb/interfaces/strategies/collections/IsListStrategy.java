@@ -30,13 +30,14 @@ import de.vandermeer.skb.interfaces.strategies.IsCollectionStrategy;
 public interface IsListStrategy<L extends List<T>, T> extends IsCollectionStrategy<L, T> {
 
 	@Override
-	default boolean isList(){
-		return true;
-	}
+	L get();
 
 	@Override
-	default boolean isSet(){
-		return false;
+	L get(Collection<T> collection);
+
+	@Override
+	default boolean isList(){
+		return true;
 	}
 
 	@Override
@@ -45,8 +46,7 @@ public interface IsListStrategy<L extends List<T>, T> extends IsCollectionStrate
 	}
 
 	@Override
-	L get(Collection<T> collection);
-
-	@Override
-	L get();
+	default boolean isSet(){
+		return false;
+	}
 }

@@ -29,16 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.maps.IsHashtableStrategy;
  */
 public interface HashtableStrategy<K, V> extends IsHashtableStrategy<K, V> {
 
-	@Override
-	default Hashtable<K, V> get() {
-		return new Hashtable<>();
-	}
-
-	@Override
-	default Hashtable<K, V> get(Map<K, V> map){
-		return new Hashtable<>(map);
-	}
-
 	/**
 	 * Creates a new hash table strategy.
 	 * @param <K> type of the keys in the table
@@ -47,5 +37,15 @@ public interface HashtableStrategy<K, V> extends IsHashtableStrategy<K, V> {
 	 */
 	static <K, V> HashtableStrategy<K, V> create(){
 		return new HashtableStrategy<K, V>() {};
+	}
+
+	@Override
+	default Hashtable<K, V> get() {
+		return new Hashtable<>();
+	}
+
+	@Override
+	default Hashtable<K, V> get(Map<K, V> map){
+		return new Hashtable<>(map);
 	}
 }

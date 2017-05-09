@@ -30,17 +30,13 @@ import de.vandermeer.skb.interfaces.strategies.IsMapStrategy;
 public interface IsConcurrentMapStrategy<K, V> extends IsMapStrategy<K, V> {
 
 	@Override
+	ConcurrentMap<K, V> get();
+
+	@Override
+	ConcurrentMap<K, V> get(Map<K, V> map);
+
+	@Override
 	default boolean isAbstractMap() {
-		return false;
-	}
-
-	@Override
-	default boolean isSortedMap() {
-		return false;
-	}
-
-	@Override
-	default boolean isNavigableMap(){
 		return false;
 	}
 
@@ -55,9 +51,13 @@ public interface IsConcurrentMapStrategy<K, V> extends IsMapStrategy<K, V> {
 	}
 
 	@Override
-	ConcurrentMap<K, V> get();
+	default boolean isNavigableMap(){
+		return false;
+	}
 
 	@Override
-	ConcurrentMap<K, V> get(Map<K, V> map);
+	default boolean isSortedMap() {
+		return false;
+	}
 
 }

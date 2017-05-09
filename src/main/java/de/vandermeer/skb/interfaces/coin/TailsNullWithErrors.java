@@ -32,9 +32,19 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  */
 public interface TailsNullWithErrors<M> extends TailsNull, IsErrorSet<M> {
 
-	@Override
-	default boolean reportsErrors(){
-		return true;
+	/**
+	 * Creates a new null coin with given value and errors.
+	 * @param <M> the message type for the set
+	 * @return new error coin
+	 */
+	static <M> TailsNullWithErrors<M> create(){
+		return new TailsNullWithErrors<M>() {
+			final Set<M> errorSet = new LinkedHashSet<>();
+			@Override
+			public Set<M> getErrorMessages() {
+				return this.errorSet;
+			}
+		};
 	}
 
 	@Override
@@ -64,18 +74,8 @@ public interface TailsNullWithErrors<M> extends TailsNull, IsErrorSet<M> {
 		return ret.toString();
 	}
 
-	/**
-	 * Creates a new null coin with given value and errors.
-	 * @param <M> the message type for the set
-	 * @return new error coin
-	 */
-	static <M> TailsNullWithErrors<M> create(){
-		return new TailsNullWithErrors<M>() {
-			final Set<M> errorSet = new LinkedHashSet<>();
-			@Override
-			public Set<M> getErrorMessages() {
-				return this.errorSet;
-			}
-		};
+	@Override
+	default boolean reportsErrors(){
+		return true;
 	}
 }

@@ -32,9 +32,27 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  */
 public interface HeadsSuccessWithInfo<R, M> extends HeadsSuccess<R>, IsInfoSet<M> {
 
-	@Override
-	default boolean reportsInfo(){
-		return true;
+	/**
+	 * Creates a new success coin with given value and information.
+	 * @param <R> type of the return value
+	 * @param <M> the message type for the set
+	 * @param value the actual return value
+	 * @return new success coin
+	 */
+	static <R, M> HeadsSuccessWithInfo<R, M> create(final R value){
+		return new HeadsSuccessWithInfo<R, M>() {
+			final Set<M> infoSet = new LinkedHashSet<>();
+
+			@Override
+			public Set<M> getInfoMessages() {
+				return this.infoSet;
+			}
+
+			@Override
+			public R getReturn() {
+				return value;
+			}
+		};
 	}
 
 	@Override
@@ -64,26 +82,8 @@ public interface HeadsSuccessWithInfo<R, M> extends HeadsSuccess<R>, IsInfoSet<M
 		return ret.toString();
 	}
 
-	/**
-	 * Creates a new success coin with given value and information.
-	 * @param <R> type of the return value
-	 * @param <M> the message type for the set
-	 * @param value the actual return value
-	 * @return new success coin
-	 */
-	static <R, M> HeadsSuccessWithInfo<R, M> create(final R value){
-		return new HeadsSuccessWithInfo<R, M>() {
-			final Set<M> infoSet = new LinkedHashSet<>();
-
-			@Override
-			public R getReturn() {
-				return value;
-			}
-
-			@Override
-			public Set<M> getInfoMessages() {
-				return this.infoSet;
-			}
-		};
+	@Override
+	default boolean reportsInfo(){
+		return true;
 	}
 }

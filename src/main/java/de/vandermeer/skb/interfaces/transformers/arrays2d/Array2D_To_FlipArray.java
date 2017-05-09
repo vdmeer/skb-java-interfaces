@@ -42,6 +42,14 @@ import de.vandermeer.skb.interfaces.transformers.IsTransformer;
  */
 public interface Array2D_To_FlipArray extends IsTransformer<String[][], String[][]> {
 
+	/**
+	 * Creates a new transformer.
+	 * @return new transformer
+	 */
+	static Array2D_To_FlipArray create(){
+		return new Array2D_To_FlipArray() {};
+	}
+
 	@Override
 	default String[][] transform(String[][] ar){
 		IsTransformer.super.transform(ar);
@@ -57,13 +65,5 @@ public interface Array2D_To_FlipArray extends IsTransformer<String[][], String[]
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Creates a new transformer.
-	 * @return new transformer
-	 */
-	static Array2D_To_FlipArray create(){
-		return new Array2D_To_FlipArray() {};
 	}
 }

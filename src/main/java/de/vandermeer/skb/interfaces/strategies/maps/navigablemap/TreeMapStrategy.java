@@ -29,16 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.maps.IsNavigableMapStrategy;
  */
 public interface TreeMapStrategy<K extends Comparable<K>, V> extends IsNavigableMapStrategy<K, V> {
 
-	@Override
-	default TreeMap<K, V> get() {
-		return new TreeMap<>();
-	}
-
-	@Override
-	default TreeMap<K, V> get(Map<K, V> map){
-		return new TreeMap<>(map);
-	}
-
 	/**
 	 * Creates a new tree map strategy.
 	 * @param <K> type of the keys in the map
@@ -47,5 +37,15 @@ public interface TreeMapStrategy<K extends Comparable<K>, V> extends IsNavigable
 	 */
 	static <K extends Comparable<K>, V> TreeMapStrategy<K, V> create(){
 		return new TreeMapStrategy<K, V>() {};
+	}
+
+	@Override
+	default TreeMap<K, V> get() {
+		return new TreeMap<>();
+	}
+
+	@Override
+	default TreeMap<K, V> get(Map<K, V> map){
+		return new TreeMap<>(map);
 	}
 }

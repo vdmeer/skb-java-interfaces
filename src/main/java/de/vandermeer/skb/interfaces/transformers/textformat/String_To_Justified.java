@@ -48,11 +48,97 @@ public interface String_To_Justified extends IsTransformer<String, StrBuilder> {
 	static char DEFAULT_INNER_WHITESPACE_CHARACTER = ' ';
 
 	/**
-	 * Returns the required length for the conversion.
-	 * @return length, default is {@link #DEFAULT_LENGTH}
+	 * Returns justified string of given length.
+	 * @param s input string
+	 * @param length the required length (must be &gt;0)
+	 * @return justified string
+	 * @see String_To_Justified interface description for how the conversion works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
 	 */
-	default int getLength(){
-		return DEFAULT_LENGTH;
+	static StrBuilder convert(String s, int length){
+		return String_To_Justified.create(length, null, null).transform(s);
+	}
+
+	/**
+	 * Returns justified string of given length.
+	 * @param s input string
+	 * @param length the required length (must be &gt;0)
+	 * @param innerWsChar inner white space replacement character, default is used if null
+	 * @return justified string
+	 * @see String_To_Justified interface description for how the conversion works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
+	 */
+	static StrBuilder convert(String s, int length, Character innerWsChar){
+		return String_To_Justified.create(length, innerWsChar, null).transform(s);
+	}
+
+	/**
+	 * Returns justified string of given length.
+	 * @param s input string
+	 * @param length the required length (must be &gt;0)
+	 * @param innerWsChar inner white space replacement character, default is used if null
+	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
+	 * @return justified string
+	 * @see String_To_Justified interface description for how the conversion works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
+	 */
+	static StrBuilder convert(String s, int length, Character innerWsChar, StrBuilder builder){
+		return String_To_Justified.create(length, innerWsChar, builder).transform(s);
+	}
+
+	/**
+	 * Returns justified string of given length.
+	 * @param s input string
+	 * @param length the required length (must be &gt;0)
+	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
+	 * @return justified string
+	 * @see String_To_Justified interface description for how the conversion works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
+	 */
+	static StrBuilder convert(String s, int length, StrBuilder builder){
+		return String_To_Justified.create(length, null, builder).transform(s);
+	}
+
+	/**
+	 * Creates a transformer that converts a string to a justified string of given length.
+	 * @param length the required length (must be &gt;0)
+	 * @param innerWsChar inner white space replacement character
+	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
+	 * @return new transformer
+	 * @see String_To_Justified interface description for how the converter works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
+	 */
+	static String_To_Justified create(int length, Character innerWsChar, StrBuilder builder){
+		Validate.validState(length>0, "cannot work with lenght of less than 1");
+		return new String_To_Justified() {
+			@Override
+			public StrBuilder getBuilderForAppend(){
+				return builder;
+			}
+
+			@Override
+			public Character getInnerWsChar() {
+				return (innerWsChar==null)?String_To_Justified.super.getInnerWsChar():innerWsChar;
+			}
+
+			@Override
+			public int getLength(){
+				return (length<1)?String_To_Justified.super.getLength():length;
+			}
+		};
+	}
+
+	/**
+	 * Returns a builder to append the justified string to, rather than creating a new builder.
+	 * @return builder, can be null, if not null the justified string will be appended to it
+	 */
+	default StrBuilder getBuilderForAppend(){
+		return null;
 	}
 
 	/**
@@ -64,11 +150,11 @@ public interface String_To_Justified extends IsTransformer<String, StrBuilder> {
 	}
 
 	/**
-	 * Returns a builder to append the justified string to, rather than creating a new builder.
-	 * @return builder, can be null, if not null the justified string will be appended to it
+	 * Returns the required length for the conversion.
+	 * @return length, default is {@link #DEFAULT_LENGTH}
 	 */
-	default StrBuilder getBuilderForAppend(){
-		return null;
+	default int getLength(){
+		return DEFAULT_LENGTH;
 	}
 
 	@Override
@@ -113,91 +199,5 @@ public interface String_To_Justified extends IsTransformer<String, StrBuilder> {
 			ret.append(' ');
 		}
 		return ret;
-	}
-
-	/**
-	 * Creates a transformer that converts a string to a justified string of given length.
-	 * @param length the required length (must be &gt;0)
-	 * @param innerWsChar inner white space replacement character
-	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
-	 * @return new transformer
-	 * @see String_To_Justified interface description for how the converter works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static String_To_Justified create(int length, Character innerWsChar, StrBuilder builder){
-		Validate.validState(length>0, "cannot work with lenght of less than 1");
-		return new String_To_Justified() {
-			@Override
-			public int getLength(){
-				return (length<1)?String_To_Justified.super.getLength():length;
-			}
-
-			@Override
-			public StrBuilder getBuilderForAppend(){
-				return builder;
-			}
-
-			@Override
-			public Character getInnerWsChar() {
-				return (innerWsChar==null)?String_To_Justified.super.getInnerWsChar():innerWsChar;
-			}
-		};
-	}
-
-	/**
-	 * Returns justified string of given length.
-	 * @param s input string
-	 * @param length the required length (must be &gt;0)
-	 * @return justified string
-	 * @see String_To_Justified interface description for how the conversion works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static StrBuilder convert(String s, int length){
-		return String_To_Justified.create(length, null, null).transform(s);
-	}
-
-	/**
-	 * Returns justified string of given length.
-	 * @param s input string
-	 * @param length the required length (must be &gt;0)
-	 * @param innerWsChar inner white space replacement character, default is used if null
-	 * @return justified string
-	 * @see String_To_Justified interface description for how the conversion works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static StrBuilder convert(String s, int length, Character innerWsChar){
-		return String_To_Justified.create(length, innerWsChar, null).transform(s);
-	}
-
-	/**
-	 * Returns justified string of given length.
-	 * @param s input string
-	 * @param length the required length (must be &gt;0)
-	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
-	 * @return justified string
-	 * @see String_To_Justified interface description for how the conversion works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static StrBuilder convert(String s, int length, StrBuilder builder){
-		return String_To_Justified.create(length, null, builder).transform(s);
-	}
-
-	/**
-	 * Returns justified string of given length.
-	 * @param s input string
-	 * @param length the required length (must be &gt;0)
-	 * @param innerWsChar inner white space replacement character, default is used if null
-	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
-	 * @return justified string
-	 * @see String_To_Justified interface description for how the conversion works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static StrBuilder convert(String s, int length, Character innerWsChar, StrBuilder builder){
-		return String_To_Justified.create(length, innerWsChar, builder).transform(s);
 	}
 }

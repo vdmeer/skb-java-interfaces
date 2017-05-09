@@ -25,6 +25,20 @@ package de.vandermeer.skb.interfaces;
 public interface StandardExampleRunner {
 
 	/**
+	 * Runs an example showing output with frames.
+	 * @param example the example to run
+	 * 
+	 */
+	default void runExample(StandardExample example){
+		System.out.println("================================================================");
+		System.out.println(example.getClass().getSimpleName() + ": " + example.getDescription());
+		System.out.println("----------------------------------------------------------------");
+		example.showOutput();
+		System.out.println("================================================================");
+		System.out.println("\n\n");
+	}
+
+	/**
 	 * Runs an example, first showing the source code and then output with frames.
 	 * @param example the example to run
 	 * 
@@ -34,20 +48,6 @@ public interface StandardExampleRunner {
 		System.out.println(example.getClass().getSimpleName() + ": " + example.getDescription());
 		System.out.println("----------------------------------------------------------------");
 		System.out.println(example.getSource());
-		System.out.println("----------------------------------------------------------------");
-		example.showOutput();
-		System.out.println("================================================================");
-		System.out.println("\n\n");
-	}
-
-	/**
-	 * Runs an example showing output with frames.
-	 * @param example the example to run
-	 * 
-	 */
-	default void runExample(StandardExample example){
-		System.out.println("================================================================");
-		System.out.println(example.getClass().getSimpleName() + ": " + example.getDescription());
 		System.out.println("----------------------------------------------------------------");
 		example.showOutput();
 		System.out.println("================================================================");

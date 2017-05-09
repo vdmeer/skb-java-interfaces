@@ -28,6 +28,15 @@ import org.stringtemplate.v4.STGroupString;
  */
 public interface Array_To_Text<T> extends IsTransformer<T[], String> {
 
+	/**
+	 * Creates a new transformer.
+	 * @param <T> type of the array
+	 * @return new transformer
+	 */
+	static <T> Array_To_Text<T> create(){
+		return new Array_To_Text<T>() {};
+	}
+
 	@Override
 	default String transform(T[] ar){
 		IsTransformer.super.transform(ar);
@@ -39,14 +48,5 @@ public interface Array_To_Text<T> extends IsTransformer<T[], String> {
 			ret.add("entries", obj);
 		}
 		return ret.render();
-	}
-
-	/**
-	 * Creates a new transformer.
-	 * @param <T> type of the array
-	 * @return new transformer
-	 */
-	static <T> Array_To_Text<T> create(){
-		return new Array_To_Text<T>() {};
 	}
 }

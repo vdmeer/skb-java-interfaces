@@ -29,16 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.maps.IsAbstractMapStrategy;
  */
 public interface LinkedHashMapStrategy<K, V> extends IsAbstractMapStrategy<K, V> {
 
-	@Override
-	default LinkedHashMap<K, V> get() {
-		return new LinkedHashMap<>();
-	}
-
-	@Override
-	default LinkedHashMap<K, V> get(Map<K, V> map){
-		return new LinkedHashMap<>(map);
-	}
-
 	/**
 	 * Creates a new linked hash map strategy.
 	 * @param <K> type of the keys in the map
@@ -47,5 +37,15 @@ public interface LinkedHashMapStrategy<K, V> extends IsAbstractMapStrategy<K, V>
 	 */
 	static <K, V> LinkedHashMapStrategy<K, V> create(){
 		return new LinkedHashMapStrategy<K, V>() {};
+	}
+
+	@Override
+	default LinkedHashMap<K, V> get() {
+		return new LinkedHashMap<>();
+	}
+
+	@Override
+	default LinkedHashMap<K, V> get(Map<K, V> map){
+		return new LinkedHashMap<>(map);
 	}
 }

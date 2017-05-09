@@ -228,6 +228,18 @@ public enum StandardErrorCategories implements IsErrorCategory {
 
 	;
 
+	/** Category display name. */
+	private final String displayName;
+
+	/** Start for error codes (minimum error code). */
+	private final int start;
+
+	/** End for error codes (maximum error code). */
+	private final int end;
+
+	/** Category description. */
+	private final String description;
+
 	/**
 	 * Creates a new category.
 	 * @param start category start
@@ -246,18 +258,6 @@ public enum StandardErrorCategories implements IsErrorCategory {
 		this.description = description;
 	}
 
-	/** Category display name. */
-	private final String displayName;
-
-	/** Start for error codes (minimum error code). */
-	private final int start;
-
-	/** End for error codes (maximum error code). */
-	private final int end;
-
-	/** Category description. */
-	private final String description;
-
 	@Override
 	public String getDescription() {
 		return this.description;
@@ -269,13 +269,13 @@ public enum StandardErrorCategories implements IsErrorCategory {
 	}
 
 	@Override
-	public int getStart() {
-		return this.start;
+	public int getEnd() {
+		return this.end;
 	}
 
 	@Override
-	public int getEnd() {
-		return this.end;
+	public int getStart() {
+		return this.start;
 	}
 
 }

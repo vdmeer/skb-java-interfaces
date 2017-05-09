@@ -30,19 +30,6 @@ import org.stringtemplate.v4.STGroupString;
  */
 public interface Iterator_To_Text<T> extends IsTransformer<Iterator<T>, String> {
 
-	@Override
-	default String transform(Iterator<T> it){
-		IsTransformer.super.transform(it);
-
-		STGroup stg = new STGroupString(Iterable_To_Text.TO_STRING_ST);
-		ST ret = stg.getInstanceOf("toText");
-
-		while(it.hasNext()){
-			ret.add("entries", it.next());
-		}
-		return ret.render();
-	}
-
 	/**
 	 * Creates a new transformer.
 	 * @param <T> type for iterator
@@ -60,5 +47,18 @@ public interface Iterator_To_Text<T> extends IsTransformer<Iterator<T>, String> 
 	 */
 	static <T> Iterator_To_Text<T> create(Class<T> clazz){
 		return new Iterator_To_Text<T>() {};
+	}
+
+	@Override
+	default String transform(Iterator<T> it){
+		IsTransformer.super.transform(it);
+
+		STGroup stg = new STGroupString(Iterable_To_Text.TO_STRING_ST);
+		ST ret = stg.getInstanceOf("toText");
+
+		while(it.hasNext()){
+			ret.add("entries", it.next());
+		}
+		return ret.render();
 	}
 }

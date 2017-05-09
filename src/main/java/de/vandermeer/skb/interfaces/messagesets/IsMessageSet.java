@@ -28,6 +28,14 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
 public interface IsMessageSet extends CategoryIs, DoesRender {
 
 	/**
+	 * Tests if the message set is an error set.
+	 * @return true if error set, false otherwise
+	 */
+	default boolean isErrorSet(){
+		return false;
+	}
+
+	/**
 	 * Tests if the message set is an info set.
 	 * @return true if info set, false otherwise
 	 */
@@ -40,14 +48,6 @@ public interface IsMessageSet extends CategoryIs, DoesRender {
 	 * @return true if warning set, false otherwise
 	 */
 	default boolean isWarningSet(){
-		return false;
-	}
-
-	/**
-	 * Tests if the message set is an error set.
-	 * @return true if error set, false otherwise
-	 */
-	default boolean isErrorSet(){
 		return false;
 	}
 }

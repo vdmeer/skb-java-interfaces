@@ -25,13 +25,6 @@ package de.vandermeer.skb.interfaces;
 public interface StandardExampleAsCmd extends StandardExample {
 
 	/**
-	 * Returns an identifier for the example.
-	 * This is useful when a set of examples exist, and an application wants to build maps of them.
-	 * @return example identifier, unique within the set of examples defined for a purpose, e.g. a package
-	 */
-	String getID();
-
-	/**
 	 * Returns a string that can be used as a command to execute the example.
 	 * The default implementation simply uses the identifier as command string
 	 * @return example command string
@@ -39,4 +32,11 @@ public interface StandardExampleAsCmd extends StandardExample {
 	default String getCmd(){
 		return this.getID();
 	}
+
+	/**
+	 * Returns an identifier for the example.
+	 * This is useful when a set of examples exist, and an application wants to build maps of them.
+	 * @return example identifier, unique within the set of examples defined for a purpose, e.g. a package
+	 */
+	String getID();
 }

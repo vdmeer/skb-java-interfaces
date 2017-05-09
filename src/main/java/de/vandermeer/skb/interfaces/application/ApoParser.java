@@ -18,25 +18,13 @@ package de.vandermeer.skb.interfaces.application;
 import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
 
 /**
- * An application parser parser.
+ * An application parser.
  * 
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
 public interface ApoParser<O extends ApoBase, S extends ApoParserOptionSet<O>> {
-
-	/**
-	 * Returns the option set of the parser.
-	 * @return parser option set, must not be null, empty if no options added
-	 */
-	ApoParserOptionSet<O> getOptions();
-
-	/**
-	 * Returns the parser's error set.
-	 * @return parser's error set
-	 */
-	IsErrorSet_IsError getErrorSet();
 
 	/**
 	 * Returns the application name.
@@ -49,6 +37,18 @@ public interface ApoParser<O extends ApoBase, S extends ApoParserOptionSet<O>> {
 	 * @return last error number
 	 */
 	int getErrNo();
+
+	/**
+	 * Returns the parser's error set.
+	 * @return parser's error set
+	 */
+	IsErrorSet_IsError getErrorSet();
+
+	/**
+	 * Returns the option set of the parser.
+	 * @return parser option set, must not be null, empty if no options added
+	 */
+	ApoParserOptionSet<O> getOptions();
 
 	/**
 	 * Sets an error number.

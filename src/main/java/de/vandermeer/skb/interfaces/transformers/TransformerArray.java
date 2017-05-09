@@ -28,6 +28,30 @@ import org.apache.commons.lang3.Validate;
 public interface TransformerArray<FROM, TO> extends Transformer <FROM, TO> {
 
 	/**
+	 * Creates a new transformer array.
+	 * @param <FROM> type of the source (from)
+	 * @param <TO> type of the target (to)
+	 * @param transformers the array of transformers
+	 * @return new transformer
+	 * @throws NullPointerException if the argument was null or had any null element
+	 */
+	static <FROM, TO> TransformerArray<FROM, TO> create(final Transformer<FROM, TO>[] transformers){
+		return new TransformerArray<FROM, TO>() {
+			@Override
+			public Transformer<FROM, TO>[] getTransformers() {
+				Validate.notNull(transformers);
+				Validate.noNullElements(transformers);
+				return transformers;
+			}
+		};
+	}
+
+	@Override
+	default TO apply(FROM f){
+		return transform(f);
+	}
+
+	/**
 	 * Returns the array of transformers used for transformations.
 	 * @return array of transformers
 	 */
@@ -58,29 +82,5 @@ public interface TransformerArray<FROM, TO> extends Transformer <FROM, TO> {
 			}
 		}
 		throw new IllegalArgumentException("none of the transformers in the array could do a non-null transformation");
-	}
-
-	@Override
-	default TO apply(FROM f){
-		return transform(f);
-	}
-
-	/**
-	 * Creates a new transformer array.
-	 * @param <FROM> type of the source (from)
-	 * @param <TO> type of the target (to)
-	 * @param transformers the array of transformers
-	 * @return new transformer
-	 * @throws NullPointerException if the argument was null or had any null element
-	 */
-	static <FROM, TO> TransformerArray<FROM, TO> create(final Transformer<FROM, TO>[] transformers){
-		return new TransformerArray<FROM, TO>() {
-			@Override
-			public Transformer<FROM, TO>[] getTransformers() {
-				Validate.notNull(transformers);
-				Validate.noNullElements(transformers);
-				return transformers;
-			}
-		};
 	}
 }

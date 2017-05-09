@@ -33,6 +33,14 @@ import de.vandermeer.skb.interfaces.strategies.IsCollectionStrategy;
 public interface ClusterElementTransformer {
 
 	/**
+	 * Creates a new transformer.
+	 * @return new transformer
+	 */
+	static ClusterElementTransformer create(){
+		return new ClusterElementTransformer() {};
+	}
+
+	/**
 	 * Converts the input `iterable` to a collection applying a transformation for each input element.
 	 * @param <T1> the from/source of the transformer (also the type for `iterable`)
 	 * @param <T2> the to/target of the transformer and the type of objects in the return collection
@@ -169,13 +177,5 @@ public interface ClusterElementTransformer {
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Creates a new transformer.
-	 * @return new transformer
-	 */
-	static ClusterElementTransformer create(){
-		return new ClusterElementTransformer() {};
 	}
 }

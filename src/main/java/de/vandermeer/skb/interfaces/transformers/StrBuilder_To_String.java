@@ -27,20 +27,20 @@ import org.apache.commons.lang3.text.StrBuilder;
  */
 public interface StrBuilder_To_String extends IsTransformer<StrBuilder, String> {
 
-	@Override
-	default String transform(StrBuilder sb) {
-		if(sb==null){
-			return "";
-		}
-		return sb.toString();
-	}
-
 	/**
 	 * Creates a transformer that takes an {@link StrBuilder} and returns a string.
 	 * @return new transformer
 	 */
 	static StrBuilder_To_String create(){
 		return new StrBuilder_To_String() {};
+	}
+
+	@Override
+	default String transform(StrBuilder sb) {
+		if(sb==null){
+			return "";
+		}
+		return sb.toString();
 	}
 
 }

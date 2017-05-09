@@ -28,6 +28,14 @@ import de.vandermeer.skb.interfaces.objctxt.HasObjectContext;
  */
 public interface IsTableRow extends HasObjectContext {
 
+	/**
+	 * Returns the cells of a content row in a table.
+	 * @return cells, can be null
+	 */
+	default LinkedList<? extends IsTableCell> getCells(){
+		return null;
+	}
+
 	@Override
 	IsTableRowContext getContext();
 
@@ -45,14 +53,6 @@ public interface IsTableRow extends HasObjectContext {
 	 */
 	default TableRowType getType(){
 		return TableRowType.UNKNOWN;
-	}
-
-	/**
-	 * Returns the cells of a content row in a table.
-	 * @return cells, can be null
-	 */
-	default LinkedList<? extends IsTableCell> getCells(){
-		return null;
 	}
 
 	/**

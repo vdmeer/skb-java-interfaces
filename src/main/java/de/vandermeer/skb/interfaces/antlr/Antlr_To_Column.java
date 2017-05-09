@@ -26,15 +26,6 @@ import de.vandermeer.skb.interfaces.transformers.IsTransformer;
  */
 public interface Antlr_To_Column extends IsTransformer<Object, Integer> {
 
-	@Override
-	default Integer transform(Object obj){
-		IsTransformer.super.transform(obj);
-		if(obj instanceof IsAntlrRuntimeObject){
-			return ((IsAntlrRuntimeObject)obj).getColumn();
-		}
-		return IsAntlrRuntimeObject.create(obj).getColumn();
-	}
-
 	/**
 	 * Creates a transformer that takes an object and returns an Integer with column information for ANTLR runtime objects.
 	 * The returned transformer will throw runtime exceptions (null pointer, illegal argument) if the given object was not an ANTLR runtime object.
@@ -43,5 +34,14 @@ public interface Antlr_To_Column extends IsTransformer<Object, Integer> {
 	 */
 	static Antlr_To_Column create(){
 		return new Antlr_To_Column() {};
+	}
+
+	@Override
+	default Integer transform(Object obj){
+		IsTransformer.super.transform(obj);
+		if(obj instanceof IsAntlrRuntimeObject){
+			return ((IsAntlrRuntimeObject)obj).getColumn();
+		}
+		return IsAntlrRuntimeObject.create(obj).getColumn();
 	}
 }

@@ -33,6 +33,23 @@ public interface Integer_To_RomanLiteral extends IsTransformer<Integer, String> 
 	/** Array of Roman number literals. */
 	public final static String[] LETTERS = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
 
+	/**
+	 * Takes an integer and returns a Roman number literal using upper case ASCII characters.
+	 * @param number input number
+	 * @return Roman number literal using upper case ASCII characters
+	 */
+	static String convert(Integer number){
+		return StringUtils.join(Integer_To_RomanLiteral.create().transform(number), "");
+	}
+
+	/**
+	 * Creates a transformer that takes an integer and returns a Roman number literal using upper case ASCII characters.
+	 * @return new transformer
+	 */
+	static Integer_To_RomanLiteral create(){
+		return new Integer_To_RomanLiteral() {};
+	}
+
 	@Override
 	default String transform(Integer number){
 		Validate.notNull(number);
@@ -46,22 +63,5 @@ public interface Integer_To_RomanLiteral extends IsTransformer<Integer, String> 
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Creates a transformer that takes an integer and returns a Roman number literal using upper case ASCII characters.
-	 * @return new transformer
-	 */
-	static Integer_To_RomanLiteral create(){
-		return new Integer_To_RomanLiteral() {};
-	}
-
-	/**
-	 * Takes an integer and returns a Roman number literal using upper case ASCII characters.
-	 * @param number input number
-	 * @return Roman number literal using upper case ASCII characters
-	 */
-	static String convert(Integer number){
-		return StringUtils.join(Integer_To_RomanLiteral.create().transform(number), "");
 	}
 }

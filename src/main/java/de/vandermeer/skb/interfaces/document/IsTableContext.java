@@ -29,6 +29,17 @@ import de.vandermeer.skb.interfaces.objctxt.IsObjectContext;
 public interface IsTableContext extends IsObjectContext {
 
 	/**
+	 * Checks a width against the text width (calculated)
+	 * @param width the width to check against
+	 * @return true if text has at least 1 character
+	 * @throws IllegalStateException if the text width is less than 1
+	 */
+	default boolean checkWidth(int width){
+		Validate.validState(this.getTextWidth(width)>0, "text width smaller than 1");
+		return (this.getTextWidth(width)>0)?true:false;
+	}
+
+	/**
 	 * Returns the width of the text in the table (overall width minus any margins etc).
 	 * @return text width
 	 */
@@ -48,15 +59,4 @@ public interface IsTableContext extends IsObjectContext {
 	 * @return set width
 	 */
 	int getWidth();
-
-	/**
-	 * Checks a width against the text width (calculated)
-	 * @param width the width to check against
-	 * @return true if text has at least 1 character
-	 * @throws IllegalStateException if the text width is less than 1
-	 */
-	default boolean checkWidth(int width){
-		Validate.validState(this.getTextWidth(width)>0, "text width smaller than 1");
-		return (this.getTextWidth(width)>0)?true:false;
-	}
 }

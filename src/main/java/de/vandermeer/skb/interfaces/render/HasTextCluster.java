@@ -31,6 +31,14 @@ public interface HasTextCluster extends CategoryHas {
 
 	/**
 	 * Returns text representation of an object.
+	 * @return `array` view of text, should not be null and have no blank elements
+	 */
+	default String[] getTextAsArray(){
+		return this.getTextAsCollection().toArray(new String[0]);
+	}
+
+	/**
+	 * Returns text representation of an object.
 	 * @return collection view of text, should not be null and have no blank elements
 	 */
 	Collection<String> getTextAsCollection();
@@ -49,13 +57,5 @@ public interface HasTextCluster extends CategoryHas {
 	 */
 	default Iterator<String> getTextAsIterator(){
 		return this.getTextAsCollection().iterator();
-	}
-
-	/**
-	 * Returns text representation of an object.
-	 * @return `array` view of text, should not be null and have no blank elements
-	 */
-	default String[] getTextAsArray(){
-		return this.getTextAsCollection().toArray(new String[0]);
 	}
 }

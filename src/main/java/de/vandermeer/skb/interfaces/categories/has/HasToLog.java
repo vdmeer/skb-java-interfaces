@@ -28,8 +28,6 @@ import de.vandermeer.skb.interfaces.categories.CategoryHas;
  */
 public interface HasToLog extends CategoryHas {
 
-	StrBuilder toLog();
-
 	/**
 	 * Returns a builder using containment class, contained class, and values.
 	 * @param container the contain object class
@@ -66,4 +64,6 @@ public interface HasToLog extends CategoryHas {
 			;
 		return ret;
 	}
+
+	StrBuilder toLog();
 }

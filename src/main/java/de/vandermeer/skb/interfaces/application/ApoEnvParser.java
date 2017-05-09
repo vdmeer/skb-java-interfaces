@@ -41,6 +41,41 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  */
 public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 
+	static ApoEnvParser create(final String appName){
+		return new ApoEnvParser() {
+			protected final transient ApoEnvOptions options = ApoEnvOptions.create();
+
+			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
+
+			protected transient int errNo;
+
+			@Override
+			public String getAppName() {
+				return appName;
+			}
+
+			@Override
+			public int getErrNo() {
+				return this.errNo;
+			}
+
+			@Override
+			public IsErrorSet_IsError getErrorSet() {
+				return this.errorSet;
+			}
+
+			@Override
+			public ApoParserOptionSet<Apo_TypedE<?>> getOptions() {
+				return this.options;
+			}
+
+			@Override
+			public void setErrno(int errorNumber) {
+				this.errNo = errorNumber;
+			}
+		};
+	}
+
 	/**
 	 * Parses environment and sets values for environment options.
 	 * Parsing errors are in the local error set.
@@ -93,6 +128,14 @@ public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 	}
 
 	/**
+	 * Prints usage information for the CLI parser including all CLI options.
+	 * @return list of lines with usage information
+	 */
+	default ArrayList<StrBuilder> usage(){
+		return this.usage(80);
+	}
+
+	/**
 	 * Prints usage information for the parser including all options.
 	 * @param width the console columns or width of each output line
 	 * @return list of lines with usage information
@@ -130,48 +173,5 @@ public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Prints usage information for the CLI parser including all CLI options.
-	 * @return list of lines with usage information
-	 */
-	default ArrayList<StrBuilder> usage(){
-		return this.usage(80);
-	}
-
-	static ApoEnvParser create(final String appName){
-		return new ApoEnvParser() {
-			protected final transient ApoEnvOptions options = ApoEnvOptions.create();
-
-			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
-
-			protected transient int errNo;
-
-			@Override
-			public void setErrno(int errorNumber) {
-				this.errNo = errorNumber;
-			}
-			
-			@Override
-			public ApoParserOptionSet<Apo_TypedE<?>> getOptions() {
-				return this.options;
-			}
-			
-			@Override
-			public IsErrorSet_IsError getErrorSet() {
-				return this.errorSet;
-			}
-			
-			@Override
-			public int getErrNo() {
-				return this.errNo;
-			}
-			
-			@Override
-			public String getAppName() {
-				return appName;
-			}
-		};
 	}
 }

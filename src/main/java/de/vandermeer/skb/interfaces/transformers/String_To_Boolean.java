@@ -25,6 +25,14 @@ package de.vandermeer.skb.interfaces.transformers;
 public interface String_To_Boolean extends IsTransformer<String, Boolean> {
 
 	/**
+	 * Creates a transformer that takes a String and returns a Boolean.
+	 * @return new transformer
+	 */
+	static String_To_Boolean create(){
+		return new String_To_Boolean() {};
+	}
+
+	/**
 	 * Transforms a String to a Boolean.
 	 * Returns true if the string is `true` or `on` and false if the string is `false` or `off` (all string are tested ignoring case).
 	 * @param s input string
@@ -41,14 +49,6 @@ public interface String_To_Boolean extends IsTransformer<String, Boolean> {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Creates a transformer that takes a String and returns a Boolean.
-	 * @return new transformer
-	 */
-	static String_To_Boolean create(){
-		return new String_To_Boolean() {};
 	}
 
 }

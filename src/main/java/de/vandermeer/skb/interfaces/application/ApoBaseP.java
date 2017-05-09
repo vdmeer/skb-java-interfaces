@@ -28,12 +28,6 @@ import org.stringtemplate.v4.ST;
  */
 public interface ApoBaseP extends ApoBase {
 
-	/**
-	 * Tests if the property option is required meaning it must be set in properties.
-	 * @return true if required, false otherwise
-	 */
-	boolean propertyIsRequired();
-
 	@Override
 	default ST getHelp(){
 		ST st = ApoBase.super.getHelp();
@@ -53,6 +47,12 @@ public interface ApoBaseP extends ApoBase {
 	 * @return true if it was present, false otherwise
 	 */
 	boolean inProperties();
+
+	/**
+	 * Tests if the property option is required meaning it must be set in properties.
+	 * @return true if required, false otherwise
+	 */
+	boolean propertyIsRequired();
 
 	/**
 	 * Sets the option flag for being in a properties.

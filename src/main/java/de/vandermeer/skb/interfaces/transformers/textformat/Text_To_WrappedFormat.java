@@ -39,11 +39,58 @@ public interface Text_To_WrappedFormat extends IsTransformer<String, Pair<ArrayL
 	static String LINEBREAK = "<br />";
 
 	/**
-	 * Returns the width for the overall wrapping, defaults to 80.
-	 * @return overall wrapping width
+	 * Transforms text to wrapped lines.
+	 * @param text the text to transform
+	 * @param width the width to wrap lines for
+	 * @return transformed text
 	 */
-	default int getWidth(){
-		return 80;
+	static Pair<ArrayList<String>, ArrayList<String>> convert(String text, int width){
+		return create(width).transform(text);
+	}
+
+	/**
+	 * Transforms text to wrapped lines.
+	 * @param text the text to transform
+	 * @param width the width to wrap lines for
+	 * @param top the settings for top as pair of lines and width
+	 * @return transformed text
+	 */
+	static Pair<ArrayList<String>, ArrayList<String>> convert(String text, int width, Pair<Integer, Integer> top){
+		return create(width, top).transform(text);
+	}
+
+	/**
+	 * Returns a new transformer.
+	 * @param width the width to wrap lines for
+	 * @return new transformer
+	 */
+	static Text_To_WrappedFormat create(int width){
+		return new Text_To_WrappedFormat() {
+			@Override
+			public int getWidth(){
+				return width;
+			}
+		};
+	}
+
+	/**
+	 * Returns a new transformer.
+	 * @param width the width to wrap lines for
+	 * @param top the settings for top as pair of lines and width
+	 * @return new transformer
+	 */
+	static Text_To_WrappedFormat create(int width, Pair<Integer, Integer> top){
+		return new Text_To_WrappedFormat() {
+			@Override
+			public Pair<Integer, Integer> getTopSettings(){
+				return top;
+			}
+
+			@Override
+			public int getWidth(){
+				return width;
+			}
+		};
 	}
 
 	/**
@@ -52,6 +99,14 @@ public interface Text_To_WrappedFormat extends IsTransformer<String, Pair<ArrayL
 	 */
 	default Pair<Integer, Integer> getTopSettings(){
 		return null;
+	}
+
+	/**
+	 * Returns the width for the overall wrapping, defaults to 80.
+	 * @return overall wrapping width
+	 */
+	default int getWidth(){
+		return 80;
 	}
 
 	@Override
@@ -153,60 +208,5 @@ public interface Text_To_WrappedFormat extends IsTransformer<String, Pair<ArrayL
 		}
 
 		return Pair.of(topList, bottomList);
-	}
-
-	/**
-	 * Returns a new transformer.
-	 * @param width the width to wrap lines for
-	 * @return new transformer
-	 */
-	static Text_To_WrappedFormat create(int width){
-		return new Text_To_WrappedFormat() {
-			@Override
-			public int getWidth(){
-				return width;
-			}
-		};
-	}
-
-	/**
-	 * Returns a new transformer.
-	 * @param width the width to wrap lines for
-	 * @param top the settings for top as pair of lines and width
-	 * @return new transformer
-	 */
-	static Text_To_WrappedFormat create(int width, Pair<Integer, Integer> top){
-		return new Text_To_WrappedFormat() {
-			@Override
-			public int getWidth(){
-				return width;
-			}
-
-			@Override
-			public Pair<Integer, Integer> getTopSettings(){
-				return top;
-			}
-		};
-	}
-
-	/**
-	 * Transforms text to wrapped lines.
-	 * @param text the text to transform
-	 * @param width the width to wrap lines for
-	 * @return transformed text
-	 */
-	static Pair<ArrayList<String>, ArrayList<String>> convert(String text, int width){
-		return create(width).transform(text);
-	}
-
-	/**
-	 * Transforms text to wrapped lines.
-	 * @param text the text to transform
-	 * @param width the width to wrap lines for
-	 * @param top the settings for top as pair of lines and width
-	 * @return transformed text
-	 */
-	static Pair<ArrayList<String>, ArrayList<String>> convert(String text, int width, Pair<Integer, Integer> top){
-		return create(width, top).transform(text);
 	}
 }

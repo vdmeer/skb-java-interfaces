@@ -83,24 +83,6 @@ public final class MessageConsole {
 	private static transient int PRINT = ERRORS | WARNINGS | INFOS;
 
 	/**
-	 * Activates all messages: errors, warnings, information, trace, and debug.
-	 */
-	public static void activateAll(){
-		PRINT = ALL;
-	}
-
-	/**
-	 * Sets the print bitmap to the given value.
-	 * To activate all messages use {@link #ALL}.
-	 * To set a particular combination, use any of the defined message flags with a logical `or`.
-	 * For instance, to activate error and debug messages use `ERRORS | DEBUG`.
-	 * @param print the print bitmap to set
-	 */
-	public static void setPrint(int print){
-		PRINT = print;
-	}
-
-	/**
 	 * Activate a particular message type.
 	 * Use the defined static flags.
 	 * For instance, to activate trace messages use `TRACE`.
@@ -111,128 +93,52 @@ public final class MessageConsole {
 	}
 
 	/**
-	 * Deactivate a particular message type.
-	 * Use the defined static flags.
-	 * For instance, to activate trace messages use `TRACE`.
-	 * @param type the type to de-activate
+	 * Activates all messages: errors, warnings, information, trace, and debug.
 	 */
-	public static void deActivate(int type){
-		PRINT = PRINT & ~type;
+	public static void activateAll(){
+		PRINT = ALL;
 	}
 
 	/**
-	 * Tests if a particular type is activates
-	 * @param type the type, use the defined static types of this class
-	 * @return true if message type is activated, false otherwise
+	 * Prints a debug message to to standard out.
+	 * @param msg debug message to print, ignored if null
 	 */
-	private static boolean isActive(int type){
-		return ((PRINT & type) == type);
-	}
-
-	/**
-	 * Prints an info message to standard out.
-	 * @param msg info message to print, nothing printed if null
-	 */
-	public static void conInfo(String msg){
-		if(isActive(INFOS) && msg!=null){
-			System.out.println(msg);
-		}
-	}
-
-	/**
-	 * Prints an info message to to standard out using a {@link FormattingTuple}.
-	 * @param msg info message to print, nothing printed if null
-	 * @param args arguments for the message
-	 */
-	public static void conInfo(String msg, Object ... args){
-		if(isActive(INFOS) && msg!=null){
-			System.out.println(FormattingTupleWrapper.create(msg, args).getMessage());
-		}
-	}
-
-	/**
-	 * Prints an info message to to standard out.
-	 * @param msg info message to print, ignored if null
-	 */
-	public static void conInfo(FormattingTupleWrapper msg){
-		if(isActive(INFOS) && msg!=null){
+	public static void conDebug(FormattingTupleWrapper msg){
+		if(isActive(DEBUG) && msg!=null){
 			System.out.println(msg.getMessage());
 		}
 	}
 
 	/**
-	 * Prints info messages to to standard out.
-	 * @param messages info messages to print, ignored if null
+	 * Prints debug messages to to standard out.
+	 * @param messages debug messages to print, ignored if null
 	 */
-	public static void conInfo(Set<FormattingTupleWrapper> messages){
-		if(isActive(INFOS) && messages!=null){
+	public static void conDebug(Set<FormattingTupleWrapper> messages){
+		if(isActive(DEBUG) && messages!=null){
 			for(FormattingTupleWrapper msg : messages){
-				conInfo(msg);
+				conDebug(msg);
 			}
 		}
 	}
 
 	/**
-	 * Prints a warning message to to standard out.
-	 * @param msg warning message to print, nothing printed if null
+	 * Prints a debug message to standard out.
+	 * @param msg debug message to print, nothing printed if null
 	 */
-	public static void conWarn(String msg){
-		if(isActive(WARNINGS) && msg!=null){
+	public static void conDebug(String msg){
+		if(isActive(DEBUG) && msg!=null){
 			System.out.println(msg);
 		}
 	}
 
 	/**
-	 * Prints a warning message to to standard out using a {@link FormattingTuple}.
-	 * @param msg warning message to print, nothing printed if null
+	 * Prints a debug message to to standard out using a {@link FormattingTuple}.
+	 * @param msg debug message to print, nothing printed if null
 	 * @param args arguments for the message
 	 */
-	public static void conWarn(String msg, Object ... args){
-		if(isActive(WARNINGS) && msg!=null){
+	public static void conDebug(String msg, Object ... args){
+		if(isActive(DEBUG) && msg!=null){
 			System.out.println(FormattingTupleWrapper.create(msg, args).getMessage());
-		}
-	}
-
-	/**
-	 * Prints a warning message to to standard out.
-	 * @param msg warning message to print, ignored if null
-	 */
-	public static void conWarn(FormattingTupleWrapper msg){
-		if(isActive(WARNINGS) && msg!=null){
-			System.out.println(msg.getMessage());
-		}
-	}
-
-	/**
-	 * Prints warning messages to to standard out.
-	 * @param messages warning messages to print, ignored if null
-	 */
-	public static void conWarn(Set<FormattingTupleWrapper> messages){
-		if(isActive(WARNINGS) && messages!=null){
-			for(FormattingTupleWrapper msg : messages){
-				conWarn(msg);
-			}
-		}
-	}
-
-	/**
-	 * Prints an error message to standard error.
-	 * @param msg error message to print, nothing printed if null
-	 */
-	public static void conError(String msg){
-		if(isActive(ERRORS) && msg!=null){
-			System.err.println(msg);
-		}
-	}
-
-	/**
-	 * Prints an error message to to standard error using a {@link FormattingTuple}.
-	 * @param msg error message to print, nothing printed if null
-	 * @param args arguments for the message
-	 */
-	public static void conError(String msg, Object ... args){
-		if(isActive(ERRORS) && msg!=null){
-			System.err.println(FormattingTupleWrapper.create(msg, args).getMessage());
 		}
 	}
 
@@ -259,22 +165,65 @@ public final class MessageConsole {
 	}
 
 	/**
-	 * Prints a trace message to standard out.
-	 * @param msg trace message to print, nothing printed if null
+	 * Prints an error message to standard error.
+	 * @param msg error message to print, nothing printed if null
 	 */
-	public static void conTrace(String msg){
-		if(isActive(TRACE) && msg!=null){
+	public static void conError(String msg){
+		if(isActive(ERRORS) && msg!=null){
+			System.err.println(msg);
+		}
+	}
+
+	/**
+	 * Prints an error message to to standard error using a {@link FormattingTuple}.
+	 * @param msg error message to print, nothing printed if null
+	 * @param args arguments for the message
+	 */
+	public static void conError(String msg, Object ... args){
+		if(isActive(ERRORS) && msg!=null){
+			System.err.println(FormattingTupleWrapper.create(msg, args).getMessage());
+		}
+	}
+
+	/**
+	 * Prints an info message to to standard out.
+	 * @param msg info message to print, ignored if null
+	 */
+	public static void conInfo(FormattingTupleWrapper msg){
+		if(isActive(INFOS) && msg!=null){
+			System.out.println(msg.getMessage());
+		}
+	}
+
+	/**
+	 * Prints info messages to to standard out.
+	 * @param messages info messages to print, ignored if null
+	 */
+	public static void conInfo(Set<FormattingTupleWrapper> messages){
+		if(isActive(INFOS) && messages!=null){
+			for(FormattingTupleWrapper msg : messages){
+				conInfo(msg);
+			}
+		}
+	}
+
+	/**
+	 * Prints an info message to standard out.
+	 * @param msg info message to print, nothing printed if null
+	 */
+	public static void conInfo(String msg){
+		if(isActive(INFOS) && msg!=null){
 			System.out.println(msg);
 		}
 	}
 
 	/**
-	 * Prints a trace message to to standard out using a {@link FormattingTuple}.
-	 * @param msg trace message to print, nothing printed if null
+	 * Prints an info message to to standard out using a {@link FormattingTuple}.
+	 * @param msg info message to print, nothing printed if null
 	 * @param args arguments for the message
 	 */
-	public static void conTrace(String msg, Object ... args){
-		if(isActive(TRACE) && msg!=null){
+	public static void conInfo(String msg, Object ... args){
+		if(isActive(INFOS) && msg!=null){
 			System.out.println(FormattingTupleWrapper.create(msg, args).getMessage());
 		}
 	}
@@ -302,46 +251,77 @@ public final class MessageConsole {
 	}
 
 	/**
-	 * Prints a debug message to standard out.
-	 * @param msg debug message to print, nothing printed if null
+	 * Prints a trace message to standard out.
+	 * @param msg trace message to print, nothing printed if null
 	 */
-	public static void conDebug(String msg){
-		if(isActive(DEBUG) && msg!=null){
+	public static void conTrace(String msg){
+		if(isActive(TRACE) && msg!=null){
 			System.out.println(msg);
 		}
 	}
 
 	/**
-	 * Prints a debug message to to standard out using a {@link FormattingTuple}.
-	 * @param msg debug message to print, nothing printed if null
+	 * Prints a trace message to to standard out using a {@link FormattingTuple}.
+	 * @param msg trace message to print, nothing printed if null
 	 * @param args arguments for the message
 	 */
-	public static void conDebug(String msg, Object ... args){
-		if(isActive(DEBUG) && msg!=null){
+	public static void conTrace(String msg, Object ... args){
+		if(isActive(TRACE) && msg!=null){
 			System.out.println(FormattingTupleWrapper.create(msg, args).getMessage());
 		}
 	}
 
 	/**
-	 * Prints a debug message to to standard out.
-	 * @param msg debug message to print, ignored if null
+	 * Prints a warning message to to standard out.
+	 * @param msg warning message to print, ignored if null
 	 */
-	public static void conDebug(FormattingTupleWrapper msg){
-		if(isActive(DEBUG) && msg!=null){
+	public static void conWarn(FormattingTupleWrapper msg){
+		if(isActive(WARNINGS) && msg!=null){
 			System.out.println(msg.getMessage());
 		}
 	}
 
 	/**
-	 * Prints debug messages to to standard out.
-	 * @param messages debug messages to print, ignored if null
+	 * Prints warning messages to to standard out.
+	 * @param messages warning messages to print, ignored if null
 	 */
-	public static void conDebug(Set<FormattingTupleWrapper> messages){
-		if(isActive(DEBUG) && messages!=null){
+	public static void conWarn(Set<FormattingTupleWrapper> messages){
+		if(isActive(WARNINGS) && messages!=null){
 			for(FormattingTupleWrapper msg : messages){
-				conDebug(msg);
+				conWarn(msg);
 			}
 		}
+	}
+
+	/**
+	 * Prints a warning message to to standard out.
+	 * @param msg warning message to print, nothing printed if null
+	 */
+	public static void conWarn(String msg){
+		if(isActive(WARNINGS) && msg!=null){
+			System.out.println(msg);
+		}
+	}
+
+	/**
+	 * Prints a warning message to to standard out using a {@link FormattingTuple}.
+	 * @param msg warning message to print, nothing printed if null
+	 * @param args arguments for the message
+	 */
+	public static void conWarn(String msg, Object ... args){
+		if(isActive(WARNINGS) && msg!=null){
+			System.out.println(FormattingTupleWrapper.create(msg, args).getMessage());
+		}
+	}
+
+	/**
+	 * Deactivate a particular message type.
+	 * Use the defined static flags.
+	 * For instance, to activate trace messages use `TRACE`.
+	 * @param type the type to de-activate
+	 */
+	public static void deActivate(int type){
+		PRINT = PRINT & ~type;
 	}
 
 	/**
@@ -369,6 +349,26 @@ public final class MessageConsole {
 			MessageConsole.conError("{}: encoding exception opening SdtIn, expecting UTF-8 -> {}", appName, ex.getMessage());
 		}
 		return ret;
+	}
+
+	/**
+	 * Tests if a particular type is activates
+	 * @param type the type, use the defined static types of this class
+	 * @return true if message type is activated, false otherwise
+	 */
+	private static boolean isActive(int type){
+		return ((PRINT & type) == type);
+	}
+
+	/**
+	 * Sets the print bitmap to the given value.
+	 * To activate all messages use {@link #ALL}.
+	 * To set a particular combination, use any of the defined message flags with a logical `or`.
+	 * For instance, to activate error and debug messages use `ERRORS | DEBUG`.
+	 * @param print the print bitmap to set
+	 */
+	public static void setPrint(int print){
+		PRINT = print;
 	}
 
 	/**

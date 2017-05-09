@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsListStrategy;
  */
 public interface StackStrategy<T> extends IsListStrategy<Stack<T>, T> {
 
-	@Override
-	default Stack<T> get(Collection<T> collection) {
-		Stack<T> ret = new Stack<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default Stack<T> get(){
-		return new Stack<T>();
-	}
-
 	/**
 	 * Creates a new stack strategy.
 	 * @param <T> type for the objects in the list
@@ -50,5 +36,19 @@ public interface StackStrategy<T> extends IsListStrategy<Stack<T>, T> {
 	 */
 	static <T> StackStrategy<T> create(){
 		return new StackStrategy<T>(){};
+	}
+
+	@Override
+	default Stack<T> get(){
+		return new Stack<T>();
+	}
+
+	@Override
+	default Stack<T> get(Collection<T> collection) {
+		Stack<T> ret = new Stack<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

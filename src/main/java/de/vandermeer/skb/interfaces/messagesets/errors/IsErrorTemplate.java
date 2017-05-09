@@ -37,10 +37,33 @@ import de.vandermeer.skb.interfaces.categories.has.HasDescription;
 public interface IsErrorTemplate extends HasDescription, CategoryIs {
 
 	/**
-	 * Returns the template display name.
-	 * @return display name
+	 * Validates an array of templates.
+	 * @param templates the templates to validate, must not be null or have null elements
+	 * @throws NullPointerException if parameter was null
+	 * @throws IllegalArgumentException if parameter had null elements
+	 * @throws IllegalStateException if any validation error was detected
 	 */
-	String getDisplayName();
+	static void validate(IsErrorTemplate[] templates){
+		Validate.noNullElements(templates, "The array contain null at position %d");
+		Map<Integer, String> inuse = new HashMap<>();
+		for(IsErrorTemplate tpl : templates){
+			Validate.notNull(tpl.getCategory());
+			Validate.inclusiveBetween(tpl.getCategory().getEnd(), tpl.getCategory().getStart(), tpl.getCode());
+			Validate.notBlank(tpl.getMessage());
+			Validate.notBlank(tpl.getDescription());
+			Validate.notBlank(tpl.getDisplayName());
+			Validate.isTrue(!inuse.containsKey(tpl.getCode()), tpl.getCode() + " == " + inuse.get(tpl.getCode()) + " ==> " + tpl.getDisplayName());
+			inuse.put(tpl.getCode(), tpl.getDisplayName());
+		}
+	}
+
+	/**
+	 * Returns the number of expected arguments.
+	 * @return number of expected arguments
+	 */
+	default int expectedArguments(){
+		return StringUtils.countMatches(this.getMessage(), "{}");
+	}
 
 	/**
 	 * Returns the category of the error.
@@ -55,26 +78,10 @@ public interface IsErrorTemplate extends HasDescription, CategoryIs {
 	int getCode();
 
 	/**
-	 * Returns the number of expected arguments.
-	 * @return number of expected arguments
+	 * Returns the template display name.
+	 * @return display name
 	 */
-	default int expectedArguments(){
-		return StringUtils.countMatches(this.getMessage(), "{}");
-	}
-
-	/**
-	 * Tests if the error requires arguments for the error message.
-	 * @return true if arguments are requires, false otherwise
-	 */
-	default boolean requiresArguments(){
-		return this.expectedArguments()!=0;
-	}
-
-	/**
-	 * Returns the error message.
-	 * @return error message
-	 */
-	String getMessage();
+	String getDisplayName();
 
 	/**
 	 * Creates a new error message for errors without arguments.
@@ -100,8 +107,8 @@ public interface IsErrorTemplate extends HasDescription, CategoryIs {
 
 		return new IsError() {
 			@Override
-			public FormattingTuple getErrorMessage() {
-				return MessageFormatter.arrayFormat(getMessage(), ArrayUtils.add(args, 0, appName));
+			public IsErrorCategory getCategory() {
+				return getCategory();
 			}
 
 			@Override
@@ -110,32 +117,25 @@ public interface IsErrorTemplate extends HasDescription, CategoryIs {
 			}
 
 			@Override
-			public IsErrorCategory getCategory() {
-				return getCategory();
+			public FormattingTuple getErrorMessage() {
+				return MessageFormatter.arrayFormat(getMessage(), ArrayUtils.add(args, 0, appName));
 			}
 		};
 
 	}
 
 	/**
-	 * Validates an array of templates.
-	 * @param templates the templates to validate, must not be null or have null elements
-	 * @throws NullPointerException if parameter was null
-	 * @throws IllegalArgumentException if parameter had null elements
-	 * @throws IllegalStateException if any validation error was detected
+	 * Returns the error message.
+	 * @return error message
 	 */
-	static void validate(IsErrorTemplate[] templates){
-		Validate.noNullElements(templates, "The array contain null at position %d");
-		Map<Integer, String> inuse = new HashMap<>();
-		for(IsErrorTemplate tpl : templates){
-			Validate.notNull(tpl.getCategory());
-			Validate.inclusiveBetween(tpl.getCategory().getEnd(), tpl.getCategory().getStart(), tpl.getCode());
-			Validate.notBlank(tpl.getMessage());
-			Validate.notBlank(tpl.getDescription());
-			Validate.notBlank(tpl.getDisplayName());
-			Validate.isTrue(!inuse.containsKey(tpl.getCode()), tpl.getCode() + " == " + inuse.get(tpl.getCode()) + " ==> " + tpl.getDisplayName());
-			inuse.put(tpl.getCode(), tpl.getDisplayName());
-		}
+	String getMessage();
+
+	/**
+	 * Tests if the error requires arguments for the error message.
+	 * @return true if arguments are requires, false otherwise
+	 */
+	default boolean requiresArguments(){
+		return this.expectedArguments()!=0;
 	}
 
 }

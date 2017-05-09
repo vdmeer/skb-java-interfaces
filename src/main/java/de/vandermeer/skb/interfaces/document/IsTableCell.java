@@ -26,12 +26,12 @@ import de.vandermeer.skb.interfaces.objctxt.HasObjectContext;
  */
 public interface IsTableCell extends HasObjectContext {
 
-	@Override
-	IsTableCellContext getContext();
-
 	/**
 	 * Returns the content of the cell.
 	 * @return content cell
 	 */
 	Object getContent();
+
+	@Override
+	IsTableCellContext getContext();
 }

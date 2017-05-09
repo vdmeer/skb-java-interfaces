@@ -103,6 +103,465 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 	static IsCollectionStrategy<?, StrBuilder> DEFAULT_COLLECTION_STRATEGY = ArrayListStrategy.create();
 
 	/**
+	 * Transforms text to centered lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> center(String text, int textWidth){
+		return center(text, textWidth, FORMAT_NONE, null, null, null, null);
+	}
+
+	/**
+	 * Transforms text to centered lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> center(String text, int textWidth, int format){
+		return center(text, textWidth, format, null, null, null, null);
+	}
+
+	/**
+	 * Transforms text to centered lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding left and right padding character
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> center(String text, int textWidth, int format, Character padding){
+		return center(text, textWidth, format, padding, padding, null, null);
+	}
+
+	/**
+	 * Transforms text to centered lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param leftPadding left padding character
+	 * @param rightPadding right padding character
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> center(String text, int textWidth, int format, Character leftPadding, Character rightPadding){
+		return center(text, textWidth, format, leftPadding, rightPadding, null, null);
+	}
+
+	/**
+	 * Transforms text to centered lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param leftPadding left padding character
+	 * @param rightPadding right padding character
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> center(String text, int textWidth, int format, Character leftPadding, Character rightPadding, Character innerWS){
+		return center(text, textWidth, format, leftPadding, rightPadding, innerWS, null);
+	}
+
+	/**
+	 * Transforms text to centered lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param leftPadding left padding character
+	 * @param rightPadding right padding character
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @param strategy the strategy for the returned collection
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> center(String text, int textWidth, int format, Character leftPadding, Character rightPadding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
+		return create(
+				textWidth, ALIGN_CENTER, format, leftPadding, rightPadding, innerWS,
+				0, 0, null, 0, 0, strategy
+		).transform(text);
+	}
+
+	/**
+	 * Creates a new transformer.
+	 * @param textWidth the text width (width of each line in the returned collection), should not be less than 1
+	 * @param alignment the option for text alignment, must be a valid option
+	 * @param format the option for text formatting, must be a valid option
+	 * @param leftPadding character for padding on the left side of a line, can be null (then default is used)
+	 * @param rightPadding character for padding on the right side of a line, can be null (then default is used)
+	 * @param innerWS character for replacing whitespaces within a line (between first and last word), can be null (then default is used)
+	 * @param hangingIndentation indentation for a hanging paragraph format, 0 will result in default being used
+	 * @param firstlineIndentation indentation for the first line in the first line format, 0 will result in default being used
+	 * @param dropCap a dropped capital letter for dropped capital formats, should not be null if relevant format is set
+	 * @param charsBetweenDroppcapAndText characters between the dropped capital letter and text, 0 will result in default being used
+	 * @param linesAfterDropcap lines added after the dropped capital letter with same indentation, 0 will result in default being used
+	 * @param strategy the collection strategy for the returned collection, null means use default
+	 * @return new transformer
+	 */
+	static Text_To_FormattedText create(int textWidth, int alignment, int format, Character leftPadding, Character rightPadding, Character innerWS, int hangingIndentation, int firstlineIndentation, String[] dropCap, int charsBetweenDroppcapAndText, int linesAfterDropcap, IsCollectionStrategy<?, StrBuilder> strategy){
+		return new Text_To_FormattedText() {
+			@Override
+			public int getAlignment(){
+				return alignment;
+			}
+
+			@Override
+			public int getCharsBetweenDroppcapAndText(){
+				return (charsBetweenDroppcapAndText<1)?Text_To_FormattedText.super.getCharsBetweenDroppcapAndText():charsBetweenDroppcapAndText;
+			}
+
+			@Override
+			public IsCollectionStrategy<?, StrBuilder> getCollectionStrategy(){
+				return (strategy==null)?Text_To_FormattedText.super.getCollectionStrategy():strategy;
+			}
+
+			@Override
+			public String[] getDropCap() {
+				return dropCap;
+			}
+
+			@Override
+			public int getFirstlineIndentation(){
+				return (firstlineIndentation<1)?Text_To_FormattedText.super.getFirstlineIndentation():firstlineIndentation;
+			}
+
+			@Override
+			public int getFormat(){
+				return format;
+			}
+
+			@Override
+			public int getHangingIndentation(){
+				return (hangingIndentation<1)?Text_To_FormattedText.super.getHangingIndentation():hangingIndentation;
+			}
+
+			@Override
+			public Character getInnerWsChar(){
+				return (innerWS==null)?Text_To_FormattedText.super.getInnerWsChar():innerWS;
+			}
+
+			@Override
+			public Character getLeftPaddingChar(){
+				return (leftPadding==null)?Text_To_FormattedText.super.getLeftPaddingChar():leftPadding;
+			}
+
+			@Override
+			public int getLinesAfterDropcap(){
+				return (linesAfterDropcap<1)?Text_To_FormattedText.super.getLinesAfterDropcap():linesAfterDropcap;
+			}
+
+			@Override
+			public Character getRightPaddingChar(){
+				return (rightPadding==null)?Text_To_FormattedText.super.getRightPaddingChar():rightPadding;
+			}
+
+			@Override
+			public int getTextWidth(){
+				return textWidth;
+			}
+		};
+	}
+
+	/**
+	 * Transforms text to justified lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justified(String text, int textWidth){
+		return justified(text, textWidth, FORMAT_NONE, null, null);
+	}
+
+	/**
+	 * Transforms text to justified lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justified(String text, int textWidth, int format){
+		return justified(text, textWidth, format, null, null);
+	}
+
+	/**
+	 * Transforms text to justified lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justified(String text, int textWidth, int format, Character innerWS){
+		return justified(text, textWidth, format, innerWS, null);
+	}
+
+	/**
+	 * Transforms text to justified lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @param strategy the strategy for the returned collection
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justified(String text, int textWidth, int format, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
+		return create(
+				textWidth, ALIGN_JUSTIFIED, format, null, null, innerWS,
+				0, 0, null, 0, 0, strategy
+		).transform(text);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being left aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedLeft(String text, int textWidth){
+		return justifiedLeft(text, textWidth, FORMAT_NONE, null, null, null);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being left aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedLeft(String text, int textWidth, int format){
+		return justifiedLeft(text, textWidth, format, null, null, null);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being left aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding for the last line
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedLeft(String text, int textWidth, int format, Character padding){
+		return justifiedLeft(text, textWidth, format, padding, null, null);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being left aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding for the last line
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedLeft(String text, int textWidth, int format, Character padding, Character innerWS){
+		return justifiedLeft(text, textWidth, format, padding, innerWS, null);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being left aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding for the last line
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @param strategy the strategy for the returned collection
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedLeft(String text, int textWidth, int format, Character padding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
+		return create(
+				textWidth, ALIGN_JUSTIFIED_LEFT, format, null, padding, innerWS,
+				0, 0, null, 0, 0, strategy
+		).transform(text);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being right aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedRight(String text, int textWidth){
+		return justifiedRight(text, textWidth, FORMAT_NONE, null, null, null);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being right aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedRight(String text, int textWidth, int format){
+		return justifiedRight(text, textWidth, format, null, null, null);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being right aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding for the last line
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedRight(String text, int textWidth, int format, Character padding){
+		return justifiedRight(text, textWidth, format, padding, null, null);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being right aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding for the last line
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedRight(String text, int textWidth, int format, Character padding, Character innerWS){
+		return justifiedRight(text, textWidth, format, padding, innerWS, null);
+	}
+
+	/**
+	 * Transforms text to justified lines, last line being right aligned.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding for the last line
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @param strategy the strategy for the returned collection
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> justifiedRight(String text, int textWidth, int format, Character padding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
+		return create(
+				textWidth, ALIGN_JUSTIFIED_RIGHT, format, padding, null, innerWS,
+				0, 0, null, 0, 0, strategy
+		).transform(text);
+	}
+
+	/**
+	 * Transforms text to left aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> left(String text, int textWidth){
+		return left(text, textWidth, FORMAT_NONE, null, null, null);
+	}
+
+	/**
+	 * Transforms text to left aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> left(String text, int textWidth, int format){
+		return left(text, textWidth, format, null, null, null);
+	}
+
+	/**
+	 * Transforms text to left aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding on the right side
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> left(String text, int textWidth, int format, Character padding){
+		return left(text, textWidth, format, padding, null, null);
+	}
+
+	/**
+	 * Transforms text to left aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding on the right side
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> left(String text, int textWidth, int format, Character padding, Character innerWS){
+		return left(text, textWidth, format, padding, innerWS, null);
+	}
+
+	/**
+	 * Transforms text to left aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding on the right side
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @param strategy the strategy for the returned collection
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> left(String text, int textWidth, int format, Character padding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
+		return create(
+				textWidth, ALIGN_LEFT, format, null, padding, innerWS,
+				0, 0, null, 0, 0, strategy
+		).transform(text);
+	}
+
+	/**
+	 * Transforms text to right aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> right(String text, int textWidth){
+		return right(text, textWidth, FORMAT_NONE, null, null, null);
+	}
+
+	/**
+	 * Transforms text to right aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> right(String text, int textWidth, int format){
+		return right(text, textWidth, format, null, null, null);
+	}
+
+	/**
+	 * Transforms text to right aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding on the left side of each line
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> right(String text, int textWidth, int format, Character padding){
+		return right(text, textWidth, format, padding, null, null);
+	}
+
+	/**
+	 * Transforms text to right aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding on the left side of each line
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> right(String text, int textWidth, int format, Character padding, Character innerWS){
+		return right(text, textWidth, format, padding, innerWS, null);
+	}
+
+	/**
+	 * Transforms text to right aligned lines.
+	 * @param text the input text
+	 * @param textWidth the width of each line
+	 * @param format a format for the text
+	 * @param padding character for padding on the left side of each line
+	 * @param innerWS character for replacing whitespaces in the text
+	 * @param strategy the strategy for the returned collection
+	 * @return transformed text
+	 */
+	static Collection<StrBuilder> right(String text, int textWidth, int format, Character padding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
+		return create(
+				textWidth, ALIGN_RIGHT, format, padding, null, innerWS,
+				0, 0, null, 0, 0, strategy
+		).transform(text);
+	}
+
+	/**
 	 * Returns the required alignment, defaults to {@link #ALIGN_JUSTIFIED_LEFT}.
 	 * @return alignment
 	 */
@@ -111,11 +570,49 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 	}
 
 	/**
+	 * Returns the number of characters between a dropped capital letter and text lines, default to {@link #DEFAULT_CHARS_BETWEEN_DROPCAP_AND_TEXT}.
+	 * @return characters between a dropped capital letter and text lines
+	 */
+	default int getCharsBetweenDroppcapAndText(){
+		return DEFAULT_CHARS_BETWEEN_DROPCAP_AND_TEXT;
+	}
+
+	/**
+	 * Returns the collection strategy, defaults to {@link #DEFAULT_COLLECTION_STRATEGY}.
+	 * @return collection strategy
+	 */
+	default IsCollectionStrategy<?, StrBuilder> getCollectionStrategy(){
+		return DEFAULT_COLLECTION_STRATEGY;
+	}
+
+	/**
+	 * Returns the dropped capital letter used if such format is required.
+	 * @return dropped capital letter, cannot be null or have null elements, each line in array must have same length
+	 */
+	String[] getDropCap();
+
+	/**
+	 * Returns the first line indentation, defaults to {@link #DEFAULT_FIRSTLINE_INDENTATION}.
+	 * @return first line indentation
+	 */
+	default int getFirstlineIndentation(){
+		return DEFAULT_FIRSTLINE_INDENTATION;
+	}
+
+	/**
 	 * Returns the required format, defaults to {@link #FORMAT_NONE}.
 	 * @return format
 	 */
 	default int getFormat(){
 		return FORMAT_NONE;
+	}
+
+	/**
+	 * Returns the hanging paragraph indentation, defaults to {@link #DEFAULT_HANGING_INDENTATION}.
+	 * @return hanging paragraph indentation
+	 */
+	default int getHangingIndentation(){
+		return DEFAULT_HANGING_INDENTATION;
 	}
 
 	/**
@@ -135,6 +632,14 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 	}
 
 	/**
+	 * Returns the lines added after a dropped capital letter, defaults to {@link #DEFAULT_LINES_AFTER_DROPCAP}.
+	 * @return lines added after a dropped capital letter
+	 */
+	default int getLinesAfterDropcap(){
+		return DEFAULT_LINES_AFTER_DROPCAP;
+	}
+
+	/**
 	 * Returns the right padding character, defaults to {@link #DEFAULT_RIGHT_PADDING_CHARACTER}.
 	 * @return right padding character
 	 */
@@ -151,46 +656,6 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 	}
 
 	/**
-	 * Returns the collection strategy, defaults to {@link #DEFAULT_COLLECTION_STRATEGY}.
-	 * @return collection strategy
-	 */
-	default IsCollectionStrategy<?, StrBuilder> getCollectionStrategy(){
-		return DEFAULT_COLLECTION_STRATEGY;
-	}
-
-	/**
-	 * Returns the hanging paragraph indentation, defaults to {@link #DEFAULT_HANGING_INDENTATION}.
-	 * @return hanging paragraph indentation
-	 */
-	default int getHangingIndentation(){
-		return DEFAULT_HANGING_INDENTATION;
-	}
-
-	/**
-	 * Returns the first line indentation, defaults to {@link #DEFAULT_FIRSTLINE_INDENTATION}.
-	 * @return first line indentation
-	 */
-	default int getFirstlineIndentation(){
-		return DEFAULT_FIRSTLINE_INDENTATION;
-	}
-
-	/**
-	 * Returns the number of characters between a dropped capital letter and text lines, default to {@link #DEFAULT_CHARS_BETWEEN_DROPCAP_AND_TEXT}.
-	 * @return characters between a dropped capital letter and text lines
-	 */
-	default int getCharsBetweenDroppcapAndText(){
-		return DEFAULT_CHARS_BETWEEN_DROPCAP_AND_TEXT;
-	}
-
-	/**
-	 * Returns the lines added after a dropped capital letter, defaults to {@link #DEFAULT_LINES_AFTER_DROPCAP}.
-	 * @return lines added after a dropped capital letter
-	 */
-	default int getLinesAfterDropcap(){
-		return DEFAULT_LINES_AFTER_DROPCAP;
-	}
-
-	/**
 	 * Transforms a string builder to a collection using the main transform method.
 	 * @param sb input string builder, cannot be null
 	 * @return formatted text as a collection of string builders
@@ -199,12 +664,6 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 		Validate.notNull(sb);
 		return this.transform(sb.toString());
 	}
-
-	/**
-	 * Returns the dropped capital letter used if such format is required.
-	 * @return dropped capital letter, cannot be null or have null elements, each line in array must have same length
-	 */
-	String[] getDropCap();
 
 	@Override
 	default Collection<StrBuilder> transform(String s) {
@@ -387,464 +846,5 @@ public interface Text_To_FormattedText extends IsTransformer<String, Collection<
 		}
 
 		return ret;
-	}
-
-	/**
-	 * Creates a new transformer.
-	 * @param textWidth the text width (width of each line in the returned collection), should not be less than 1
-	 * @param alignment the option for text alignment, must be a valid option
-	 * @param format the option for text formatting, must be a valid option
-	 * @param leftPadding character for padding on the left side of a line, can be null (then default is used)
-	 * @param rightPadding character for padding on the right side of a line, can be null (then default is used)
-	 * @param innerWS character for replacing whitespaces within a line (between first and last word), can be null (then default is used)
-	 * @param hangingIndentation indentation for a hanging paragraph format, 0 will result in default being used
-	 * @param firstlineIndentation indentation for the first line in the first line format, 0 will result in default being used
-	 * @param dropCap a dropped capital letter for dropped capital formats, should not be null if relevant format is set
-	 * @param charsBetweenDroppcapAndText characters between the dropped capital letter and text, 0 will result in default being used
-	 * @param linesAfterDropcap lines added after the dropped capital letter with same indentation, 0 will result in default being used
-	 * @param strategy the collection strategy for the returned collection, null means use default
-	 * @return new transformer
-	 */
-	static Text_To_FormattedText create(int textWidth, int alignment, int format, Character leftPadding, Character rightPadding, Character innerWS, int hangingIndentation, int firstlineIndentation, String[] dropCap, int charsBetweenDroppcapAndText, int linesAfterDropcap, IsCollectionStrategy<?, StrBuilder> strategy){
-		return new Text_To_FormattedText() {
-			@Override
-			public int getAlignment(){
-				return alignment;
-			}
-
-			@Override
-			public int getFormat(){
-				return format;
-			}
-
-			@Override
-			public int getTextWidth(){
-				return textWidth;
-			}
-
-			@Override
-			public Character getInnerWsChar(){
-				return (innerWS==null)?Text_To_FormattedText.super.getInnerWsChar():innerWS;
-			}
-
-			@Override
-			public Character getLeftPaddingChar(){
-				return (leftPadding==null)?Text_To_FormattedText.super.getLeftPaddingChar():leftPadding;
-			}
-
-			@Override
-			public Character getRightPaddingChar(){
-				return (rightPadding==null)?Text_To_FormattedText.super.getRightPaddingChar():rightPadding;
-			}
-
-			@Override
-			public IsCollectionStrategy<?, StrBuilder> getCollectionStrategy(){
-				return (strategy==null)?Text_To_FormattedText.super.getCollectionStrategy():strategy;
-			}
-
-			@Override
-			public int getHangingIndentation(){
-				return (hangingIndentation<1)?Text_To_FormattedText.super.getHangingIndentation():hangingIndentation;
-			}
-
-			@Override
-			public int getFirstlineIndentation(){
-				return (firstlineIndentation<1)?Text_To_FormattedText.super.getFirstlineIndentation():firstlineIndentation;
-			}
-
-			@Override
-			public int getCharsBetweenDroppcapAndText(){
-				return (charsBetweenDroppcapAndText<1)?Text_To_FormattedText.super.getCharsBetweenDroppcapAndText():charsBetweenDroppcapAndText;
-			}
-
-			@Override
-			public int getLinesAfterDropcap(){
-				return (linesAfterDropcap<1)?Text_To_FormattedText.super.getLinesAfterDropcap():linesAfterDropcap;
-			}
-
-			@Override
-			public String[] getDropCap() {
-				return dropCap;
-			}
-		};
-	}
-
-	/**
-	 * Transforms text to left aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> left(String text, int textWidth){
-		return left(text, textWidth, FORMAT_NONE, null, null, null);
-	}
-
-	/**
-	 * Transforms text to left aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> left(String text, int textWidth, int format){
-		return left(text, textWidth, format, null, null, null);
-	}
-
-	/**
-	 * Transforms text to left aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding on the right side
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> left(String text, int textWidth, int format, Character padding){
-		return left(text, textWidth, format, padding, null, null);
-	}
-
-	/**
-	 * Transforms text to left aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding on the right side
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> left(String text, int textWidth, int format, Character padding, Character innerWS){
-		return left(text, textWidth, format, padding, innerWS, null);
-	}
-
-	/**
-	 * Transforms text to left aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding on the right side
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @param strategy the strategy for the returned collection
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> left(String text, int textWidth, int format, Character padding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
-		return create(
-				textWidth, ALIGN_LEFT, format, null, padding, innerWS,
-				0, 0, null, 0, 0, strategy
-		).transform(text);
-	}
-
-	/**
-	 * Transforms text to centered lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> center(String text, int textWidth){
-		return center(text, textWidth, FORMAT_NONE, null, null, null, null);
-	}
-
-	/**
-	 * Transforms text to centered lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> center(String text, int textWidth, int format){
-		return center(text, textWidth, format, null, null, null, null);
-	}
-
-	/**
-	 * Transforms text to centered lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding left and right padding character
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> center(String text, int textWidth, int format, Character padding){
-		return center(text, textWidth, format, padding, padding, null, null);
-	}
-
-	/**
-	 * Transforms text to centered lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param leftPadding left padding character
-	 * @param rightPadding right padding character
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> center(String text, int textWidth, int format, Character leftPadding, Character rightPadding){
-		return center(text, textWidth, format, leftPadding, rightPadding, null, null);
-	}
-
-	/**
-	 * Transforms text to centered lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param leftPadding left padding character
-	 * @param rightPadding right padding character
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> center(String text, int textWidth, int format, Character leftPadding, Character rightPadding, Character innerWS){
-		return center(text, textWidth, format, leftPadding, rightPadding, innerWS, null);
-	}
-
-	/**
-	 * Transforms text to centered lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param leftPadding left padding character
-	 * @param rightPadding right padding character
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @param strategy the strategy for the returned collection
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> center(String text, int textWidth, int format, Character leftPadding, Character rightPadding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
-		return create(
-				textWidth, ALIGN_CENTER, format, leftPadding, rightPadding, innerWS,
-				0, 0, null, 0, 0, strategy
-		).transform(text);
-	}
-
-	/**
-	 * Transforms text to right aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> right(String text, int textWidth){
-		return right(text, textWidth, FORMAT_NONE, null, null, null);
-	}
-
-	/**
-	 * Transforms text to right aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> right(String text, int textWidth, int format){
-		return right(text, textWidth, format, null, null, null);
-	}
-
-	/**
-	 * Transforms text to right aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding on the left side of each line
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> right(String text, int textWidth, int format, Character padding){
-		return right(text, textWidth, format, padding, null, null);
-	}
-
-	/**
-	 * Transforms text to right aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding on the left side of each line
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> right(String text, int textWidth, int format, Character padding, Character innerWS){
-		return right(text, textWidth, format, padding, innerWS, null);
-	}
-
-	/**
-	 * Transforms text to right aligned lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding on the left side of each line
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @param strategy the strategy for the returned collection
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> right(String text, int textWidth, int format, Character padding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
-		return create(
-				textWidth, ALIGN_RIGHT, format, padding, null, innerWS,
-				0, 0, null, 0, 0, strategy
-		).transform(text);
-	}
-
-	/**
-	 * Transforms text to justified lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justified(String text, int textWidth){
-		return justified(text, textWidth, FORMAT_NONE, null, null);
-	}
-
-	/**
-	 * Transforms text to justified lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justified(String text, int textWidth, int format){
-		return justified(text, textWidth, format, null, null);
-	}
-
-	/**
-	 * Transforms text to justified lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justified(String text, int textWidth, int format, Character innerWS){
-		return justified(text, textWidth, format, innerWS, null);
-	}
-
-	/**
-	 * Transforms text to justified lines.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @param strategy the strategy for the returned collection
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justified(String text, int textWidth, int format, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
-		return create(
-				textWidth, ALIGN_JUSTIFIED, format, null, null, innerWS,
-				0, 0, null, 0, 0, strategy
-		).transform(text);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being left aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedLeft(String text, int textWidth){
-		return justifiedLeft(text, textWidth, FORMAT_NONE, null, null, null);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being left aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedLeft(String text, int textWidth, int format){
-		return justifiedLeft(text, textWidth, format, null, null, null);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being left aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding for the last line
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedLeft(String text, int textWidth, int format, Character padding){
-		return justifiedLeft(text, textWidth, format, padding, null, null);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being left aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding for the last line
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedLeft(String text, int textWidth, int format, Character padding, Character innerWS){
-		return justifiedLeft(text, textWidth, format, padding, innerWS, null);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being left aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding for the last line
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @param strategy the strategy for the returned collection
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedLeft(String text, int textWidth, int format, Character padding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
-		return create(
-				textWidth, ALIGN_JUSTIFIED_LEFT, format, null, padding, innerWS,
-				0, 0, null, 0, 0, strategy
-		).transform(text);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being right aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedRight(String text, int textWidth){
-		return justifiedRight(text, textWidth, FORMAT_NONE, null, null, null);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being right aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedRight(String text, int textWidth, int format){
-		return justifiedRight(text, textWidth, format, null, null, null);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being right aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding for the last line
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedRight(String text, int textWidth, int format, Character padding){
-		return justifiedRight(text, textWidth, format, padding, null, null);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being right aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding for the last line
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedRight(String text, int textWidth, int format, Character padding, Character innerWS){
-		return justifiedRight(text, textWidth, format, padding, innerWS, null);
-	}
-
-	/**
-	 * Transforms text to justified lines, last line being right aligned.
-	 * @param text the input text
-	 * @param textWidth the width of each line
-	 * @param format a format for the text
-	 * @param padding character for padding for the last line
-	 * @param innerWS character for replacing whitespaces in the text
-	 * @param strategy the strategy for the returned collection
-	 * @return transformed text
-	 */
-	static Collection<StrBuilder> justifiedRight(String text, int textWidth, int format, Character padding, Character innerWS, IsCollectionStrategy<?, StrBuilder> strategy){
-		return create(
-				textWidth, ALIGN_JUSTIFIED_RIGHT, format, padding, null, innerWS,
-				0, 0, null, 0, 0, strategy
-		).transform(text);
 	}
 }

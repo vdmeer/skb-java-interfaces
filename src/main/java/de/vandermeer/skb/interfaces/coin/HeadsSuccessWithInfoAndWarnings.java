@@ -32,6 +32,35 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
 public interface HeadsSuccessWithInfoAndWarnings<R, M> extends HeadsSuccessWithInfo<R, M>, HeadsSuccessWithWarnings<R, M> {
 
 	/**
+	 * Creates a new success coin with given value and information.
+	 * @param <R> type of the return value
+	 * @param <M> the message type for the set
+	 * @param value the actual return value
+	 * @return new success coin
+	 */
+	static <R, M> HeadsSuccessWithInfoAndWarnings<R, M> create(final R value){
+		return new HeadsSuccessWithInfoAndWarnings<R, M>() {
+			final Set<M> infoSet = new LinkedHashSet<>();
+			final Set<M> warningSet = new LinkedHashSet<>();
+
+			@Override
+			public Set<M> getInfoMessages() {
+				return this.infoSet;
+			}
+
+			@Override
+			public R getReturn() {
+				return value;
+			}
+
+			@Override
+			public Set<M> getWarningMessages() {
+				return this.warningSet;
+			}
+		};
+	}
+
+	/**
 	 * Renders the warnings and information sets.
 	 * The method uses {@link DoesRender} or simple toString to render warnings and information.
 	 * Each element in the sets is rendered in a single line, preceded by the type (warning or info).
@@ -62,34 +91,5 @@ public interface HeadsSuccessWithInfoAndWarnings<R, M> extends HeadsSuccessWithI
 			ret.appendNewLine();
 		}
 		return ret.toString();
-	}
-
-	/**
-	 * Creates a new success coin with given value and information.
-	 * @param <R> type of the return value
-	 * @param <M> the message type for the set
-	 * @param value the actual return value
-	 * @return new success coin
-	 */
-	static <R, M> HeadsSuccessWithInfoAndWarnings<R, M> create(final R value){
-		return new HeadsSuccessWithInfoAndWarnings<R, M>() {
-			final Set<M> infoSet = new LinkedHashSet<>();
-			final Set<M> warningSet = new LinkedHashSet<>();
-
-			@Override
-			public R getReturn() {
-				return value;
-			}
-
-			@Override
-			public Set<M> getInfoMessages() {
-				return this.infoSet;
-			}
-
-			@Override
-			public Set<M> getWarningMessages() {
-				return this.warningSet;
-			}
-		};
 	}
 }

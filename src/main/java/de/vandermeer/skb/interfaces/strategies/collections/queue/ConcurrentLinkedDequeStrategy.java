@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface ConcurrentLinkedDequeStrategy<T> extends IsQueueStrategy<ConcurrentLinkedDeque<T>, T> {
 
-	@Override
-	default ConcurrentLinkedDeque<T> get(Collection<T> collection) {
-		ConcurrentLinkedDeque<T> ret = new ConcurrentLinkedDeque<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default ConcurrentLinkedDeque<T> get() {
-		return new ConcurrentLinkedDeque<T>();
-	}
-
 	/**
 	 * Creates a new concurrent linked deque strategy.
 	 * @param <T> type for the objects in the queue
@@ -50,5 +36,19 @@ public interface ConcurrentLinkedDequeStrategy<T> extends IsQueueStrategy<Concur
 	 */
 	static <T> ConcurrentLinkedDequeStrategy<T> create(){
 		return new ConcurrentLinkedDequeStrategy<T>(){};
+	}
+
+	@Override
+	default ConcurrentLinkedDeque<T> get() {
+		return new ConcurrentLinkedDeque<T>();
+	}
+
+	@Override
+	default ConcurrentLinkedDeque<T> get(Collection<T> collection) {
+		ConcurrentLinkedDeque<T> ret = new ConcurrentLinkedDeque<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

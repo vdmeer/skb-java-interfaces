@@ -33,20 +33,6 @@ import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
 public interface IsErrorSet_IsError extends IsErrorSet<IsError> {
 
 	/**
-	 * Renders the error set.
-	 * Each element in the error set is rendered in a single line.
-	 * @return rendered object
-	 */
-	@Override
-	default String render() {
-		StrBuilder ret = new StrBuilder(100);
-		for(IsError error : this.getErrorMessages()){
-			ret.append(error.getErrorMessageString()).appendNewLine();
-		}
-		return ret.toString();
-	}
-
-	/**
 	 * Creates a new error set.
 	 * @return new error set
 	 */
@@ -58,5 +44,19 @@ public interface IsErrorSet_IsError extends IsErrorSet<IsError> {
 				return this.errorSet;
 			}
 		};
+	}
+
+	/**
+	 * Renders the error set.
+	 * Each element in the error set is rendered in a single line.
+	 * @return rendered object
+	 */
+	@Override
+	default String render() {
+		StrBuilder ret = new StrBuilder(100);
+		for(IsError error : this.getErrorMessages()){
+			ret.append(error.getErrorMessageString()).appendNewLine();
+		}
+		return ret.toString();
 	}
 }

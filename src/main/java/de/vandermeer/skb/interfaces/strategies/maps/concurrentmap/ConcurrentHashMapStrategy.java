@@ -29,16 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.maps.IsConcurrentMapStrategy;
  */
 public interface ConcurrentHashMapStrategy<K, V> extends IsConcurrentMapStrategy<K, V> {
 
-	@Override
-	default ConcurrentHashMap<K, V> get() {
-		return new ConcurrentHashMap<>();
-	}
-
-	@Override
-	default ConcurrentHashMap<K, V> get(Map<K, V> map){
-		return new ConcurrentHashMap<>(map);
-	}
-
 	/**
 	 * Creates a new concurrent hash map strategy.
 	 * @param <K> type of the keys in the map
@@ -47,5 +37,15 @@ public interface ConcurrentHashMapStrategy<K, V> extends IsConcurrentMapStrategy
 	 */
 	static <K, V> ConcurrentHashMapStrategy<K, V> create(){
 		return new ConcurrentHashMapStrategy<K, V>() {};
+	}
+
+	@Override
+	default ConcurrentHashMap<K, V> get() {
+		return new ConcurrentHashMap<>();
+	}
+
+	@Override
+	default ConcurrentHashMap<K, V> get(Map<K, V> map){
+		return new ConcurrentHashMap<>(map);
 	}
 }

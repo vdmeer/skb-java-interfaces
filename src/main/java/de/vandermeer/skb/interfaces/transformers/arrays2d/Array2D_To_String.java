@@ -29,6 +29,15 @@ import de.vandermeer.skb.interfaces.transformers.IsTransformer;
  */
 public interface Array2D_To_String<T> extends IsTransformer<T[][], String> {
 
+	/**
+	 * Creates a new transformer.
+	 * @param <T> type of the array
+	 * @return new transformer
+	 */
+	static <T> Array2D_To_String<T> create(){
+		return new Array2D_To_String<T>() {};
+	}
+
 	@Override
 	default String transform(T[][] ar){
 		IsTransformer.super.transform(ar);
@@ -57,14 +66,5 @@ public interface Array2D_To_String<T> extends IsTransformer<T[][], String> {
 			}
 		}
 		return ret.toString();
-	}
-
-	/**
-	 * Creates a new transformer.
-	 * @param <T> type of the array
-	 * @return new transformer
-	 */
-	static <T> Array2D_To_String<T> create(){
-		return new Array2D_To_String<T>() {};
 	}
 }

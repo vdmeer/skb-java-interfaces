@@ -29,20 +29,6 @@ import org.slf4j.helpers.MessageFormatter;
 public interface FormattingTupleWrapper {
 
 	/**
-	 * Returns the set formatting tuple.
-	 * @return formatting tuple
-	 */
-	FormattingTuple getTuple();
-
-	/**
-	 * Returns the formatted (rendered) message using the set formatting tuple.
-	 * @return formatted (rendered) message
-	 */
-	default String getMessage(){
-		return this.getTuple().getMessage();
-	}
-
-	/**
 	 * Creates a new wrapper.
 	 * @param msg the message for the wrapper, should not be blank
 	 * @return new wrapper with given message
@@ -85,4 +71,18 @@ public interface FormattingTupleWrapper {
 			}
 		};
 	}
+
+	/**
+	 * Returns the formatted (rendered) message using the set formatting tuple.
+	 * @return formatted (rendered) message
+	 */
+	default String getMessage(){
+		return this.getTuple().getMessage();
+	}
+
+	/**
+	 * Returns the set formatting tuple.
+	 * @return formatting tuple
+	 */
+	FormattingTuple getTuple();
 }

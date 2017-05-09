@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface LinkedListStrategy<T> extends IsQueueStrategy<LinkedList<T>, T> {
 
-	@Override
-	default LinkedList<T> get(Collection<T> collection) {
-		LinkedList<T> ret = new LinkedList<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default LinkedList<T> get() {
-		return new LinkedList<T>();
-	}
-
 	/**
 	 * Creates a new linked list strategy as a queue strategy.
 	 * @param <T> type for the objects in the queue
@@ -50,5 +36,19 @@ public interface LinkedListStrategy<T> extends IsQueueStrategy<LinkedList<T>, T>
 	 */
 	static <T> LinkedListStrategy<T> create(){
 		return new LinkedListStrategy<T>(){};
+	}
+
+	@Override
+	default LinkedList<T> get() {
+		return new LinkedList<T>();
+	}
+
+	@Override
+	default LinkedList<T> get(Collection<T> collection) {
+		LinkedList<T> ret = new LinkedList<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

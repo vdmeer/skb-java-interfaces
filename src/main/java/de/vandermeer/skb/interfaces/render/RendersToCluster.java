@@ -28,6 +28,14 @@ import java.util.Iterator;
 public interface RendersToCluster {
 
 	/**
+	 * Returns an `array` view of the rendered object.
+	 * @return `array` view, should not be null and have no blank elements
+	 */
+	default String[] renderAsArray(){
+		return this.renderAsCollection().toArray(new String[0]);
+	}
+
+	/**
 	 * Returns a `collection` view of the rendered object.
 	 * @return `collection` view, should not be null and have no blank elements
 	 */
@@ -47,13 +55,5 @@ public interface RendersToCluster {
 	 */
 	default Iterator<String> renderAsIterator(){
 		return this.renderAsCollection().iterator();
-	}
-
-	/**
-	 * Returns an `array` view of the rendered object.
-	 * @return `array` view, should not be null and have no blank elements
-	 */
-	default String[] renderAsArray(){
-		return this.renderAsCollection().toArray(new String[0]);
 	}
 }

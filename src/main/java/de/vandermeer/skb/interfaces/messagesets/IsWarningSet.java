@@ -32,37 +32,19 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  */
 public interface IsWarningSet<M> extends IsMessageSet {
 
-	@Override
-	default boolean isErrorSet(){
-		return true;
-	}
-
-	@Override
-	default boolean isWarningSet(){
-		return true;
-	}
-
 	/**
-	 * Clears all warnings.
+	 * Creates a new warning set.
+	 * @param <M> type of the messages in the set
+	 * @return new warning set
 	 */
-	default void clearWarningMessages(){
-		this.getWarningMessages().clear();
-	}
-
-	/**
-	 * Returns the warning set.
-	 * @return warning set, should not be null
-	 */
-	Set<M> getWarningMessages();
-
-	/**
-	 * Adds a new warning.
-	 * @param warning warning to add, ignored if null
-	 */
-	default void addWarning(M warning){
-		if(warning!=null){
-			this.getWarningMessages().add(warning);
-		}
+	static <M> IsWarningSet<M> create(){
+		return new IsWarningSet<M>() {
+			final Set<M> warningSet = new LinkedHashSet<>();
+			@Override
+			public Set<M> getWarningMessages() {
+				return this.warningSet;
+			}
+		};
 	}
 
 	/**
@@ -88,11 +70,44 @@ public interface IsWarningSet<M> extends IsMessageSet {
 	}
 
 	/**
+	 * Adds a new warning.
+	 * @param warning warning to add, ignored if null
+	 */
+	default void addWarning(M warning){
+		if(warning!=null){
+			this.getWarningMessages().add(warning);
+		}
+	}
+
+	/**
+	 * Clears all warnings.
+	 */
+	default void clearWarningMessages(){
+		this.getWarningMessages().clear();
+	}
+
+	/**
+	 * Returns the warning set.
+	 * @return warning set, should not be null
+	 */
+	Set<M> getWarningMessages();
+
+	/**
 	 * Tests if warnings have been added.
 	 * @return true if warnings are in the set, false otherwise
 	 */
 	default boolean hasWarnings(){
 		return (this.getWarningMessages().size()==0)?false:true;
+	}
+
+	@Override
+	default boolean isErrorSet(){
+		return true;
+	}
+
+	@Override
+	default boolean isWarningSet(){
+		return true;
 	}
 
 	/**
@@ -114,20 +129,5 @@ public interface IsWarningSet<M> extends IsMessageSet {
 			ret.appendNewLine();
 		}
 		return ret.toString();
-	}
-
-	/**
-	 * Creates a new warning set.
-	 * @param <M> type of the messages in the set
-	 * @return new warning set
-	 */
-	static <M> IsWarningSet<M> create(){
-		return new IsWarningSet<M>() {
-			final Set<M> warningSet = new LinkedHashSet<>();
-			@Override
-			public Set<M> getWarningMessages() {
-				return this.warningSet;
-			}
-		};
 	}
 }

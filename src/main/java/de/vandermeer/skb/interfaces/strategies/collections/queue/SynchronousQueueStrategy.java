@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface SynchronousQueueStrategy<T> extends IsQueueStrategy<SynchronousQueue<T>, T> {
 
-	@Override
-	default SynchronousQueue<T> get(Collection<T> collection) {
-		SynchronousQueue<T> ret = new SynchronousQueue<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default SynchronousQueue<T> get() {
-		return new SynchronousQueue<T>();
-	}
-
 	/**
 	 * Creates a new synchronous queue strategy.
 	 * @param <T> type for the objects in the queue
@@ -50,5 +36,19 @@ public interface SynchronousQueueStrategy<T> extends IsQueueStrategy<Synchronous
 	 */
 	static <T> SynchronousQueueStrategy<T> create(){
 		return new SynchronousQueueStrategy<T>(){};
+	}
+
+	@Override
+	default SynchronousQueue<T> get() {
+		return new SynchronousQueue<T>();
+	}
+
+	@Override
+	default SynchronousQueue<T> get(Collection<T> collection) {
+		SynchronousQueue<T> ret = new SynchronousQueue<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

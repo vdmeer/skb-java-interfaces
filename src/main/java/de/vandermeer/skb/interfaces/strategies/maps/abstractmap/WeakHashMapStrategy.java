@@ -29,16 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.maps.IsAbstractMapStrategy;
  */
 public interface WeakHashMapStrategy<K, V> extends IsAbstractMapStrategy<K, V> {
 
-	@Override
-	default WeakHashMap<K, V> get() {
-		return new WeakHashMap<>();
-	}
-
-	@Override
-	default WeakHashMap<K, V> get(Map<K, V> map){
-		return new WeakHashMap<>(map);
-	}
-
 	/**
 	 * Creates a new weak hash map strategy.
 	 * @param <K> type of the keys in the map
@@ -47,5 +37,15 @@ public interface WeakHashMapStrategy<K, V> extends IsAbstractMapStrategy<K, V> {
 	 */
 	static <K, V> WeakHashMapStrategy<K, V> create(){
 		return new WeakHashMapStrategy<K, V>() {};
+	}
+
+	@Override
+	default WeakHashMap<K, V> get() {
+		return new WeakHashMap<>();
+	}
+
+	@Override
+	default WeakHashMap<K, V> get(Map<K, V> map){
+		return new WeakHashMap<>(map);
 	}
 }

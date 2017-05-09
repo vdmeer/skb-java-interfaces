@@ -40,13 +40,6 @@ public interface HtmlElementTranslator {
 
 	/**
 	 * Translates HTML elements found in the input to a target representation, without any temporary representation.
-	 * @param input string to translate
-	 * @return translated string, with target representation of HTML elements
-	 */
-	String translateHtmlElements(String input);
-
-	/**
-	 * Translates HTML elements found in the input to a target representation, without any temporary representation.
 	 * @param input object to translate (toString is used)
 	 * @return translated string, with target representation of HTML elements
 	 */
@@ -56,4 +49,11 @@ public interface HtmlElementTranslator {
 		}
 		return null;
 	}
+
+	/**
+	 * Translates HTML elements found in the input to a target representation, without any temporary representation.
+	 * @param input string to translate
+	 * @return translated string, with target representation of HTML elements
+	 */
+	String translateHtmlElements(String input);
 }

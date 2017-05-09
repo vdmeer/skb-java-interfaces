@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface PriorityBlockingQueueStrategy<T> extends IsQueueStrategy<PriorityBlockingQueue<T>, T> {
 
-	@Override
-	default PriorityBlockingQueue<T> get(Collection<T> collection) {
-		PriorityBlockingQueue<T> ret = new PriorityBlockingQueue<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default PriorityBlockingQueue<T> get() {
-		return new PriorityBlockingQueue<T>();
-	}
-
 	/**
 	 * Creates a new priority blocking queue strategy.
 	 * @param <T> type for the objects in the queue
@@ -50,5 +36,19 @@ public interface PriorityBlockingQueueStrategy<T> extends IsQueueStrategy<Priori
 	 */
 	static <T> PriorityBlockingQueueStrategy<T> create(){
 		return new PriorityBlockingQueueStrategy<T>(){};
+	}
+
+	@Override
+	default PriorityBlockingQueue<T> get() {
+		return new PriorityBlockingQueue<T>();
+	}
+
+	@Override
+	default PriorityBlockingQueue<T> get(Collection<T> collection) {
+		PriorityBlockingQueue<T> ret = new PriorityBlockingQueue<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

@@ -33,26 +33,18 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
 public interface IsErrorSet<M> extends IsMessageSet {
 
 	/**
-	 * Clears all errors.
+	 * Creates a new error set.
+	 * @param <M> type of the messages in the set
+	 * @return new error set
 	 */
-	default void clearErrorMessages(){
-		this.getErrorMessages().clear();
-	}
-
-	/**
-	 * Returns the error set.
-	 * @return error set, should not be null
-	 */
-	Set<M> getErrorMessages();
-
-	/**
-	 * Adds a new error.
-	 * @param error error to add, ignored if null
-	 */
-	default void addError(M error){
-		if(error!=null){
-			this.getErrorMessages().add(error);
-		}
+	static <M> IsErrorSet<M> create(){
+		return new IsErrorSet<M>() {
+			final Set<M> errorSet = new LinkedHashSet<>();
+			@Override
+			public Set<M> getErrorMessages() {
+				return this.errorSet;
+			}
+		};
 	}
 
 	/**
@@ -76,6 +68,29 @@ public interface IsErrorSet<M> extends IsMessageSet {
 			}
 		}
 	}
+
+	/**
+	 * Adds a new error.
+	 * @param error error to add, ignored if null
+	 */
+	default void addError(M error){
+		if(error!=null){
+			this.getErrorMessages().add(error);
+		}
+	}
+
+	/**
+	 * Clears all errors.
+	 */
+	default void clearErrorMessages(){
+		this.getErrorMessages().clear();
+	}
+
+	/**
+	 * Returns the error set.
+	 * @return error set, should not be null
+	 */
+	Set<M> getErrorMessages();
 
 	/**
 	 * Tests if errors have been added.
@@ -104,20 +119,5 @@ public interface IsErrorSet<M> extends IsMessageSet {
 			ret.appendNewLine();
 		}
 		return ret.toString();
-	}
-
-	/**
-	 * Creates a new error set.
-	 * @param <M> type of the messages in the set
-	 * @return new error set
-	 */
-	static <M> IsErrorSet<M> create(){
-		return new IsErrorSet<M>() {
-			final Set<M> errorSet = new LinkedHashSet<>();
-			@Override
-			public Set<M> getErrorMessages() {
-				return this.errorSet;
-			}
-		};
 	}
 }

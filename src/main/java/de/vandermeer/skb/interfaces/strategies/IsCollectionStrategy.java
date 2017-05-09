@@ -29,22 +29,10 @@ import de.vandermeer.skb.interfaces.categories.CategoryIs;
 public interface IsCollectionStrategy<S extends Collection<T>, T> extends CategoryIs {
 
 	/**
-	 * Test if the collection is a list.
-	 * @return true if list, false otherwise
+	 * Returns a new collection of requested type.
+	 * @return new collection
 	 */
-	boolean isList();
-
-	/**
-	 * Test if the collection is a set.
-	 * @return true if set, false otherwise
-	 */
-	boolean isSet();
-
-	/**
-	 * Test if the collection is a queue.
-	 * @return true if queue, false otherwise
-	 */
-	boolean isQueue();
+	S get();
 
 	/**
 	 * Returns a new collection for the given collection.
@@ -54,8 +42,20 @@ public interface IsCollectionStrategy<S extends Collection<T>, T> extends Catego
 	S get(Collection<T> collection);
 
 	/**
-	 * Returns a new collection of requested type.
-	 * @return new collection
+	 * Test if the collection is a list.
+	 * @return true if list, false otherwise
 	 */
-	S get();
+	boolean isList();
+
+	/**
+	 * Test if the collection is a queue.
+	 * @return true if queue, false otherwise
+	 */
+	boolean isQueue();
+
+	/**
+	 * Test if the collection is a set.
+	 * @return true if set, false otherwise
+	 */
+	boolean isSet();
 }

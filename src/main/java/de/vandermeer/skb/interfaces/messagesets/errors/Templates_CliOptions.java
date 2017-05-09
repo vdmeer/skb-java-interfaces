@@ -47,11 +47,6 @@ public enum Templates_CliOptions implements IsErrorTemplate {
 	/** A description for the error code. */
 	private final String description;
 
-	@Override
-	public String getDescription() {
-		return this.description;
-	}
-
 	/**
 	 * Creates a new error.
 	 * @param code the error code, must be smaller than 0, in the range of the used category, and unique in the enumerate
@@ -79,13 +74,18 @@ public enum Templates_CliOptions implements IsErrorTemplate {
 	}
 
 	@Override
-	public String getMessage() {
-		return this.message;
+	public String getDescription() {
+		return this.description;
 	}
 
 	@Override
 	public String getDisplayName() {
 		return this.name();
+	}
+
+	@Override
+	public String getMessage() {
+		return this.message;
 	}
 
 }

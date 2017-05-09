@@ -39,10 +39,52 @@ import de.vandermeer.skb.interfaces.render.DoesRenderToWidth;
 public interface IsST extends DoesRender, DoesRenderToWidth, CategoryIs {
 
 	/**
-	 * Returns the ST object.
-	 * @return ST object
+	 * Creates a new IsST object.
+	 * @param st the contained ST object
+	 * @return new IsST object
+	 * @throws NullPointerException if `st` was null
 	 */
-	ST getST();
+	static IsST create(ST st){
+		return IsST.create(st, null, null);
+	}
+
+	/**
+	 * Creates a new IsST object.
+	 * @param st the contained ST object
+	 * @param expectedArguments set of expected arguments for the ST, null if none required
+	 * @param groupName the name of the ST group of the template, null if none set or known
+	 * @return new IsST object
+	 * @throws NullPointerException if `st` was null or the expected arguments was not null and contained null elements
+	 */
+	static IsST create(final ST st, final String[] expectedArguments, String groupName){
+		Validate.notNull(st);
+		if(expectedArguments!=null){
+			Validate.noNullElements(expectedArguments);
+		}
+
+		return new IsST() {
+			@Override
+			public String[] getExpectedArguments() {
+				return expectedArguments;
+			}
+
+			@Override
+			public String getGroupName(){
+				return groupName;
+			}
+
+			@Override
+			public ST getST() {
+				return st;
+			}
+		};
+	}
+
+	/**
+	 * Returns the arguments expected to be defined in the ST object.
+	 * @return expected arguments as set of argument names
+	 */
+	String[] getExpectedArguments();;
 
 	/**
 	 * The name of the ST Group in which the template was defined.
@@ -52,13 +94,19 @@ public interface IsST extends DoesRender, DoesRenderToWidth, CategoryIs {
 		return null;
 	}
 
+	/**
+	 * Returns the ST object.
+	 * @return ST object
+	 */
+	ST getST();
+
 	@Override
 	default String render() {
 		if(this.getST()==null){
 			return "";
 		}
 		return this.getST().render();
-	};
+	}
 
 	@Override
 	default String render(int width) {
@@ -67,12 +115,6 @@ public interface IsST extends DoesRender, DoesRenderToWidth, CategoryIs {
 		}
 		return this.getST().render(width);
 	}
-
-	/**
-	 * Returns the arguments expected to be defined in the ST object.
-	 * @return expected arguments as set of argument names
-	 */
-	String[] getExpectedArguments();
 
 	/**
 	 * Validates the ST for expected arguments.
@@ -101,47 +143,5 @@ public interface IsST extends DoesRender, DoesRenderToWidth, CategoryIs {
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Creates a new IsST object.
-	 * @param st the contained ST object
-	 * @return new IsST object
-	 * @throws NullPointerException if `st` was null
-	 */
-	static IsST create(ST st){
-		return IsST.create(st, null, null);
-	}
-
-	/**
-	 * Creates a new IsST object.
-	 * @param st the contained ST object
-	 * @param expectedArguments set of expected arguments for the ST, null if none required
-	 * @param groupName the name of the ST group of the template, null if none set or known
-	 * @return new IsST object
-	 * @throws NullPointerException if `st` was null or the expected arguments was not null and contained null elements
-	 */
-	static IsST create(final ST st, final String[] expectedArguments, String groupName){
-		Validate.notNull(st);
-		if(expectedArguments!=null){
-			Validate.noNullElements(expectedArguments);
-		}
-
-		return new IsST() {
-			@Override
-			public ST getST() {
-				return st;
-			}
-
-			@Override
-			public String[] getExpectedArguments() {
-				return expectedArguments;
-			}
-
-			@Override
-			public String getGroupName(){
-				return groupName;
-			}
-		};
 	}
 }

@@ -39,11 +39,6 @@ public interface ApoEnvOptions extends ApoParserOptionSet<Apo_TypedE<?>> {
 			protected final transient Map<String, Apo_TypedE<?>> options = new HashMap<>();
 
 			@Override
-			public Map<String, Apo_TypedE<?>> getMap() {
-				return options;
-			}
-
-			@Override
 			public ApoEnvOptions addOption(Object option) throws IllegalStateException {
 				if(option==null){
 					return this;
@@ -57,6 +52,11 @@ public interface ApoEnvOptions extends ApoParserOptionSet<Apo_TypedE<?>> {
 					this.getMap().put(eo.getEnvironmentKey(), eo);
 				}
 				return this;
+			}
+
+			@Override
+			public Map<String, Apo_TypedE<?>> getMap() {
+				return options;
 			}
 		};
 	}

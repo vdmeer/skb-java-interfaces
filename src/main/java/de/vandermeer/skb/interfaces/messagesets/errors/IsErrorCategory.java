@@ -33,24 +33,6 @@ import de.vandermeer.skb.interfaces.categories.has.HasDescription;
 public interface IsErrorCategory extends HasDescription, CategoryIs {
 
 	/**
-	 * Returns the category display name.
-	 * @return display name
-	 */
-	String getDisplayName();
-
-	/**
-	 * Returns the start of the error codes.
-	 * @return error code start
-	 */
-	int getStart();
-
-	/**
-	 * Returns the end of the error codes.
-	 * @return error code end
-	 */
-	int getEnd();
-
-	/**
 	 * Validates an array of categories for not overlapping in star/end.
 	 * @param categories the categories to validate, must not be null or have null elements
 	 * @throws NullPointerException if parameter was null
@@ -67,4 +49,22 @@ public interface IsErrorCategory extends HasDescription, CategoryIs {
 			}
 		}
 	}
+
+	/**
+	 * Returns the category display name.
+	 * @return display name
+	 */
+	String getDisplayName();
+
+	/**
+	 * Returns the end of the error codes.
+	 * @return error code end
+	 */
+	int getEnd();
+
+	/**
+	 * Returns the start of the error codes.
+	 * @return error code start
+	 */
+	int getStart();
 }

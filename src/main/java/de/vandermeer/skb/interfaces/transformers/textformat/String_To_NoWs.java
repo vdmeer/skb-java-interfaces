@@ -28,14 +28,12 @@ import de.vandermeer.skb.interfaces.transformers.IsTransformer;
 public interface String_To_NoWs extends IsTransformer<String, String> {
 
 	/**
-	 * Transforms a String to a String removing all excessive whitespace characters.
+	 * Returns a string with all excessive white spaces removed.
 	 * @param s input string
-	 * @return String with excessive white spaces removed, `null` if input was null
+	 * @return `null` if `s` was null, string with no excessive white spaces otherwise
 	 */
-	@Override
-	default String transform(String s) {
-		IsTransformer.super.transform(s);
-		return s.replaceAll("\\s+", " ");
+	static String convert(String s){
+		return String_To_NoWs.create().transform(s);
 	}
 
 	/**
@@ -47,11 +45,13 @@ public interface String_To_NoWs extends IsTransformer<String, String> {
 	}
 
 	/**
-	 * Returns a string with all excessive white spaces removed.
+	 * Transforms a String to a String removing all excessive whitespace characters.
 	 * @param s input string
-	 * @return `null` if `s` was null, string with no excessive white spaces otherwise
+	 * @return String with excessive white spaces removed, `null` if input was null
 	 */
-	static String convert(String s){
-		return String_To_NoWs.create().transform(s);
+	@Override
+	default String transform(String s) {
+		IsTransformer.super.transform(s);
+		return s.replaceAll("\\s+", " ");
 	}
 }

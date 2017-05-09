@@ -33,13 +33,13 @@ public interface StandardExample {
 	String getDescription();
 
 	/**
-	 * Shows the output of the example.
-	 */
-	void showOutput();
-
-	/**
 	 * Returns the original source code of the example.
 	 * @return source code
 	 */
 	StrBuilder getSource();
+
+	/**
+	 * Shows the output of the example.
+	 */
+	void showOutput();
 }

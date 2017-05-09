@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface LinkedTransferQueueStrategy<T> extends IsQueueStrategy<LinkedTransferQueue<T>, T> {
 
-	@Override
-	default LinkedTransferQueue<T> get(Collection<T> collection) {
-		LinkedTransferQueue<T> ret = new LinkedTransferQueue<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default LinkedTransferQueue<T> get() {
-		return new LinkedTransferQueue<T>();
-	}
-
 	/**
 	 * Creates a new linked transfer queue strategy.
 	 * @param <T> type for the objects in the queue
@@ -50,5 +36,19 @@ public interface LinkedTransferQueueStrategy<T> extends IsQueueStrategy<LinkedTr
 	 */
 	static <T> LinkedTransferQueueStrategy<T> create(){
 		return new LinkedTransferQueueStrategy<T>(){};
+	}
+
+	@Override
+	default LinkedTransferQueue<T> get() {
+		return new LinkedTransferQueue<T>();
+	}
+
+	@Override
+	default LinkedTransferQueue<T> get(Collection<T> collection) {
+		LinkedTransferQueue<T> ret = new LinkedTransferQueue<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

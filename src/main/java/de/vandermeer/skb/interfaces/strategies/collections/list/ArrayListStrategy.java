@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsListStrategy;
  */
 public interface ArrayListStrategy<T> extends IsListStrategy<ArrayList<T>, T> {
 
-	@Override
-	default ArrayList<T> get(Collection<T> collection) {
-		ArrayList<T> ret = new ArrayList<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default ArrayList<T> get(){
-		return new ArrayList<T>();
-	}
-
 	/**
 	 * Creates a new array list strategy.
 	 * @param <T> type for the objects in the list
@@ -50,5 +36,19 @@ public interface ArrayListStrategy<T> extends IsListStrategy<ArrayList<T>, T> {
 	 */
 	static <T> ArrayListStrategy<T> create(){
 		return new ArrayListStrategy<T>(){};
+	}
+
+	@Override
+	default ArrayList<T> get(){
+		return new ArrayList<T>();
+	}
+
+	@Override
+	default ArrayList<T> get(Collection<T> collection) {
+		ArrayList<T> ret = new ArrayList<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

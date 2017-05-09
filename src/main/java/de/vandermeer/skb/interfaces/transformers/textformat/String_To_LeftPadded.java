@@ -51,85 +51,6 @@ public interface String_To_LeftPadded extends IsTransformer<String, StrBuilder> 
 	static char DEFAULT_INNER_WHITESPACE_CHARACTER = ' ';
 
 	/**
-	 * Returns the required length for the conversion.
-	 * @return length, default is {@link #DEFAULT_LENGTH}
-	 */
-	default int getLength(){
-		return DEFAULT_LENGTH;
-	}
-
-	/**
-	 * Returns the white space replacement character.
-	 * @return white space replacement character, default is {@link #DEFAULT_INNER_WHITESPACE_CHARACTER}
-	 */
-	default Character getInnerWsChar(){
-		return DEFAULT_INNER_WHITESPACE_CHARACTER;
-	}
-
-	/**
-	 * Returns the padding character for the conversion.
-	 * @return padding character, cannot be null, default is {@link #DEFAULT_PADDING_CHARACTER}
-	 */
-	default Character getPaddingChar(){
-		return DEFAULT_PADDING_CHARACTER;
-	}
-
-	/**
-	 * Returns a builder to append the padded string to, rather than creating a new builder.
-	 * @return builder, can be null, if not null the padding string will be appended to it
-	 */
-	default StrBuilder getBuilderForAppend(){
-		return null;
-	}
-
-	@Override
-	default StrBuilder transform(String s) {
-		IsTransformer.super.transform(s);
-		StrBuilder ret = (this.getBuilderForAppend()==null)?new StrBuilder(this.getLength()):this.getBuilderForAppend();
-
-		String left = (s==null)?"":s;
-		left = left.replace(' ', this.getInnerWsChar());
-		ret.appendFixedWidthPadRight(left, this.getLength(), this.getPaddingChar());
-		return ret;
-	}
-
-	/**
-	 * Creates a transformer that converts a string to a left-padded string of given length.
-	 * @param length the required length (must be &gt;0)
-	 * @param paddingChar the padding character, default is used if null
-	 * @param innerWsChar inner white space replacement character
-	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
-	 * @return new transformer
-	 * @see String_To_LeftPadded interface description for how the converter works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static String_To_LeftPadded create(int length, Character paddingChar, Character innerWsChar, StrBuilder builder){
-		Validate.validState(length>0, "cannot work with lenght of less than 1");
-		return new String_To_LeftPadded() {
-			@Override
-			public int getLength(){
-				return length;
-			}
-
-			@Override
-			public Character getInnerWsChar() {
-				return (innerWsChar==null)?String_To_LeftPadded.super.getInnerWsChar():innerWsChar;
-			}
-
-			@Override
-			public Character getPaddingChar(){
-				return (paddingChar==null)?String_To_LeftPadded.super.getPaddingChar():paddingChar;
-			}
-
-			@Override
-			public StrBuilder getBuilderForAppend(){
-				return builder;
-			}
-		};
-	}
-
-	/**
 	 * Returns a left-padded string of given length using the default padding character.
 	 * @param s input string
 	 * @param length the required length (must be &gt;0)
@@ -140,20 +61,6 @@ public interface String_To_LeftPadded extends IsTransformer<String, StrBuilder> 
 	 */
 	static StrBuilder convert(String s, int length){
 		return String_To_LeftPadded.create(length, null, null, null).transform(s);
-	}
-
-	/**
-	 * Returns a left-padded string of given length.
-	 * @param s input string
-	 * @param length the required length (must be &gt;0)
-	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
-	 * @return left-padded string
-	 * @see String_To_LeftPadded interface description for how the conversion works
-	 * @throws NullPointerException if an argument was unexpectedly null
-	 * @throws IllegalArgumentException if an argument was illegal
-	 */
-	static StrBuilder convert(String s, int length, StrBuilder builder){
-		return String_To_LeftPadded.create(length, null, null, builder).transform(s);
 	}
 
 	/**
@@ -190,6 +97,22 @@ public interface String_To_LeftPadded extends IsTransformer<String, StrBuilder> 
 	 * @param s input string
 	 * @param length the required length (must be &gt;0)
 	 * @param paddingChar the padding character, default is used if null
+	 * @param innerWsChar inner white space replacement character, default is used if null
+	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
+	 * @return left-padded string
+	 * @see String_To_LeftPadded interface description for how the conversion works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
+	 */
+	static StrBuilder convert(String s, int length, Character paddingChar, Character innerWsChar, StrBuilder builder){
+		return String_To_LeftPadded.create(length, paddingChar, innerWsChar, builder).transform(s);
+	}
+
+	/**
+	 * Returns a left-padded string of given length.
+	 * @param s input string
+	 * @param length the required length (must be &gt;0)
+	 * @param paddingChar the padding character, default is used if null
 	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
 	 * @return left-padded string
 	 * @see String_To_LeftPadded interface description for how the conversion works
@@ -204,15 +127,92 @@ public interface String_To_LeftPadded extends IsTransformer<String, StrBuilder> 
 	 * Returns a left-padded string of given length.
 	 * @param s input string
 	 * @param length the required length (must be &gt;0)
-	 * @param paddingChar the padding character, default is used if null
-	 * @param innerWsChar inner white space replacement character, default is used if null
 	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
 	 * @return left-padded string
 	 * @see String_To_LeftPadded interface description for how the conversion works
 	 * @throws NullPointerException if an argument was unexpectedly null
 	 * @throws IllegalArgumentException if an argument was illegal
 	 */
-	static StrBuilder convert(String s, int length, Character paddingChar, Character innerWsChar, StrBuilder builder){
-		return String_To_LeftPadded.create(length, paddingChar, innerWsChar, builder).transform(s);
+	static StrBuilder convert(String s, int length, StrBuilder builder){
+		return String_To_LeftPadded.create(length, null, null, builder).transform(s);
+	}
+
+	/**
+	 * Creates a transformer that converts a string to a left-padded string of given length.
+	 * @param length the required length (must be &gt;0)
+	 * @param paddingChar the padding character, default is used if null
+	 * @param innerWsChar inner white space replacement character
+	 * @param builder an optional builder to append the padded string to, used if set, ignored if null
+	 * @return new transformer
+	 * @see String_To_LeftPadded interface description for how the converter works
+	 * @throws NullPointerException if an argument was unexpectedly null
+	 * @throws IllegalArgumentException if an argument was illegal
+	 */
+	static String_To_LeftPadded create(int length, Character paddingChar, Character innerWsChar, StrBuilder builder){
+		Validate.validState(length>0, "cannot work with lenght of less than 1");
+		return new String_To_LeftPadded() {
+			@Override
+			public StrBuilder getBuilderForAppend(){
+				return builder;
+			}
+
+			@Override
+			public Character getInnerWsChar() {
+				return (innerWsChar==null)?String_To_LeftPadded.super.getInnerWsChar():innerWsChar;
+			}
+
+			@Override
+			public int getLength(){
+				return length;
+			}
+
+			@Override
+			public Character getPaddingChar(){
+				return (paddingChar==null)?String_To_LeftPadded.super.getPaddingChar():paddingChar;
+			}
+		};
+	}
+
+	/**
+	 * Returns a builder to append the padded string to, rather than creating a new builder.
+	 * @return builder, can be null, if not null the padding string will be appended to it
+	 */
+	default StrBuilder getBuilderForAppend(){
+		return null;
+	}
+
+	/**
+	 * Returns the white space replacement character.
+	 * @return white space replacement character, default is {@link #DEFAULT_INNER_WHITESPACE_CHARACTER}
+	 */
+	default Character getInnerWsChar(){
+		return DEFAULT_INNER_WHITESPACE_CHARACTER;
+	}
+
+	/**
+	 * Returns the required length for the conversion.
+	 * @return length, default is {@link #DEFAULT_LENGTH}
+	 */
+	default int getLength(){
+		return DEFAULT_LENGTH;
+	}
+
+	/**
+	 * Returns the padding character for the conversion.
+	 * @return padding character, cannot be null, default is {@link #DEFAULT_PADDING_CHARACTER}
+	 */
+	default Character getPaddingChar(){
+		return DEFAULT_PADDING_CHARACTER;
+	}
+
+	@Override
+	default StrBuilder transform(String s) {
+		IsTransformer.super.transform(s);
+		StrBuilder ret = (this.getBuilderForAppend()==null)?new StrBuilder(this.getLength()):this.getBuilderForAppend();
+
+		String left = (s==null)?"":s;
+		left = left.replace(' ', this.getInnerWsChar());
+		ret.appendFixedWidthPadRight(left, this.getLength(), this.getPaddingChar());
+		return ret;
 	}
 }

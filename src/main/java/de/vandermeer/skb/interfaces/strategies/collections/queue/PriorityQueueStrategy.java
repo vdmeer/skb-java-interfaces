@@ -29,20 +29,6 @@ import de.vandermeer.skb.interfaces.strategies.collections.IsQueueStrategy;
  */
 public interface PriorityQueueStrategy<T> extends IsQueueStrategy<PriorityQueue<T>, T> {
 
-	@Override
-	default PriorityQueue<T> get(Collection<T> collection) {
-		PriorityQueue<T> ret = new PriorityQueue<T>();
-		if(collection!=null){
-			ret.addAll(collection);
-		}
-		return ret;
-	}
-
-	@Override
-	default PriorityQueue<T> get() {
-		return new PriorityQueue<T>();
-	}
-
 	/**
 	 * Creates a new priority queue strategy.
 	 * @param <T> type for the objects in the queue
@@ -50,5 +36,19 @@ public interface PriorityQueueStrategy<T> extends IsQueueStrategy<PriorityQueue<
 	 */
 	static <T> PriorityQueueStrategy<T> create(){
 		return new PriorityQueueStrategy<T>(){};
+	}
+
+	@Override
+	default PriorityQueue<T> get() {
+		return new PriorityQueue<T>();
+	}
+
+	@Override
+	default PriorityQueue<T> get(Collection<T> collection) {
+		PriorityQueue<T> ret = new PriorityQueue<T>();
+		if(collection!=null){
+			ret.addAll(collection);
+		}
+		return ret;
 	}
 }

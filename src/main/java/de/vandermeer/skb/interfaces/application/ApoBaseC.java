@@ -15,8 +15,6 @@
 
 package de.vandermeer.skb.interfaces.application;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 
@@ -47,17 +45,6 @@ public interface ApoBaseC extends ApoBase {
 	 */
 	Character getCliShort();
 
-	/**
-	 * Returns a CLI option either short or long.
-	 * @return CLI option, short if short is not null, long otherwise
-	 */
-	default String getCliShortLong(){
-		if(this.getCliShort()!=null){
-			return this.getCliShort().toString();
-		}
-		return this.getCliLong();
-	}
-
 	@Override
 	default ST getHelp(){
 		STGroupFile stg = new STGroupFile(ApoBase.STG_FILE);
@@ -86,6 +73,5 @@ public interface ApoBaseC extends ApoBase {
 	@Override
 	default void validate() throws IllegalStateException {
 		ApoBase.super.validate();
-		Validate.validState(!StringUtils.isBlank(this.getCliShortLong()), "Apo: cliShor or cliLong must have a value");
 	}
 }

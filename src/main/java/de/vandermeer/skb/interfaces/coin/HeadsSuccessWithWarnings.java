@@ -32,9 +32,27 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  */
 public interface HeadsSuccessWithWarnings<R, M> extends HeadsSuccess<R>, IsWarningSet<M> {
 
-	@Override
-	default boolean reportsWarnings(){
-		return true;
+	/**
+	 * Creates a new success coin with given value and warnings.
+	 * @param <R> type of the return value
+	 * @param <M> the message type for the set
+	 * @param value the actual return value
+	 * @return new success coin
+	 */
+	static <R, M> HeadsSuccessWithWarnings<R, M> create(final R value){
+		return new HeadsSuccessWithWarnings<R, M>() {
+			final Set<M> warningSet = new LinkedHashSet<>();
+
+			@Override
+			public R getReturn() {
+				return value;
+			}
+
+			@Override
+			public Set<M> getWarningMessages() {
+				return this.warningSet;
+			}
+		};
 	}
 
 	@Override
@@ -64,26 +82,8 @@ public interface HeadsSuccessWithWarnings<R, M> extends HeadsSuccess<R>, IsWarni
 		return ret.toString();
 	}
 
-	/**
-	 * Creates a new success coin with given value and warnings.
-	 * @param <R> type of the return value
-	 * @param <M> the message type for the set
-	 * @param value the actual return value
-	 * @return new success coin
-	 */
-	static <R, M> HeadsSuccessWithWarnings<R, M> create(final R value){
-		return new HeadsSuccessWithWarnings<R, M>() {
-			final Set<M> warningSet = new LinkedHashSet<>();
-
-			@Override
-			public R getReturn() {
-				return value;
-			}
-
-			@Override
-			public Set<M> getWarningMessages() {
-				return this.warningSet;
-			}
-		};
+	@Override
+	default boolean reportsWarnings(){
+		return true;
 	}
 }

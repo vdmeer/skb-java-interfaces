@@ -63,6 +63,25 @@ public interface Object_To_StrBuilder extends IsTransformer<Object, StrBuilder> 
 	 * Transforms an object to a string builder.
 	 * @param obj input object
 	 * @return string builder
+	 * @see Object_To_StrBuilder interface description for how the convertion works
+	 */
+	static StrBuilder convert(Object obj){
+		return Object_To_StrBuilder.create().transform(obj);
+	}
+
+	/**
+	 * Creates a transformer that takes an object and returns a string builder.
+	 * @return new transformer
+	 * @see Object_To_StrBuilder interface description for how the converter works
+	 */
+	static Object_To_StrBuilder create(){
+		return new Object_To_StrBuilder() {};
+	}
+
+	/**
+	 * Transforms an object to a string builder.
+	 * @param obj input object
+	 * @return string builder
 	 */
 	@Override
 	default StrBuilder transform(Object obj) {
@@ -145,24 +164,5 @@ public interface Object_To_StrBuilder extends IsTransformer<Object, StrBuilder> 
 			sb.appendSeparator(' ').append(obj);
 		}
 		return sb;
-	}
-
-	/**
-	 * Creates a transformer that takes an object and returns a string builder.
-	 * @return new transformer
-	 * @see Object_To_StrBuilder interface description for how the converter works
-	 */
-	static Object_To_StrBuilder create(){
-		return new Object_To_StrBuilder() {};
-	}
-
-	/**
-	 * Transforms an object to a string builder.
-	 * @param obj input object
-	 * @return string builder
-	 * @see Object_To_StrBuilder interface description for how the convertion works
-	 */
-	static StrBuilder convert(Object obj){
-		return Object_To_StrBuilder.create().transform(obj);
 	}
 }
