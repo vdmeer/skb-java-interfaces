@@ -15,6 +15,8 @@
 
 package de.vandermeer.skb.interfaces.application;
 
+import de.vandermeer.skb.interfaces.messagesets.errors.IsErrorTemplate;
+
 /**
  * General application exception.
  * 
@@ -42,12 +44,13 @@ public class ApplicationException extends Exception {
 
 	/**
 	 * Creates a new exception.
-	 * @param errorCode the exception error code
-	 * @param args the arguments for the error code
+	 * @param template the exception error template
+	 * @param appName the application name for the error message
+	 * @param objects the objects required to create the error message for the template
 	 */
-	public ApplicationException(ApplicationErrorCode errorCode, Object ... args){
-		super(errorCode.getMessage(args));
-		this.errorCode = errorCode.getCode();
+	public ApplicationException(IsErrorTemplate template, String appName, Object ... objects){
+		super(template.getError(appName, objects).getErrorMessage().getMessage());
+		this.errorCode = template.getCode();
 	}
 
 	/**

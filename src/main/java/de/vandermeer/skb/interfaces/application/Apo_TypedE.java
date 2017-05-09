@@ -17,6 +17,8 @@ package de.vandermeer.skb.interfaces.application;
 
 import org.stringtemplate.v4.ST;
 
+import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
+
 /**
  * A standard typed environment options.
  * 
@@ -58,4 +60,12 @@ public interface Apo_TypedE<T> extends ApoBaseE, ApoBaseTyped<T> {
 	default boolean isSet(){
 		return this.getValue()!=null;
 	}
+
+	/**
+	 * Sets the environment value of the option.
+	 * @param value the value read from the environment, must not be blank
+	 * @return null on success, an error message on error
+	 */
+	IsError setEnvironmentValue(final String value);
+
 }

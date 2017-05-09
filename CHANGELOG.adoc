@@ -1,3 +1,25 @@
+=== v0.0.3 - some changes - 2017-##-##
+* changed `MessageConsole` to use flags and bitmaps
+  ** no public static flags anymore
+  ** static methods to set bitmaps and flags
+  ** added `null` tests to print methods
+  ** added more print methods
+* changed all `ST` related interfaces
+  ** moved to `st` package
+  ** added error listener
+  ** changed `STGroup` to fully load group with error messages
+* changed `messagesets`
+  ** added more error handling, including error templates and categories
+  ** added default error categories and templates
+* further changed `application`
+  ** added new error handling using error list and errNo
+  ** removed some older exceptions
+  ** changed `App_CliParser.parse()` to use `errNo` instead of exceptions
+* fixed javadoc errors
+* changed internals of some interfaces to remove bugs and static code errors (findbugs and PMD)
+* started to remove `NullPointerException` from validations, substitute with `IllegalStateExeception`
+
+
 === v0.0.2 - update - 2017-05-02
 * added application package
 

@@ -29,6 +29,12 @@ import org.stringtemplate.v4.ST;
 public interface ApoBaseE extends ApoBase {
 
 	/**
+	 * Tests if the environment option is required meaning it must be set in the environment.
+	 * @return true if required, false otherwise
+	 */
+	boolean environmentIsRequired();
+
+	/**
 	 * Returns the environment key of the option.
 	 * @return environment key, must not be blank
 	 */
@@ -38,6 +44,7 @@ public interface ApoBaseE extends ApoBase {
 	default ST getHelp(){
 		ST st = ApoBase.super.getHelp();
 		st.add("envKey", this.getEnvironmentKey());
+		st.add("envRequired", this.environmentIsRequired());
 		return st;
 	}
 
@@ -46,6 +53,12 @@ public interface ApoBaseE extends ApoBase {
 	 * @return true if it was present, false otherwise
 	 */
 	boolean inEnvironment();
+
+	/**
+	 * Sets the option flag for being in a the environment.
+	 * @param true if in a environment,  false otherwise
+	 */
+	void setInEnvironment(boolean inEnv);
 
 	@Override
 	default void validate() throws IllegalStateException {

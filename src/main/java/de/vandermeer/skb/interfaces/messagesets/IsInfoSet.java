@@ -52,18 +52,34 @@ public interface IsInfoSet<M> extends IsMessageSet {
 
 	/**
 	 * Adds a new info.
-	 * @param info info to add
+	 * @param info info to add, ignored if null
 	 */
 	default void addInfo(M info){
-		this.getInfoMessages().add(info);
+		if(info!=null){
+			this.getInfoMessages().add(info);
+		}
 	}
 
 	/**
 	 * Adds all infos from given collection.
-	 * @param infos collection of information to add
+	 * @param infos collection of information to add, ignored if null
 	 */
 	default void addAllInfos(Collection<M> infos){
-		this.getInfoMessages().addAll(infos);
+		if(infos!=null){
+			this.getInfoMessages().addAll(infos);
+		}
+	}
+
+	/**
+	 * Adds all infos from given collection.
+	 * @param infos array of information to add, ignored if null
+	 */
+	default void addAllInfos(M[] infos){
+		if(infos!=null){
+			for(M inf : infos){
+				this.addInfo(inf);
+			}
+		}
 	}
 
 	/**

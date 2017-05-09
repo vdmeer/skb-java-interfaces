@@ -29,7 +29,9 @@ public interface Apo_TypedCP<T> extends Apo_TypedC<T>, Apo_TypedP<T> {
 	@Override
 	default ST getHelp(){
 		ST st = Apo_TypedC.super.getHelp();
+
 		st.add("propKey", this.getPropertyKey());
+		st.add("propRequired", this.propertyIsRequired());
 
 		return st;
 	}

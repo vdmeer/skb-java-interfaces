@@ -32,6 +32,9 @@ import de.vandermeer.skb.interfaces.categories.has.HasDescription;
  */
 public interface ApoBase extends CategoryIs, HasDescription {
 
+	/** The STG file for long help. */
+	static final String STG_FILE = "de/vandermeer/skb/interfaces/application/long-help.stg";
+
 	/**
 	 * Returns help information for the option.
 	 * The information contains all possible settings, except the long description.
@@ -39,8 +42,8 @@ public interface ApoBase extends CategoryIs, HasDescription {
 	 * @return help information, must not be null
 	 */
 	default ST getHelp(){
-		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/option-help.stg");
-		ST st = stg.getInstanceOf("optionHelp");
+		STGroupFile stg = new STGroupFile(STG_FILE);
+		ST st = stg.getInstanceOf("longHelp");
 
 		st.add("displayName", this.getDisplayName());
 		st.add("shortDescr", this.getDescription());

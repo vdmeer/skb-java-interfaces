@@ -57,18 +57,34 @@ public interface IsWarningSet<M> extends IsMessageSet {
 
 	/**
 	 * Adds a new warning.
-	 * @param warning warning to add
+	 * @param warning warning to add, ignored if null
 	 */
 	default void addWarning(M warning){
-		this.getWarningMessages().add(warning);
+		if(warning!=null){
+			this.getWarningMessages().add(warning);
+		}
 	}
 
 	/**
 	 * Adds all warnings from given collection.
-	 * @param warnings collection of warnings to add
+	 * @param warnings collection of warnings to add, ignored if null
 	 */
 	default void addAllWarnings(Collection<M> warnings){
-		this.getWarningMessages().addAll(warnings);
+		if(warnings!=null){
+			this.getWarningMessages().addAll(warnings);
+		}
+	}
+
+	/**
+	 * Adds all warnings from given collection.
+	 * @param warnings array of warnings to add, ignored if null
+	 */
+	default void addAllWarnings(M[] warnings){
+		if(warnings!=null){
+			for(M warn : warnings){
+				this.addWarning(warn);
+			}
+		}
 	}
 
 	/**

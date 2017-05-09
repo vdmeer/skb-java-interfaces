@@ -47,18 +47,34 @@ public interface IsErrorSet<M> extends IsMessageSet {
 
 	/**
 	 * Adds a new error.
-	 * @param error error to add
+	 * @param error error to add, ignored if null
 	 */
 	default void addError(M error){
-		this.getErrorMessages().add(error);
+		if(error!=null){
+			this.getErrorMessages().add(error);
+		}
 	}
 
 	/**
 	 * Adds all errors from given collection.
-	 * @param errors collection of errors to add
+	 * @param errors collection of errors to add, ignored if null
 	 */
 	default void addAllErrors(Collection<M> errors){
-		this.getErrorMessages().addAll(errors);
+		if(errors!=null){
+			this.getErrorMessages().addAll(errors);
+		}
+	}
+
+	/**
+	 * Adds all errors from given collection.
+	 * @param errors array of errors to add, ignored if null
+	 */
+	default void addAllErrors(M[] errors){
+		if(errors!=null){
+			for(M err : errors){
+				this.addError(err);
+			}
+		}
 	}
 
 	/**

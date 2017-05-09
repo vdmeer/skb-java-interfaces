@@ -60,8 +60,8 @@ public interface ApoBaseC extends ApoBase {
 
 	@Override
 	default ST getHelp(){
-		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/option-help.stg");
-		ST cliST = stg.getInstanceOf("cliHelp");
+		STGroupFile stg = new STGroupFile(ApoBase.STG_FILE);
+		ST cliST = stg.getInstanceOf("cli");
 		cliST.add("cliShort", this.getCliShort());
 		cliST.add("cliLong", this.getCliLong());
 		cliST.add("cliRequired", this.cliIsRequired());
@@ -79,7 +79,7 @@ public interface ApoBaseC extends ApoBase {
 
 	/**
 	 * Sets the option flag for being in a command line.
-	 * @param inCli true if in a command line, false otherwise
+	 * @param true if in a command line, false otherwise
 	 */
 	void setInCLi(boolean inCli);
 

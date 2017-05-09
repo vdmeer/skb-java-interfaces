@@ -15,9 +15,9 @@
 
 package de.vandermeer.skb.interfaces.application;
 
-import java.util.Properties;
-
 import org.stringtemplate.v4.ST;
+
+import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
 
 /**
  * A standard typed property options.
@@ -63,9 +63,9 @@ public interface Apo_TypedP<T> extends ApoBaseP, ApoBaseTyped<T> {
 
 	/**
 	 * Sets the property value of the option.
-	 * @param properties set of properties to get the value from
-	 * @throws IllegalStateException if the argument was blank (string) or otherwise problematic
+	 * @param value the value to set
+	 * @return null on success, an error message on error
 	 */
-	void setPropertyValue(Properties properties) throws IllegalStateException;
+	IsError setPropertyValue(final String value);
 
 }

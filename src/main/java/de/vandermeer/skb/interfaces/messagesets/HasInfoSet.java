@@ -22,11 +22,11 @@ package de.vandermeer.skb.interfaces.messagesets;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
-public interface HasInfoSet<M> extends HasMessageSet {
+public interface HasInfoSet<M extends IsInfoSet<?>> extends HasMessageSet {
 
 	/**
 	 * Returns a set of info messages.
 	 * @return set of info messages
 	 */
-	IsInfoSet<M> getInfoSet();
+	M getInfoSet();
 }

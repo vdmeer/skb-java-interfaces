@@ -14,7 +14,7 @@
  */
 
 /*
- * Template for CLI usage.
+ * Template for CLI/Env/Prop usage.
  *
  * @package    de.vandermeer.skb.interfaces.application
  * @author     Sven van der Meer <vdmeer.sven@mykolab.com>
@@ -24,13 +24,13 @@
  * @since      v0.0.2
  */
 
-usage(appName, appDisplayName, appVersion, appDescription, required, cliOptions, envOptions, propOptions) ::= <<
+usage(appName, appDisplayName, appVersion, appDescription, requiredCliOptions, cliOptions, envOptions, propOptions) ::= <<
 <appDisplayName>
 <appVersion>
 
 <appDescription:{descr | <descr>}; separator="\n">
 
-usage: <appName> <required:{man | <man>}; separator=" "> [OPTIONS]
+usage: <appName> <requiredCliOptions:{man | <man>}; separator=" "> [OPTIONS]
 
 <cliOptions:{cli | <cli>}; separator="\n">
 <if(envOptions)>
@@ -47,4 +47,5 @@ Property options (property key, description):
 
 >>
 
-option(cliShort, cliLong, argName, argOptional) ::= "  <if(cliShort)>-<cliShort>, <else>    <endif><if(cliLong)>--<cliLong><endif><if(argName)> <if(argOptional)>[<else>\<<endif><argName><if(argOptional)>]<else>><endif><endif>"
+cliOption(cliShort, cliLong, argName, argOptional) ::= "  <if(cliShort)>-<cliShort>, <else>    <endif><if(cliLong)>--<cliLong><endif><if(argName)> <if(argOptional)>[<else>\<<endif><argName><if(argOptional)>]<else>><endif><endif>"
+

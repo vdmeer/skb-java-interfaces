@@ -15,23 +15,23 @@
 
 package de.vandermeer.skb.interfaces.application;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.text.StrBuilder;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
 import de.vandermeer.skb.interfaces.categories.has.HasDescription;
+import de.vandermeer.skb.interfaces.messagesets.HasErrorSet;
+import de.vandermeer.skb.interfaces.messagesets.HasInfoSet;
+import de.vandermeer.skb.interfaces.messagesets.HasWarningSet;
+import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
+import de.vandermeer.skb.interfaces.messagesets.IsInfoSet_FT;
+import de.vandermeer.skb.interfaces.messagesets.IsWarningSet_FT;
+import de.vandermeer.skb.interfaces.messagesets.errors.Templates_AppStart;
 import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedText;
 
 /**
@@ -41,7 +41,7 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
-public interface IsApplication extends CategoryIs, HasDescription {
+public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<IsErrorSet_IsError>, HasWarningSet<IsWarningSet_FT>, HasInfoSet<IsInfoSet_FT> {
 
 	/**
 	 * Simple utility to test if a CLI option (short or long) is in an array.
@@ -49,7 +49,7 @@ public interface IsApplication extends CategoryIs, HasDescription {
 	 * @param apo the option to search for
 	 * @return true if the option, short or long, is in the array, false otherwise
 	 */
-	public static boolean IN_ARRAY(String[] array, ApoBaseC apo){
+	public static boolean IN_ARGUMENTS(String[] array, ApoBaseC apo){
 		if(array==null || array.length==0 || apo==null){
 			return false;
 		}
@@ -64,11 +64,9 @@ public interface IsApplication extends CategoryIs, HasDescription {
 	 * @param options object array, ignored if null, only application options will be taken
 	 */
 	default void addAllOptions(Iterable<?> options){
-		if(options!=null){
-			for(Object opt : options){
-				this.addOption(opt);
-			}
-		}
+		this.getCliParser().addAllOptions(options);
+		this.getEnvironmentParser().addAllOptions(options);
+		this.getPropertyParser().addAllOptions(options);
 	}
 
 	/**
@@ -76,11 +74,9 @@ public interface IsApplication extends CategoryIs, HasDescription {
 	 * @param options object array, ignored if null, only application options will be taken
 	 */
 	default void addAllOptions(Object[] options){
-		if(options!=null){
-			for(Object opt : options){
-				this.addOption(opt);
-			}
-		}
+		this.getCliParser().addAllOptions(options);
+		this.getEnvironmentParser().addAllOptions(options);
+		this.getPropertyParser().addAllOptions(options);
 	}
 
 	/**
@@ -92,168 +88,51 @@ public interface IsApplication extends CategoryIs, HasDescription {
 	 * @throws IllegalStateException if the option is already in use
 	 */
 	default void addOption(Object option){
-		if(option==null){
-			return;
-		}
-		if(ClassUtils.isAssignable(option.getClass(), Apo_SimpleC.class)){
-			this.getCliParser().addOption((Apo_SimpleC)option);
-		}
-		if(ClassUtils.isAssignable(option.getClass(), Apo_TypedC.class)){
-			this.getCliParser().addOption((Apo_TypedC<?>)option);
-		}
-		if(ClassUtils.isAssignable(option.getClass(), Apo_TypedE.class)){
-			Apo_TypedE<?> eo = (Apo_TypedE<?>)option;
-			for(Apo_TypedE<?> op : this.getEnvironmentOptions()){
-				Validate.validState(
-						!op.getEnvironmentKey().equals(eo.getEnvironmentKey()),
-						this.getAppName() + ": environment option <" + eo.getEnvironmentKey() + "> already in use"
-				);
-			}
-			this.getEnvironmentOptions().add(eo);
-		}
-		if(ClassUtils.isAssignable(option.getClass(), Apo_TypedP.class)){
-			Apo_TypedP<?> po = (Apo_TypedP<?>)option;
-			for(Apo_TypedP<?> op : this.getPropertyOptions()){
-				Validate.validState(
-						!op.getPropertyKey().equals(po.getPropertyKey()),
-						this.getAppName() + ": property option <" + po.getPropertyKey() + "> already in use"
-				);
-			}
-			this.getPropertyOptions().add(po);
-		}
+		this.getCliParser().addOption(option);
+		this.getEnvironmentParser().addOption(option);
+		this.getPropertyParser().addOption(option);
 	}
 
 	/**
 	 * Prints a help screen for the application, to be used by an executing component.
 	 */
-	default void appHelpScreen(){
+	default void helpScreen(){
 		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/help.stg");
 		ST st = stg.getInstanceOf("usage");
 		st.add("appName", this.getAppName());
 		st.add("appDisplayName", this.getAppDisplayName());
 		st.add("appVersion", this.getAppVersion());
 		st.add("appDescription", Text_To_FormattedText.left(this.getAppDescription(), this.getConsoleWidth()));
-		st.add("required", CliOptionList.getRequired(getCLiALlOptions()));
+		st.add("requiredCliOptions", CliOptionList.getRequired(getCLiALlOptions()));
+
 		for(StrBuilder sb : this.getCliParser().usage(this.getConsoleWidth())){
 			st.add("cliOptions", sb);
 		}
-
-		if(this.getEnvironmentOptions().size()>0){
-			TreeMap<String, Apo_TypedE<?>> map = EnvironmentOptionsList.sortedMap(this.getEnvironmentOptions());
-			Map<String, String> envMap = new LinkedHashMap<>();
-			int length = 0;
-			for(Apo_TypedE<?> te : map.values()){
-				if(te.getEnvironmentKey().length()>length){
-					length = te.getEnvironmentKey().length();
-				}
-				envMap.put(te.getEnvironmentKey(), te.getDescription());
-			}
-			length += 2;
-
-			for(Entry<String, String> entry : envMap.entrySet()){
-				StrBuilder argLine = new StrBuilder();
-				argLine.append(entry.getKey()).appendPadding(length-argLine.length(), ' ').append("  - ");
-				StrBuilder padLine = new StrBuilder();
-				padLine.appendPadding(length+4, ' ');
-
-				Collection<StrBuilder> text = Text_To_FormattedText.left(entry.getValue(), this.getConsoleWidth()-length);
-				int i = 0;
-				for(StrBuilder b : text){
-					if(i==0){
-						st.add("envOptions", argLine + b.build());
-					}
-					else{
-						st.add("envOptions", padLine + b.build());
-					}
-					i++;
-				}
-			}
+		for(StrBuilder sb : this.getEnvironmentParser().usage(this.getConsoleWidth())){
+			st.add("envOptions", sb);
+		}
+		for(StrBuilder sb : this.getPropertyParser().usage(this.getConsoleWidth())){
+			st.add("propOptions", sb);
 		}
 
-		if(this.getPropertyOptions().size()>0){
-			TreeMap<String, Apo_TypedP<?>> map = PropertyOptionsList.sortedMap(this.getPropertyOptions());
-			Map<String, String> envMap = new LinkedHashMap<>();
-			int length = 0;
-			for(Apo_TypedP<?> te : map.values()){
-				if(te.getPropertyKey().length()>length){
-					length = te.getPropertyKey().length();
-				}
-				envMap.put(te.getPropertyKey(), te.getDescription());
-			}
-			length += 2;
-
-			for(Entry<String, String> entry : envMap.entrySet()){
-				StrBuilder argLine = new StrBuilder();
-				argLine.append(entry.getKey()).appendPadding(length-argLine.length(), ' ').append("  - ");
-				StrBuilder padLine = new StrBuilder();
-				padLine.appendPadding(length+4, ' ');
-
-				Collection<StrBuilder> text = Text_To_FormattedText.left(entry.getValue(), this.getConsoleWidth()-length);
-				int i = 0;
-				for(StrBuilder b : text){
-					if(i==0){
-						st.add("propOptions", argLine + b.build());
-					}
-					else{
-						st.add("propOptions", padLine + b.build());
-					}
-					i++;
-				}
-			}
-		}
 		System.out.println(st.render());
 	}
 
 	/**
 	 * Prints specific help for a command line option of the application.
-	 * @param arg the command line argument specific help is requested for
+	 * @param opt the option specific help is requested for
 	 */
-	default void appHelpScreen(String arg){
-		if(StringUtils.isBlank(arg)){
+	default void helpScreen(ApoBase opt){
+		if(opt==null){
 			return;
 		}
 
-		ApoBase opt = null;
-		for(ApoBaseC cliOpt : this.getCLiALlOptions()){
-			if(cliOpt.getCliShort()!=null){
-				if(arg.equals(cliOpt.getCliShort().toString())){
-					opt = cliOpt;
-					break;
-				}
-			}
-			if(arg.equals(cliOpt.getCliLong())){
-				opt = cliOpt;
-				break;
-			}
-		}
-		if(opt==null){
-			for(Apo_TypedP<?> propOpt : this.getPropertyOptions()){
-				if(arg.equals(propOpt.getPropertyKey())){
-					opt = propOpt;
-					break;
-				}
-			}
-		}
-
-		if(opt==null){
-			for(Apo_TypedE<?> envOpt : this.getEnvironmentOptions()){
-				if(arg.equals(envOpt.getEnvironmentKey())){
-					opt = envOpt;
-					break;
-				}
-			}
-		}
-
-		if(opt==null){
-			System.err.println(this.getAppName() + ": unknown option -> " + arg);//TODO Error Code
-		}
-		else{
-			ST st = opt.getHelp();
-			st.add("longDescr", this.longDescriptionString(opt.getLongDescription()));
-			st.add("strongLine", new StrBuilder().appendPadding(this.getConsoleWidth(), '=' ));
-			st.add("line", new StrBuilder().appendPadding(this.getConsoleWidth(), '-' ));
-			System.out.println(st.render());
-		}
+		ST st = opt.getHelp();
+		st.add("longDescr", this.translateLongDescription(opt.getLongDescription()));
+		st.add("lineTop", new StrBuilder().appendPadding(this.getConsoleWidth(), '=' ));
+		st.add("lineBottom", new StrBuilder().appendPadding(this.getConsoleWidth(), '=' ));
+		st.add("lineMid", new StrBuilder().appendPadding(this.getConsoleWidth(), '-' ));
+		System.out.println(st.render());
 	}
 
 	/**
@@ -283,10 +162,11 @@ public interface IsApplication extends CategoryIs, HasDescription {
 	/**
 	 * Executes the application.
 	 * The default implementation will try to parse the command line with the application's CLI object and if that does not return success (0), call the help screen automatically.
+	 * Error and information messages will be added to the respective sets.
+	 * An error code will be set in case an error occurred.
 	 * @param args arguments for execution
-	 * @return 0 on success, negative integer on error, positive integer on no-error but exit application
 	 */
-	default int executeApplication(String[] args){
+	default void executeApplication(String[] args){
 		//add help and version options if required
 		if(this.cliSimpleHelpOption()!=null && !this.getCliParser().hasOption(this.cliSimpleHelpOption())){
 			this.getCliParser().addOption(this.cliSimpleHelpOption());
@@ -298,42 +178,67 @@ public interface IsApplication extends CategoryIs, HasDescription {
 			this.getCliParser().addOption(this.cliVersionOption());
 		}
 
-		if(IN_ARRAY(args, this.cliVersionOption())){
+		if(IN_ARGUMENTS(args, this.cliVersionOption())){
 			System.out.println(this.getAppVersion());
-			return 1;
+			this.setErrno(1);
 		}
-		if(IN_ARRAY(args, this.cliSimpleHelpOption())){
-			this.appHelpScreen();
-			return 1;
+		else if(IN_ARGUMENTS(args, this.cliSimpleHelpOption())){
+			this.helpScreen();
+			this.setErrno(1);
 		}
-		if(IN_ARRAY(args, this.cliTypedHelpOption())){
+		else if(IN_ARGUMENTS(args, this.cliTypedHelpOption())){
 			if(args.length==1){
-				this.appHelpScreen();
-				return 1;
+				this.helpScreen();
+				this.setErrno(1);
 			}
 			else if(args.length==2){
-				this.appHelpScreen(args[1]);
-				return 1;
+				ApoBase opt = this.getOption(args[1]);
+				if(opt==null){
+					this.getErrorSet().addError(Templates_AppStart.HELP_UKNOWN_OPTION.getError(this.getAppName(), args[1]));
+					this.setErrno(Templates_AppStart.HELP_UKNOWN_OPTION.getCode());
+				}
+				else{
+					this.helpScreen(opt);
+					this.setErrno(1);
+				}
 			}
-			System.err.println(this.getAppName() + ": help requested but too many arguments given");
-			return -1;
+			else{
+				//TODO too many help options
+			}
 		}
 
-		try{
-			this.getCliParser().parse(args);
-		}
-		catch(IllegalStateException ex){
-			System.err.println(this.getAppName() + ": error parsing command line -> " + ex.getMessage());
-			System.err.println(this.getAppName() + ": try '--help' for list of CLI options or '--help <option>' for detailed help on a CLI option");
-			return -1; 
-		}
-		catch (CliParseException e) {
-			System.err.println(this.getAppName() + ": error: " + e.getMessage());
-			System.err.println(this.getAppName() + ": try '--help' for list of CLI options or '--help <option>' for detailed help on a CLI option");
-			return e.getErrorCode(); 
+		if(this.getErrNo()!=0){
+			return;
 		}
 
-		return 0;
+		this.setErrno(0);
+		this.getCliParser().parse(args);
+		if(this.getCliParser().getErrNo()!=0){
+			this.getErrorSet().addAllErrors(this.getCliParser().getErrorSet().getErrorMessages());
+			this.setErrno(this.getCliParser().getErrNo());
+		}
+
+		if(this.getErrNo()<0){
+			if(this.cliSimpleHelpOption()!=null){
+				this.getInfoSet().addInfo("{}: try '--help' for list of CLI options", this.getAppName());
+			}
+			if(this.cliTypedHelpOption()!=null){
+				this.getInfoSet().addInfo("{}: try '--help' for list of CLI options or '--help <option>' for detailed help on a CLI option", this.getAppName());
+			}
+
+			System.err.println(this.getErrorSet().render());
+			if(this.getWarningSet().hasWarnings()){
+				System.out.println();
+				System.out.println(this.getWarningSet().render());
+			}
+			if(this.getInfoSet().hasInformation()){
+				System.out.println();
+				System.out.println(this.getInfoSet().render());
+			}
+		}
+		else{
+			this.getEnvironmentParser().parse();
+		}
 	}
 
 	/**
@@ -409,21 +314,77 @@ public interface IsApplication extends CategoryIs, HasDescription {
 	}
 
 	/**
-	 * Returns all environment options.
-	 * @return all environment options, empty array if none added
+	 * Returns the environment parser.
+	 * @return the environment parser, must not be null
 	 */
-	Set<Apo_TypedE<?>> getEnvironmentOptions();
+	App_EnvironmentParser getEnvironmentParser();
 
 	/**
-	 * Returns all property options.
-	 * @return all property options, empty array if none added
+	 * Returns the number of the last error, 0 if none occurred.
+	 * @return last error number
 	 */
-	Set<Apo_TypedP<?>> getPropertyOptions();
+	int getErrNo();
+
+	/**
+	 * Finds and returns an option by name from CLI, property, and environment options.
+	 * @param name the name, blank strings result in `null` return
+	 * @return the option as base option if found, null if not found
+	 */
+	default ApoBase getOption(String name){
+		ApoBase opt = null;
+		if(!StringUtils.isBlank(name)){
+			for(ApoBaseC cliOpt : this.getCLiALlOptions()){
+				if(cliOpt.getCliShort()!=null){
+					if(name.equals(cliOpt.getCliShort().toString())){
+						opt = cliOpt;
+						break;
+					}
+				}
+				if(cliOpt.getCliLong()!=null){
+					if(name.equals(cliOpt.getCliLong())){
+						opt = cliOpt;
+						break;
+					}
+				}
+			}
+			if(opt==null){
+				for(Apo_TypedP<?> propOpt : this.getPropertyParser().getOptions().getValues()){
+					if(name.equals(propOpt.getPropertyKey())){
+						opt = propOpt;
+						break;
+					}
+				}
+			}
+
+			if(opt==null){
+				for(Apo_TypedE<?> envOpt : this.getEnvironmentParser().getOptions().getValues()){
+					if(name.equals(envOpt.getEnvironmentKey())){
+						opt = envOpt;
+						break;
+					}
+				}
+			}
+		}
+		return opt;
+	}
+
+	/**
+	 * Returns the property parser.
+	 * @return the property parser, must not be null
+	 */
+	App_PropertyParser getPropertyParser();
+
+	/**
+	 * Sets an error number.
+	 * @param errorNumber the new number for the error
+	 */
+	void setErrno(int errorNumber);
 
 	/**
 	 * Translates an option's long help object into a string.
 	 * @param longDescription the original long description of an option to translate
 	 * @return the options long help, null and blank strings mean no long help available
 	 */
-	String longDescriptionString(Object longDescription);
+	String translateLongDescription(Object longDescription);
+
 }

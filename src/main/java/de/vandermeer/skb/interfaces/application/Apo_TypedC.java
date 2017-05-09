@@ -19,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.stringtemplate.v4.ST;
 
+import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
+
 /**
  * A standard typed CLI option.
  * 
@@ -96,10 +98,9 @@ public interface Apo_TypedC<T> extends ApoBaseTyped<T>, ApoBaseC {
 	/**
 	 * Sets the CLI value of the option.
 	 * @param value the value read from the command line, must not be null (or blank in case of a string)
-	 * @throws CliParseException if the argument was blank (string) or otherwise problematic
-	 * @throws IllegalStateException if the argument was blank (string) or otherwise problematic
+	 * @return null on success, an error message on error
 	 */
-	void setCliValue(Object value) throws CliParseException, IllegalStateException;
+	IsError setCliValue(final Object value);
 
 	@Override
 	default void validate() throws IllegalStateException {

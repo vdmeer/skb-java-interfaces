@@ -23,7 +23,10 @@ import org.apache.commons.lang3.Validate;
 import org.stringtemplate.v4.ST;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
+import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
+import de.vandermeer.skb.interfaces.messagesets.errors.Templates_ST;
 import de.vandermeer.skb.interfaces.render.DoesRender;
+import de.vandermeer.skb.interfaces.render.DoesRenderToWidth;
 
 /**
  * Interface for objects that represent String Template (ST) objects
@@ -33,13 +36,21 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
-public interface IsST extends DoesRender, CategoryIs {
+public interface IsST extends DoesRender, DoesRenderToWidth, CategoryIs {
 
 	/**
 	 * Returns the ST object.
 	 * @return ST object
 	 */
 	ST getST();
+
+	/**
+	 * The name of the ST Group in which the template was defined.
+	 * @return STGroup name, null if none set
+	 */
+	default String getGroupName(){
+		return null;
+	}
 
 	@Override
 	default String render() {
@@ -49,17 +60,25 @@ public interface IsST extends DoesRender, CategoryIs {
 		return this.getST().render();
 	};
 
+	@Override
+	default String render(int width) {
+		if(this.getST()==null || width<1){
+			return "";
+		}
+		return this.getST().render(width);
+	}
+
 	/**
 	 * Returns the arguments expected to be defined in the ST object.
 	 * @return expected arguments as set of argument names
 	 */
-	Set<String> getExpectedArguments();
+	String[] getExpectedArguments();
 
 	/**
 	 * Validates the ST for expected arguments.
 	 * @return a set of error messages, empty if no errors found, null if no expected arguments where set or no ST was set
 	 */
-	default Set<String> validate(){
+	default Set<IsError> validate(){
 		if(this.getExpectedArguments()==null){
 			return null;
 		}
@@ -67,17 +86,17 @@ public interface IsST extends DoesRender, CategoryIs {
 			return null;
 		}
 
-		Set<String> ret = new LinkedHashSet<>();
+		Set<IsError> ret = new LinkedHashSet<>();
 		Map<?,?> formalArgs = this.getST().impl.formalArguments;
 		if(formalArgs==null){
 			for(String s : this.getExpectedArguments()){
-				ret.add("ST <" + this.getST().getName() + "> does not define expected argument <" + s + ">");
+				ret.add(Templates_ST.MISSING_EXPECTED_ARGUMENT_STG.getError("app", this.getGroupName(), this.getST().getName(), s));
 			}
 		}
 		else{
 			for(String s : this.getExpectedArguments()){
 				if(!formalArgs.containsKey(s)){
-					ret.add("ST <" + this.getST().getName() + "> does not define expected argument <" + s + ">");
+					ret.add(Templates_ST.MISSING_EXPECTED_ARGUMENT_STG.getError("app", this.getGroupName(), this.getST().getName(), s));
 				}
 			}
 		}
@@ -91,17 +110,18 @@ public interface IsST extends DoesRender, CategoryIs {
 	 * @throws NullPointerException if `st` was null
 	 */
 	static IsST create(ST st){
-		return IsST.create(st, null);
+		return IsST.create(st, null, null);
 	}
 
 	/**
 	 * Creates a new IsST object.
 	 * @param st the contained ST object
-	 * @param expectedArguments set of expected arguments for the ST
+	 * @param expectedArguments set of expected arguments for the ST, null if none required
+	 * @param groupName the name of the ST group of the template, null if none set or known
 	 * @return new IsST object
 	 * @throws NullPointerException if `st` was null or the expected arguments was not null and contained null elements
 	 */
-	static IsST create(final ST st, final Set<String> expectedArguments){
+	static IsST create(final ST st, final String[] expectedArguments, String groupName){
 		Validate.notNull(st);
 		if(expectedArguments!=null){
 			Validate.noNullElements(expectedArguments);
@@ -114,8 +134,13 @@ public interface IsST extends DoesRender, CategoryIs {
 			}
 
 			@Override
-			public Set<String> getExpectedArguments() {
+			public String[] getExpectedArguments() {
 				return expectedArguments;
+			}
+
+			@Override
+			public String getGroupName(){
+				return groupName;
 			}
 		};
 	}

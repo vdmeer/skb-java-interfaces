@@ -28,6 +28,8 @@ import org.apache.commons.lang3.text.StrBuilder;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 
+import de.vandermeer.skb.interfaces.messagesets.HasErrorSet;
+import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
 import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedText;
 
 /**
@@ -37,7 +39,19 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
-public interface App_CliParser {
+public interface App_CliParser extends HasErrorSet<IsErrorSet_IsError> {
+
+	/**
+	 * Returns the application name.
+	 * @return application name, must not be null
+	 */
+	String getAppName();
+
+	/**
+	 * Returns the number of the last error, 0 if none occurred.
+	 * @return last error number
+	 */
+	int getErrNo();
 
 	/**
 	 * Statistic method: returns number of CLI arguments with short option.
@@ -114,7 +128,7 @@ public interface App_CliParser {
 	Set<ApoBaseC> getAllOptions();
 
 	/**
-	 * Tests if an option is already added to the command line parser.
+	 * Tests if an option is already added to the parser.
 	 * @param option the option to test for
 	 * @return true if parser has the option (short or long), false otherwise (option was `null` or not an instance of {@link ApoBaseC}
 	 */
@@ -123,11 +137,11 @@ public interface App_CliParser {
 			return false;
 		}
 		if(option.getClass().isInstance(ApoBaseC.class)){
-			ApoBaseC simple = (Apo_SimpleC)option;
-			if(this.getAddedOptions().contains(simple.getCliShort())){
+			ApoBaseC opt = (ApoBaseC)option;
+			if(opt.getCliShort()!=null && this.getAddedOptions().contains(opt.getCliShort().toString())){
 				return true;
 			}
-			if(this.getAddedOptions().contains(simple.getCliLong())){
+			if(opt.getCliLong()!=null && this.getAddedOptions().contains(opt.getCliLong())){
 				return true;
 			}
 		}
@@ -135,12 +149,12 @@ public interface App_CliParser {
 	}
 
 	/**
-	 * Parses command line arguments set values for CLI options.
+	 * Parses command line arguments and sets values for CLI options.
+	 * Parsing errors are in the local error set.
+	 * Latest parsing error code is in the local `errNo` member.
 	 * @param args command line arguments
-	 * @throws CliParseException if a parsing error happened, for instance a required option was not present in the arguments
-	 * @throws IllegalStateException if a parsing error happened, for instance a required option was not present in the arguments
 	 */
-	void parse(String[] args) throws CliParseException, IllegalStateException;
+	void parse(String[] args);
 
 	/**
 	 * Prints usage information for the CLI parser including all CLI options.
@@ -153,7 +167,7 @@ public interface App_CliParser {
 		int length = 0;
 		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/help.stg");
 		for(Object option : map.values()){
-			ST sto = stg.getInstanceOf("option");
+			ST sto = stg.getInstanceOf("cliOption");
 			String description = null;
 			if(ClassUtils.isAssignable(option.getClass(), Apo_SimpleC.class)){
 				sto.add("cliShort", ((Apo_SimpleC)option).getCliShort());

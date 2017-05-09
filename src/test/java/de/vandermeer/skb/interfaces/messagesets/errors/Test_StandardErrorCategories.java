@@ -1,4 +1,4 @@
-/* Copyright 2016 Sven van der Meer <vdmeer.sven@mykolab.com>
+/* Copyright 2017 Sven van der Meer <vdmeer.sven@mykolab.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,20 @@
  * limitations under the License.
  */
 
-package de.vandermeer.skb.interfaces.messagesets;
+package de.vandermeer.skb.interfaces.messagesets.errors;
 
-/**
- * Things that "`have`" a warning message set.
- * 
- * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
- * @since      v0.0.1
- */
-public interface HasWarningSet<M extends IsWarningSet<?>> extends HasMessageSet {
+import org.junit.Test;
 
-	/**
-	 * Returns a set of warning messages.
-	 * @return set of warning messages
-	 */
-	M getWarningSet();
+public class Test_StandardErrorCategories {
+
+	@Test
+	public void test_Constructor(){
+		@SuppressWarnings("unused")
+		StandardErrorCategories[] cats = StandardErrorCategories.values();
+	}
+
+	@Test
+	public void test_Validation(){
+		IsErrorCategory.validate(StandardErrorCategories.values());
+	}
 }

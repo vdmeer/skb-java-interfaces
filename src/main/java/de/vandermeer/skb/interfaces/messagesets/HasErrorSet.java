@@ -22,11 +22,11 @@ package de.vandermeer.skb.interfaces.messagesets;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
-public interface HasErrorSet<M> extends HasMessageSet {
+public interface HasErrorSet<M extends IsErrorSet<?>> extends HasMessageSet {
 
 	/**
 	 * Returns a set of error messages.
 	 * @return set of error messages
 	 */
-	IsErrorSet<M> getErrorSet();
+	M getErrorSet();
 }
