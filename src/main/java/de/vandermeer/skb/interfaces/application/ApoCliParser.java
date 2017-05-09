@@ -20,9 +20,18 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.cli.AlreadySelectedException;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.MissingArgumentException;
+import org.apache.commons.cli.MissingOptionException;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 import org.stringtemplate.v4.ST;
@@ -30,6 +39,8 @@ import org.stringtemplate.v4.STGroupFile;
 
 import de.vandermeer.skb.interfaces.messagesets.HasErrorSet;
 import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
+import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
+import de.vandermeer.skb.interfaces.messagesets.errors.Templates_CliGeneral;
 import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedText;
 
 /**
@@ -39,7 +50,7 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
-public interface App_CliParser extends HasErrorSet<IsErrorSet_IsError> {
+public interface ApoCliParser extends HasErrorSet<IsErrorSet_IsError> {
 
 	/**
 	 * Returns the application name.
@@ -54,99 +65,10 @@ public interface App_CliParser extends HasErrorSet<IsErrorSet_IsError> {
 	int getErrNo();
 
 	/**
-	 * Statistic method: returns number of CLI arguments with short option.
-	 * @return number of CLI arguments with short option
+	 * Returns the parser's option set.
+	 * @return parser's option set, must not be null
 	 */
-	int numberShort();
-
-	/**
-	 * Statistic method: returns number of CLI arguments with long option.
-	 * @return number of CLI arguments with long option
-	 */
-	int numberLong();
-
-	/**
-	 * Adds all options to the parser.
-	 * @param options the options to be added, ignored if null, any null element is ignored as well
-	 * @return self to allow chaining
-	 * @throws IllegalStateException if the option is already in use
-	 */
-	default App_CliParser addAllOptions(Object[] options) throws IllegalStateException{
-		if(options!=null){
-			for(Object opt : options){
-				this.addOption(opt);
-			}
-		}
-		return this;
-	}
-
-	/**
-	 * Adds all options to the parser.
-	 * @param options the options to be added, ignored if null, any null element is ignored as well
-	 * @return self to allow chaining
-	 * @throws IllegalStateException if the option is already in use
-	 */
-	default App_CliParser addAllOptions(Iterable<?> options) throws IllegalStateException{
-		if(options!=null){
-			for(Object opt : options){
-				this.addOption(opt);
-			}
-		}
-		return this;
-	}
-
-	/**
-	 * Adds a new option to the parser.
-	 * @param option the option to be added, ignored if `null`
-	 * @return self to allow chaining
-	 * @throws IllegalStateException if the option is already in use
-	 */
-	App_CliParser addOption(Object option) throws IllegalStateException;
-
-	/**
-	 * Returns the options already added, short or long.
-	 * @return already added options, empty if none added
-	 */
-	Set<String> getAddedOptions();
-
-	/**
-	 * Returns all simple options added to the parser.
-	 * @return all simple options, empty array if none added
-	 */
-	Set<Apo_SimpleC> getSimpleOptions();
-
-	/**
-	 * Returns all typed options added to the parser.
-	 * @return all typed options, empty array if none added
-	 */
-	Set<Apo_TypedC<?>> getTypedOptions();
-
-	/**
-	 * Returns a set of all options.
-	 * @return set of all options, empty if none set
-	 */
-	Set<ApoBaseC> getAllOptions();
-
-	/**
-	 * Tests if an option is already added to the parser.
-	 * @param option the option to test for
-	 * @return true if parser has the option (short or long), false otherwise (option was `null` or not an instance of {@link ApoBaseC}
-	 */
-	default boolean hasOption(ApoBase option){
-		if(option==null){
-			return false;
-		}
-		if(option.getClass().isInstance(ApoBaseC.class)){
-			ApoBaseC opt = (ApoBaseC)option;
-			if(opt.getCliShort()!=null && this.getAddedOptions().contains(opt.getCliShort().toString())){
-				return true;
-			}
-			if(opt.getCliLong()!=null && this.getAddedOptions().contains(opt.getCliLong())){
-				return true;
-			}
-		}
-		return false;
-	}
+	ApoCliOptionSet getOptions();
 
 	/**
 	 * Parses command line arguments and sets values for CLI options.
@@ -162,7 +84,7 @@ public interface App_CliParser extends HasErrorSet<IsErrorSet_IsError> {
 	 * @return list of lines with usage information
 	 */
 	default ArrayList<StrBuilder> usage(int width){
-		TreeMap<String, ApoBaseC> map = CliOptionList.sortedMap(this.getAllOptions(), this.numberShort(), this.numberLong());
+		TreeMap<String, ApoBaseC> map = this.getOptions().sortedMap();
 		Map<String, String> helpMap = new LinkedHashMap<>();
 		int length = 0;
 		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/help.stg");
@@ -220,4 +142,91 @@ public interface App_CliParser extends HasErrorSet<IsErrorSet_IsError> {
 		return this.usage(80);
 	}
 
+	/**
+	 * Creates a new default parser using Apache CLI.
+	 * @param appName the application name for error messages, must not be blank
+	 * @return new default parser
+	 */
+	static ApoCliParser defaultParser(final String appName){
+		return new ApoCliParser() {
+			protected final transient ApoCliOptionSet options = ApoCliOptionSet.setApacheOptions();
+
+			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
+
+			protected transient int errNo;
+
+			@Override
+			public IsErrorSet_IsError getErrorSet() {
+				return this.errorSet;
+			}
+
+			@Override
+			public String getAppName() {
+				return appName;
+			}
+
+			@Override
+			public int getErrNo() {
+				return this.errNo;
+			}
+
+			@Override
+			public ApoCliOptionSet getOptions() {
+				return this.options;
+			}
+
+			@Override
+			public void parse(String[] args) {
+				final CommandLineParser parser = new DefaultParser();
+				final Options options = new Options();
+				for(final Object obj : this.getOptions().getSimpleMap().values()){
+					options.addOption((Option)obj);
+				}
+				for(final Object obj : this.getOptions().getTypedMap().values()){
+					options.addOption((Option)obj);
+				}
+
+				CommandLine cmdLine = null;
+				try {
+					cmdLine = parser.parse(options, args, true);
+				}
+				catch(AlreadySelectedException ase){
+					this.getErrorSet().addError(Templates_CliGeneral.ALREADY_SELECTED.getError(this.getAppName(), ase.getMessage()));
+					this.errNo = Templates_CliGeneral.ALREADY_SELECTED.getCode();
+				}
+				catch(MissingArgumentException mae){
+					this.getErrorSet().addError(Templates_CliGeneral.MISSING_ARGUMENT.getError(this.getAppName(), mae.getMessage()));
+					this.errNo = Templates_CliGeneral.MISSING_ARGUMENT.getCode();
+				}
+				catch(MissingOptionException moe){
+					this.getErrorSet().addError(Templates_CliGeneral.MISSING_OPTION.getError(this.getAppName(), moe.getMessage()));
+					this.errNo = Templates_CliGeneral.MISSING_OPTION.getCode();
+				}
+				catch(UnrecognizedOptionException uoe){
+					this.getErrorSet().addError(Templates_CliGeneral.UNRECOGNIZED_OPTION.getError(this.getAppName(), uoe.getMessage()));
+					this.errNo = Templates_CliGeneral.UNRECOGNIZED_OPTION.getCode();
+				}
+				catch (ParseException ex) {
+					this.getErrorSet().addError(Templates_CliGeneral.PARSE_EXCEPTION.getError(this.getAppName(), ex.getMessage()));
+					this.errNo = Templates_CliGeneral.PARSE_EXCEPTION.getCode();
+				}
+
+				if(cmdLine!=null){
+					for(final Apo_SimpleC simple : this.getOptions().getSimpleMap().keySet()){
+						simple.setInCLi(cmdLine.hasOption(simple.getCliShortLong()));
+					}
+					for(final Apo_TypedC<?> typed : this.getOptions().getTypedMap().keySet()){
+						typed.setInCLi(cmdLine.hasOption(typed.getCliShortLong()));
+						if(typed.inCli()){
+							IsError error = typed.setCliValue(cmdLine.getOptionValue(typed.getCliShortLong()));
+							if(error!=null){
+								this.errorSet.addError(error);
+								this.errNo = error.getErrorCode();
+							}
+						}
+					}
+				}
+			}
+		};
+	}
 }

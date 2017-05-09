@@ -15,10 +15,9 @@
 
 package de.vandermeer.skb.interfaces.application;
 
-import java.util.Set;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.text.StrBuilder;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
@@ -64,9 +63,9 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	 * @param options object array, ignored if null, only application options will be taken
 	 */
 	default void addAllOptions(Iterable<?> options){
-		this.getCliParser().addAllOptions(options);
-		this.getEnvironmentParser().addAllOptions(options);
-		this.getPropertyParser().addAllOptions(options);
+		this.getCliParser().getOptions().addAllOptions(options);
+		this.getEnvironmentParser().getOptions().addAllOptions(options);
+		this.getPropertyParser().getOptions().addAllOptions(options);
 	}
 
 	/**
@@ -74,9 +73,9 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	 * @param options object array, ignored if null, only application options will be taken
 	 */
 	default void addAllOptions(Object[] options){
-		this.getCliParser().addAllOptions(options);
-		this.getEnvironmentParser().addAllOptions(options);
-		this.getPropertyParser().addAllOptions(options);
+		this.getCliParser().getOptions().addAllOptions(options);
+		this.getEnvironmentParser().getOptions().addAllOptions(options);
+		this.getPropertyParser().getOptions().addAllOptions(options);
 	}
 
 	/**
@@ -88,51 +87,9 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	 * @throws IllegalStateException if the option is already in use
 	 */
 	default void addOption(Object option){
-		this.getCliParser().addOption(option);
-		this.getEnvironmentParser().addOption(option);
-		this.getPropertyParser().addOption(option);
-	}
-
-	/**
-	 * Prints a help screen for the application, to be used by an executing component.
-	 */
-	default void helpScreen(){
-		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/help.stg");
-		ST st = stg.getInstanceOf("usage");
-		st.add("appName", this.getAppName());
-		st.add("appDisplayName", this.getAppDisplayName());
-		st.add("appVersion", this.getAppVersion());
-		st.add("appDescription", Text_To_FormattedText.left(this.getAppDescription(), this.getConsoleWidth()));
-		st.add("requiredCliOptions", CliOptionList.getRequired(getCLiALlOptions()));
-
-		for(StrBuilder sb : this.getCliParser().usage(this.getConsoleWidth())){
-			st.add("cliOptions", sb);
-		}
-		for(StrBuilder sb : this.getEnvironmentParser().usage(this.getConsoleWidth())){
-			st.add("envOptions", sb);
-		}
-		for(StrBuilder sb : this.getPropertyParser().usage(this.getConsoleWidth())){
-			st.add("propOptions", sb);
-		}
-
-		System.out.println(st.render());
-	}
-
-	/**
-	 * Prints specific help for a command line option of the application.
-	 * @param opt the option specific help is requested for
-	 */
-	default void helpScreen(ApoBase opt){
-		if(opt==null){
-			return;
-		}
-
-		ST st = opt.getHelp();
-		st.add("longDescr", this.translateLongDescription(opt.getLongDescription()));
-		st.add("lineTop", new StrBuilder().appendPadding(this.getConsoleWidth(), '=' ));
-		st.add("lineBottom", new StrBuilder().appendPadding(this.getConsoleWidth(), '=' ));
-		st.add("lineMid", new StrBuilder().appendPadding(this.getConsoleWidth(), '-' ));
-		System.out.println(st.render());
+		this.getCliParser().getOptions().addOption(option);
+		this.getEnvironmentParser().getOptions().addOption(option);
+		this.getPropertyParser().getOptions().addOption(option);
 	}
 
 	/**
@@ -168,14 +125,14 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	 */
 	default void executeApplication(String[] args){
 		//add help and version options if required
-		if(this.cliSimpleHelpOption()!=null && !this.getCliParser().hasOption(this.cliSimpleHelpOption())){
-			this.getCliParser().addOption(this.cliSimpleHelpOption());
+		if(this.cliSimpleHelpOption()!=null && !this.getCliParser().getOptions().hasOption(this.cliSimpleHelpOption())){
+			this.getCliParser().getOptions().addOption(this.cliSimpleHelpOption());
 		}
-		else if(this.cliTypedHelpOption()!=null && !this.getCliParser().hasOption(this.cliTypedHelpOption())){
-			this.getCliParser().addOption(this.cliTypedHelpOption());
+		else if(this.cliTypedHelpOption()!=null && !this.getCliParser().getOptions().hasOption(this.cliTypedHelpOption())){
+			this.getCliParser().getOptions().addOption(this.cliTypedHelpOption());
 		}
-		if(this.cliVersionOption()!=null && !this.getCliParser().hasOption(this.cliVersionOption())){
-			this.getCliParser().addOption(this.cliVersionOption());
+		if(this.cliVersionOption()!=null && !this.getCliParser().getOptions().hasOption(this.cliVersionOption())){
+			this.getCliParser().getOptions().addOption(this.cliVersionOption());
 		}
 
 		if(IN_ARGUMENTS(args, this.cliVersionOption())){
@@ -238,8 +195,21 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 		}
 		else{
 			this.getEnvironmentParser().parse();
+			if(this.getEnvironmentParser().getErrNo()<0){
+				this.setErrno(this.getEnvironmentParser().getErrNo());
+				this.getErrorSet().addAllErrors(this.getEnvironmentParser().getErrorSet().getErrorMessages());
+			}
+		}
+
+		if(this.getErrNo()<1){
+			this.runApplication();
 		}
 	}
+
+	/**
+	 * The main method for the application, called after {@link #executeApplication(String[])} is finished
+	 */
+	void runApplication();
 
 	/**
 	 * Returns a 1 line description of the application, should not be null.
@@ -271,34 +241,10 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	String getAppVersion();
 
 	/**
-	 * Returns all CLI options as base implementation.
-	 * @return all CLI options, empty if none set
-	 */
-	default Set<ApoBaseC> getCLiALlOptions(){
-		return this.getCliParser().getAllOptions();
-	}
-
-	/**
 	 * Returns the CLI parser.
 	 * @return the CLI parser, must not be null
 	 */
-	App_CliParser getCliParser();
-
-	/**
-	 * Returns all CLI simple options.
-	 * @return CLI simple options, empty if none set
-	 */
-	default Set<Apo_SimpleC> getCliSimpleOptions(){
-		return this.getCliParser().getSimpleOptions();
-	}
-
-	/**
-	 * Returns all CLI typed options.
-	 * @return CLI typed options, empty if none set
-	 */
-	default Set<Apo_TypedC<?>> getCliTypedOptions(){
-		return this.getCliParser().getTypedOptions();
-	}
+	ApoCliParser getCliParser();
 
 	/**
 	 * Returns the width of the console window, printable columns.
@@ -317,7 +263,7 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	 * Returns the environment parser.
 	 * @return the environment parser, must not be null
 	 */
-	App_EnvironmentParser getEnvironmentParser();
+	ApoEnvParser getEnvironmentParser();
 
 	/**
 	 * Returns the number of the last error, 0 if none occurred.
@@ -333,7 +279,7 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	default ApoBase getOption(String name){
 		ApoBase opt = null;
 		if(!StringUtils.isBlank(name)){
-			for(ApoBaseC cliOpt : this.getCLiALlOptions()){
+			for(ApoBaseC cliOpt : this.getCliParser().getOptions().getSet()){
 				if(cliOpt.getCliShort()!=null){
 					if(name.equals(cliOpt.getCliShort().toString())){
 						opt = cliOpt;
@@ -372,7 +318,49 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	 * Returns the property parser.
 	 * @return the property parser, must not be null
 	 */
-	App_PropertyParser getPropertyParser();
+	ApoPropParser getPropertyParser();
+
+	/**
+	 * Prints a help screen for the application, to be used by an executing component.
+	 */
+	default void helpScreen(){
+		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/help.stg");
+		ST st = stg.getInstanceOf("usage");
+		st.add("appName", this.getAppName());
+		st.add("appDisplayName", this.getAppDisplayName());
+		st.add("appVersion", this.getAppVersion());
+		st.add("appDescription", Text_To_FormattedText.left(this.getAppDescription(), this.getConsoleWidth()));
+		st.add("requiredCliOptions", this.getCliParser().getOptions().getRequired());
+
+		for(StrBuilder sb : this.getCliParser().usage(this.getConsoleWidth())){
+			st.add("cliOptions", sb);
+		}
+		for(StrBuilder sb : this.getEnvironmentParser().usage(this.getConsoleWidth())){
+			st.add("envOptions", sb);
+		}
+		for(StrBuilder sb : this.getPropertyParser().usage(this.getConsoleWidth())){
+			st.add("propOptions", sb);
+		}
+
+		System.out.println(st.render());
+	}
+
+	/**
+	 * Prints specific help for a command line option of the application.
+	 * @param opt the option specific help is requested for
+	 */
+	default void helpScreen(ApoBase opt){
+		if(opt==null){
+			return;
+		}
+
+		ST st = opt.getHelp();
+		st.add("longDescr", this.translateLongDescription(opt.getLongDescription()));
+		st.add("lineTop", new StrBuilder().appendPadding(this.getConsoleWidth(), '=' ));
+		st.add("lineBottom", new StrBuilder().appendPadding(this.getConsoleWidth(), '=' ));
+		st.add("lineMid", new StrBuilder().appendPadding(this.getConsoleWidth(), '-' ));
+		System.out.println(st.render());
+	}
 
 	/**
 	 * Sets an error number.
@@ -387,4 +375,27 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 	 */
 	String translateLongDescription(Object longDescription);
 
+	/**
+	 * Validates an application, throwing {@link IllegalStateException} exceptions if validation failed
+	 * @throws IllegalStateException if the validation failed
+	 */
+	default void validate(){
+		Validate.validState(!StringUtils.isBlank(this.getAppName()), "application name must be set");
+		Validate.validState(!StringUtils.isBlank(this.getDescription()), "description must be not blank");
+		Validate.validState(!StringUtils.isBlank(this.getAppDisplayName()), "application display name must be not blank");
+		Validate.validState(!StringUtils.isBlank(this.getAppVersion()), "application version must be not blank");
+
+		Validate.validState(this.getErrorSet()!=null, "ErrorSet must not be null");
+		Validate.validState(this.getInfoSet()!=null, "InfoSet must not be null");
+		Validate.validState(this.getWarningSet()!=null, "WarningSet must not be null");
+
+		Validate.validState(this.getCliParser()!=null, "CLI parser must be set");
+		Validate.validState(this.getCliParser().getOptions()!=null, "CLI parser provide non-null options");
+		Validate.validState(this.getEnvironmentParser()!=null, "Environment parser must be set");
+		Validate.validState(this.getEnvironmentParser().getOptions()!=null, "Environment parser provide non-null options");
+		Validate.validState(this.getPropertyParser()!=null, "Property parser must be set");
+		Validate.validState(this.getPropertyParser().getOptions()!=null, "Property parser provide non-null options");
+	}
+
 }
+
