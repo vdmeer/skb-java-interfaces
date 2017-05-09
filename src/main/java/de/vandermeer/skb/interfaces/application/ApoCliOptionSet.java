@@ -204,7 +204,7 @@ public interface ApoCliOptionSet {
 		Set<String> ret = new TreeSet<>();
 		for(ApoBaseC opt : this.getSet()){
 			if(opt.cliIsRequired()){
-				String required = (opt.getCliShortLong()==null)?"--"+opt.getCliLong():"-"+opt.getCliShort();
+				String required = (opt.getCliShort()==null)?"--"+opt.getCliLong():"-"+opt.getCliShort();
 				if(ClassUtils.isAssignable(opt.getClass(), Apo_TypedC.class)){
 					required += " <" + ((Apo_TypedC<?>)opt).getCliArgumentName() + ">";
 				}
