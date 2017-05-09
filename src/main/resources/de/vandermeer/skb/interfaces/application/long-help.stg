@@ -1,0 +1,61 @@
+/* Copyright 2017 Sven van der Meer <vdmeer.sven@mykolab.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Template for long help on application options.
+ *
+ * @package    de.vandermeer.skb.interfaces.application
+ * @author     Sven van der Meer <vdmeer.sven@mykolab.com>
+ * @copyright  2017 Sven van der Meer
+ * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License, Version 2.0
+ * @version    v0.0.2 build 170502 (02-May-17)
+ * @since      v0.0.2
+ */
+
+longHelp(displayName, shortDescr, defaultValue, lineTop, lineMid, lineBottom, longDescr, cli, envKey, envRequired, propKey, propRequired) ::= <<
+<displayName> - <shortDescr>
+<lineTop>
+<if(cli)><cli>
+<lineMid>
+<endif>
+<if(envKey)>
+Environment Key: <envKey>
+is required:     <if(envRequired)>true<else>false<endif>
+<lineMid>
+<endif>
+<if(propKey)>
+Property Key: <propKey>
+is required:  <if(propRequired)>true<else>false<endif>
+<lineMid>
+<endif>
+<if(defaultValue)>
+Default Value: <defaultValue>
+<lineMid>
+<endif>
+<if(longDescr)>
+
+<longDescr>
+
+<endif>
+<lineBottom>
+>>
+
+
+cli(cliShort, cliLong, cliRequired, cliArgName, cliArgOptional, cliArgDescr) ::= <<
+CLI Option:  <if(cliShort)>-<cliShort><endif><if(cliLong)><if(cliShort)>, <endif>--<cliLong><endif>
+is required: <if(cliRequired)>true<else>false<endif>
+<if(cliArgName)>Argument:    <cliArgName><if(cliArgOptional)>, optional<endif> - <cliArgDescr><endif>
+>>
+
