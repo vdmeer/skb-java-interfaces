@@ -15,7 +15,7 @@
 
 package de.vandermeer.skb.interfaces.application;
 
-import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
+import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
 
 /**
  * An application parser.
@@ -27,12 +27,6 @@ import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
 public interface ApoParser<O extends ApoBase, S extends ApoParserOptionSet<O>> {
 
 	/**
-	 * Returns the application name.
-	 * @return application name, must not be null
-	 */
-	String getAppName();
-
-	/**
 	 * Returns the number of the last error, 0 if none occurred.
 	 * @return last error number
 	 */
@@ -42,7 +36,7 @@ public interface ApoParser<O extends ApoBase, S extends ApoParserOptionSet<O>> {
 	 * Returns the parser's error set.
 	 * @return parser's error set
 	 */
-	IsErrorSet_IsError getErrorSet();
+	IsErrorSet getErrorSet();
 
 	/**
 	 * Returns the option set of the parser.

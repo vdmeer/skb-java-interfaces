@@ -29,8 +29,8 @@ import org.stringtemplate.v4.STGroupFile;
 import org.stringtemplate.v4.STGroupString;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
-import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
-import de.vandermeer.skb.interfaces.messagesets.errors.Templates_STG;
+import de.vandermeer.skb.interfaces.messages.errors.IsError;
+import de.vandermeer.skb.interfaces.messages.errors.Templates_STG;
 
 /**
  * Interface for objects that represent String Template Group (STG) objects

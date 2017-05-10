@@ -27,9 +27,9 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 
-import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
-import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
-import de.vandermeer.skb.interfaces.messagesets.errors.Templates_EnvironmentGeneral;
+import de.vandermeer.skb.interfaces.messages.errors.IsError;
+import de.vandermeer.skb.interfaces.messages.errors.Templates_EnvironmentGeneral;
+import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
 import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedText;
 
 /**
@@ -41,18 +41,17 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  */
 public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 
-	static ApoEnvParser create(final String appName){
+	/**
+	 * Creates a new default parser.
+	 * @return new default parser
+	 */
+	static ApoEnvParser create(){
 		return new ApoEnvParser() {
 			protected final transient ApoEnvOptions options = ApoEnvOptions.create();
 
-			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
+			protected final transient IsErrorSet errorSet = IsErrorSet.create();
 
 			protected transient int errNo;
-
-			@Override
-			public String getAppName() {
-				return appName;
-			}
 
 			@Override
 			public int getErrNo() {
@@ -60,7 +59,7 @@ public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 			}
 
 			@Override
-			public IsErrorSet_IsError getErrorSet() {
+			public IsErrorSet getErrorSet() {
 				return this.errorSet;
 			}
 
@@ -87,12 +86,12 @@ public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 			envSettings = System.getenv();
 		}
 		catch(SecurityException se){
-			this.getErrorSet().addError(Templates_EnvironmentGeneral.SECURITY_EXCEPTION.getError(this.getAppName(), se.getMessage()));
+			this.getErrorSet().add(Templates_EnvironmentGeneral.SECURITY_EXCEPTION.getError(se.getMessage()));
 			this.setErrno(Templates_EnvironmentGeneral.SECURITY_EXCEPTION.getCode());
 			return;
 		}
 		if(envSettings==null){
-			this.getErrorSet().addError(Templates_EnvironmentGeneral.SYSTEM_NO_ENV.getError(this.getAppName()));
+			this.getErrorSet().add(Templates_EnvironmentGeneral.SYSTEM_NO_ENV.getError());
 			this.setErrno(Templates_EnvironmentGeneral.SYSTEM_NO_ENV.getCode());
 			return;
 		}
@@ -102,23 +101,23 @@ public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 			String key = entry.getKey();
 			Apo_TypedE<?> value = entry.getValue();
 			if(!envSettings.keySet().contains(key) && value.environmentIsRequired()){
-				this.getErrorSet().addError(Templates_EnvironmentGeneral.MISSING_KEY.getError(this.getAppName(), key));
+				this.getErrorSet().add(Templates_EnvironmentGeneral.MISSING_KEY.getError(key));
 				this.setErrno(Templates_EnvironmentGeneral.MISSING_KEY.getCode());
 			}
 			else if(StringUtils.isBlank(envSettings.get(key))){
 				if(value.environmentIsRequired()){
-					this.getErrorSet().addError(Templates_EnvironmentGeneral.MISSING_ARGUMENT.getError(this.getAppName(), key));
+					this.getErrorSet().add(Templates_EnvironmentGeneral.MISSING_ARGUMENT.getError(key));
 					this.setErrno(Templates_EnvironmentGeneral.MISSING_ARGUMENT.getCode());
 				}
 			}
 			else if(setOptions.contains(key)){
-				this.getErrorSet().addError(Templates_EnvironmentGeneral.ALREADY_SELECTED.getError(this.getAppName(), key));
+				this.getErrorSet().add(Templates_EnvironmentGeneral.ALREADY_SELECTED.getError(key));
 				this.setErrno(Templates_EnvironmentGeneral.ALREADY_SELECTED.getCode());
 			}
 			else{
 				IsError error = value.setEnvironmentValue(envSettings.get(key));
 				if(error!=null){
-					this.getErrorSet().addError(error);
+					this.getErrorSet().add(error);
 					this.setErrno(error.getErrorCode());
 				}
 				value.setInEnvironment(true);

@@ -23,8 +23,8 @@ import org.apache.commons.lang3.Validate;
 import org.stringtemplate.v4.ST;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
-import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
-import de.vandermeer.skb.interfaces.messagesets.errors.Templates_ST;
+import de.vandermeer.skb.interfaces.messages.errors.IsError;
+import de.vandermeer.skb.interfaces.messages.errors.Templates_ST;
 import de.vandermeer.skb.interfaces.render.DoesRender;
 import de.vandermeer.skb.interfaces.render.DoesRenderToWidth;
 

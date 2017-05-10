@@ -22,15 +22,11 @@ import org.apache.commons.lang3.text.StrBuilder;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 
+import de.vandermeer.skb.interfaces.MessageType;
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
 import de.vandermeer.skb.interfaces.categories.has.HasDescription;
-import de.vandermeer.skb.interfaces.messagesets.HasErrorSet;
-import de.vandermeer.skb.interfaces.messagesets.HasInfoSet;
-import de.vandermeer.skb.interfaces.messagesets.HasWarningSet;
-import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
-import de.vandermeer.skb.interfaces.messagesets.IsInfoSet_FT;
-import de.vandermeer.skb.interfaces.messagesets.IsWarningSet_FT;
-import de.vandermeer.skb.interfaces.messagesets.errors.Templates_AppStart;
+import de.vandermeer.skb.interfaces.messages.HasMessageManager;
+import de.vandermeer.skb.interfaces.messages.errors.Templates_AppStart;
 import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedText;
 
 /**
@@ -40,7 +36,7 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
-public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<IsErrorSet_IsError>, HasWarningSet<IsWarningSet_FT>, HasInfoSet<IsInfoSet_FT> {
+public interface IsApplication extends CategoryIs, HasDescription, HasMessageManager {
 
 	/**
 	 * Simple utility to test if a CLI option (short or long) is in an array.
@@ -151,7 +147,7 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 			else if(args.length==2){
 				ApoBase opt = this.getOption(args[1]);
 				if(opt==null){
-					this.getErrorSet().addError(Templates_AppStart.HELP_UKNOWN_OPTION.getError(this.getAppName(), args[1]));
+					this.getMsgManager().add(Templates_AppStart.HELP_UKNOWN_OPTION.getError(this.getAppName(), args[1]));
 					this.setErrno(Templates_AppStart.HELP_UKNOWN_OPTION.getCode());
 				}
 				else{
@@ -171,37 +167,27 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 		this.setErrno(0);
 		this.getCliParser().parse(args);
 		if(this.getCliParser().getErrNo()!=0){
-			this.getErrorSet().addAllErrors(this.getCliParser().getErrorSet().getErrorMessages());
+			this.getMsgManager().addAll(MessageType.ERROR, this.getCliParser().getErrorSet().getMessages());
 			this.setErrno(this.getCliParser().getErrNo());
 		}
 
 		if(this.getErrNo()<0){
 			if(this.cliSimpleHelpOption()!=null){
-				this.getInfoSet().addInfo("{}: try '--help' for list of CLI options", this.getAppName());
+				this.getMsgManager().add(MessageType.INFO, "try '--help' for list of CLI options");
 			}
 			if(this.cliTypedHelpOption()!=null){
-				this.getInfoSet().addInfo("{}: try '--help' for list of CLI options or '--help <option>' for detailed help on a CLI option", this.getAppName());
-			}
-
-			System.err.println(this.getErrorSet().render());
-			if(this.getWarningSet().hasWarnings()){
-				System.out.println();
-				System.out.println(this.getWarningSet().render());
-			}
-			if(this.getInfoSet().hasInformation()){
-				System.out.println();
-				System.out.println(this.getInfoSet().render());
+				this.getMsgManager().add(MessageType.INFO, "try '--help' for list of CLI options or '--help <option>' for detailed help on a CLI option");
 			}
 		}
 		else{
 			this.getEnvironmentParser().parse();
 			if(this.getEnvironmentParser().getErrNo()<0){
 				this.setErrno(this.getEnvironmentParser().getErrNo());
-				this.getErrorSet().addAllErrors(this.getEnvironmentParser().getErrorSet().getErrorMessages());
+				this.getMsgManager().addAll(MessageType.ERROR, this.getEnvironmentParser().getErrorSet().getMessages());
 			}
 		}
 
-		if(this.getErrNo()<1){
+		if(this.getErrNo()==0){
 			this.runApplication();
 		}
 	}
@@ -385,9 +371,7 @@ public interface IsApplication extends CategoryIs, HasDescription, HasErrorSet<I
 		Validate.validState(!StringUtils.isBlank(this.getAppDisplayName()), "application display name must be not blank");
 		Validate.validState(!StringUtils.isBlank(this.getAppVersion()), "application version must be not blank");
 
-		Validate.validState(this.getErrorSet()!=null, "ErrorSet must not be null");
-		Validate.validState(this.getInfoSet()!=null, "InfoSet must not be null");
-		Validate.validState(this.getWarningSet()!=null, "WarningSet must not be null");
+		Validate.validState(this.getMsgManager()!=null, "MessageManager must not be null");
 
 		Validate.validState(this.getCliParser()!=null, "CLI parser must be set");
 		Validate.validState(this.getCliParser().getOptions()!=null, "CLI parser provide non-null options");

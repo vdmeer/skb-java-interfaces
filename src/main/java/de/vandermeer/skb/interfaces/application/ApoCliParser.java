@@ -37,10 +37,10 @@ import org.apache.commons.lang3.text.StrBuilder;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 
-import de.vandermeer.skb.interfaces.messagesets.HasErrorSet;
-import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
-import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
-import de.vandermeer.skb.interfaces.messagesets.errors.Templates_CliGeneral;
+import de.vandermeer.skb.interfaces.messages.errors.IsError;
+import de.vandermeer.skb.interfaces.messages.errors.Templates_CliGeneral;
+import de.vandermeer.skb.interfaces.messages.sets.HasErrorSet;
+import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
 import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedText;
 
 /**
@@ -50,25 +50,19 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
-public interface ApoCliParser extends HasErrorSet<IsErrorSet_IsError> {
+public interface ApoCliParser extends HasErrorSet {
 
 	/**
 	 * Creates a new default parser using Apache CLI.
-	 * @param appName the application name for error messages, must not be blank
 	 * @return new default parser
 	 */
-	static ApoCliParser defaultParser(final String appName){
+	static ApoCliParser defaultParser(){
 		return new ApoCliParser() {
 			protected final transient ApoCliOptionSet options = ApoCliOptionSet.setApacheOptions();
 
-			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
+			protected final transient IsErrorSet errorSet = IsErrorSet.create();
 
 			protected transient int errNo;
-
-			@Override
-			public String getAppName() {
-				return appName;
-			}
 
 			@Override
 			public int getErrNo() {
@@ -76,7 +70,7 @@ public interface ApoCliParser extends HasErrorSet<IsErrorSet_IsError> {
 			}
 
 			@Override
-			public IsErrorSet_IsError getErrorSet() {
+			public IsErrorSet getErrorSet() {
 				return this.errorSet;
 			}
 
@@ -101,23 +95,23 @@ public interface ApoCliParser extends HasErrorSet<IsErrorSet_IsError> {
 					cmdLine = parser.parse(options, args, true);
 				}
 				catch(AlreadySelectedException ase){
-					this.getErrorSet().addError(Templates_CliGeneral.ALREADY_SELECTED.getError(this.getAppName(), ase.getMessage()));
+					this.getErrorSet().add(Templates_CliGeneral.ALREADY_SELECTED.getError(ase.getMessage()));
 					this.errNo = Templates_CliGeneral.ALREADY_SELECTED.getCode();
 				}
 				catch(MissingArgumentException mae){
-					this.getErrorSet().addError(Templates_CliGeneral.MISSING_ARGUMENT.getError(this.getAppName(), mae.getMessage()));
+					this.getErrorSet().add(Templates_CliGeneral.MISSING_ARGUMENT.getError(mae.getMessage()));
 					this.errNo = Templates_CliGeneral.MISSING_ARGUMENT.getCode();
 				}
 				catch(MissingOptionException moe){
-					this.getErrorSet().addError(Templates_CliGeneral.MISSING_OPTION.getError(this.getAppName(), moe.getMessage()));
+					this.getErrorSet().add(Templates_CliGeneral.MISSING_OPTION.getError(moe.getMessage()));
 					this.errNo = Templates_CliGeneral.MISSING_OPTION.getCode();
 				}
 				catch(UnrecognizedOptionException uoe){
-					this.getErrorSet().addError(Templates_CliGeneral.UNRECOGNIZED_OPTION.getError(this.getAppName(), uoe.getMessage()));
+					this.getErrorSet().add(Templates_CliGeneral.UNRECOGNIZED_OPTION.getError(uoe.getMessage()));
 					this.errNo = Templates_CliGeneral.UNRECOGNIZED_OPTION.getCode();
 				}
 				catch (ParseException ex) {
-					this.getErrorSet().addError(Templates_CliGeneral.PARSE_EXCEPTION.getError(this.getAppName(), ex.getMessage()));
+					this.getErrorSet().add(Templates_CliGeneral.PARSE_EXCEPTION.getError(ex.getMessage()));
 					this.errNo = Templates_CliGeneral.PARSE_EXCEPTION.getCode();
 				}
 
@@ -130,7 +124,7 @@ public interface ApoCliParser extends HasErrorSet<IsErrorSet_IsError> {
 						if(typed.inCli()){
 							IsError error = typed.setCliValue(cmdLine.getOptionValue((typed.getCliShort()==null)?typed.getCliLong():typed.getCliShort().toString()));
 							if(error!=null){
-								this.errorSet.addError(error);
+								this.errorSet.add(error);
 								this.errNo = error.getErrorCode();
 							}
 						}
@@ -139,12 +133,6 @@ public interface ApoCliParser extends HasErrorSet<IsErrorSet_IsError> {
 			}
 		};
 	}
-
-	/**
-	 * Returns the application name.
-	 * @return application name, must not be null
-	 */
-	String getAppName();
 
 	/**
 	 * Returns the number of the last error, 0 if none occurred.

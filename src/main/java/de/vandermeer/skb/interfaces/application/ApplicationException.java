@@ -15,7 +15,7 @@
 
 package de.vandermeer.skb.interfaces.application;
 
-import de.vandermeer.skb.interfaces.messagesets.errors.IsErrorTemplate;
+import de.vandermeer.skb.interfaces.messages.errors.IsErrorTemplate;
 
 /**
  * General application exception.

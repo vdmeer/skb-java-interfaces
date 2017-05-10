@@ -1,4 +1,4 @@
-/* Copyright 2016 Sven van der Meer <vdmeer.sven@mykolab.com>
+/* Copyright 2014 Sven van der Meer <vdmeer.sven@mykolab.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
  */
 
 /**
- * Collection of basic, simple, standard, hopefully useful interfaces (some with factory methods for default object creation).
- * There is one class ({@link de.vandermeer.skb.interfaces.console.MessageConsole}).
- * 
+ * Some utilities for console handling.
+ *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
- * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
- * @since      v0.0.1
+ * @version    v0.0.3 build 170404 (04-Apr-17) for Java 1.8
+ * @since      v0.0.3
  */
-package de.vandermeer.skb.interfaces;
+package de.vandermeer.skb.interfaces.console;

@@ -13,53 +13,58 @@
  * limitations under the License.
  */
 
-package de.vandermeer.skb.interfaces.coin;
+package de.vandermeer.skb.interfaces.messages.sets;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import de.vandermeer.skb.interfaces.messages.sets.IsInfoSet;
+import org.slf4j.helpers.FormattingTuple;
+
+import de.vandermeer.skb.interfaces.MessageType;
+import de.vandermeer.skb.interfaces.messages.FormattingTupleWrapper;
+import de.vandermeer.skb.interfaces.messages.errors.IsError;
 import de.vandermeer.skb.interfaces.render.DoesRender;
 
 /**
- * A heads (success) coin with a value and further information.
+ * Interface for objects that have a set of error messages.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
-public interface HeadsSuccessWithInfo<R> extends HeadsSuccess<R>, IsInfoSet {
+public interface IsErrorSet extends IsMessageSet {
 
 	/**
-	 * Creates a new success coin with given value and information.
-	 * @param <R> type of the return value
-	 * @param <M> the message type for the set
-	 * @param value the actual return value
-	 * @return new success coin
+	 * Creates a new error set.
+	 * @return new error set
 	 */
-	static <R, M> HeadsSuccessWithInfo<R> create(final R value){
-		return new HeadsSuccessWithInfo<R>() {
-			final Set<DoesRender> infoSet = new LinkedHashSet<>();
+	static IsErrorSet create(){
+		return new IsErrorSet() {
+			Set<DoesRender> messages = new LinkedHashSet<>();
 
 			@Override
 			public Set<DoesRender> getMessages() {
-				return this.infoSet;
-			}
-
-			@Override
-			public R getReturn() {
-				return value;
+				return this.messages;
 			}
 		};
 	}
 
-	@Override
-	default boolean hasInfoReports(){
-		return this.hasMessages();
+	/**
+	 * Adds a new error message.
+	 * @param error the provider of the error message, ignored if null or did not provide a tuple
+	 */
+	default void add(IsError error){
+		if(error!=null){
+			FormattingTuple ft = error.getErrorMessage();
+			if(ft!=null){
+				this.getMessages().add(FormattingTupleWrapper.create(ft));
+			}
+		}
 	}
 
 	@Override
-	default boolean reportsInfo(){
-		return true;
+	default MessageType getType(){
+		return MessageType.ERROR;
 	}
+
 }

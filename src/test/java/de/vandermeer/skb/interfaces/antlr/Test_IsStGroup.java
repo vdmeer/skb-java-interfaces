@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
+import de.vandermeer.skb.interfaces.messages.errors.IsError;
 
 public class Test_IsStGroup {
 
@@ -35,7 +35,7 @@ public class Test_IsStGroup {
 		Set<IsError> errors = isStg.validate();
 		assertEquals(1, errors.size());
 		for(IsError err : errors){
-			System.out.println(err.getErrorMessageString());
+			System.out.println(err.render());
 		}
 	}
 
@@ -47,7 +47,7 @@ public class Test_IsStGroup {
 		Set<IsError> errors = isStg.validate();
 		assertEquals(1, errors.size());
 		for(IsError err : errors){
-			System.out.println(err.getErrorMessageString());
+			System.out.println(err.render());
 		}
 	}
 
@@ -59,7 +59,7 @@ public class Test_IsStGroup {
 		Set<IsError> errors = isStg.validate();
 		assertEquals(2, errors.size());
 		for(IsError err : errors){
-			System.out.println(err.getErrorMessageString());
+			System.out.println(err.render());
 		}
 	}
 

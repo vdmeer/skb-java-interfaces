@@ -28,9 +28,9 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.text.StrBuilder;
 
-import de.vandermeer.skb.interfaces.messagesets.IsErrorSet_IsError;
-import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
-import de.vandermeer.skb.interfaces.messagesets.errors.Templates_PropertiesGeneral;
+import de.vandermeer.skb.interfaces.messages.errors.IsError;
+import de.vandermeer.skb.interfaces.messages.errors.Templates_PropertiesGeneral;
+import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
 import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedText;
 
 /**
@@ -42,34 +42,33 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  */
 public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> {
 
-	static ApoPropParser create(final String appName, final boolean unknownKeyIsError){
+	/**
+	 * Creates a new default parser.
+	 * @param unknownKeyIsError treat unknown property keys in properties as errors
+	 * @return new parser
+	 */
+	static ApoPropParser create(final boolean unknownKeyIsError){
 		return new ApoPropParser() {
 			protected final transient ApoPropOptions options = ApoPropOptions.create();
 
-			protected final transient IsErrorSet_IsError errorSet = IsErrorSet_IsError.create();
+			protected final transient IsErrorSet errorSet = IsErrorSet.create();
 
 			protected transient int errNo;
-
-			@Override
-			public String getAppName() {
-				return appName;
-			}
-			
 			@Override
 			public int getErrNo() {
 				return this.errNo;
 			}
-			
+
 			@Override
-			public IsErrorSet_IsError getErrorSet() {
+			public IsErrorSet getErrorSet() {
 				return this.errorSet;
 			}
-			
+
 			@Override
 			public ApoPropOptions getOptions() {
 				return this.options;
 			}
-			
+
 			@Override
 			public void setErrno(int errorNumber) {
 				this.errNo = errorNumber;
@@ -81,13 +80,6 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 			}
 		};
 	}
-
-	/**
-	 * Returns the application name.
-	 * @return application name, must not be null
-	 */
-	String getAppName();
-
 
 	/**
 	 * Returns the number of the last error, 0 if none occurred.
@@ -129,7 +121,7 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 				for (Enumeration<?> names = prop.propertyNames(); names.hasMoreElements();){
 					String key = names.nextElement().toString();
 					if(!this.getOptions().getMap().keySet().contains(key)){
-						this.getErrorSet().addError(Templates_PropertiesGeneral.UNRECOGNIZED_KEY.getError(this.getAppName(), key));
+						this.getErrorSet().add(Templates_PropertiesGeneral.UNRECOGNIZED_KEY.getError(key));
 						this.setErrno(Templates_PropertiesGeneral.UNRECOGNIZED_KEY.getCode());
 					}
 				}
@@ -144,13 +136,13 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 				String propValue = prop.getProperty(key);
 				if(propValue!=null){
 					if(setOptions.contains(key)){
-						this.getErrorSet().addError(Templates_PropertiesGeneral.ALREADY_SELECTED.getError(this.getAppName(), key));
+						this.getErrorSet().add(Templates_PropertiesGeneral.ALREADY_SELECTED.getError(key));
 						this.setErrno(Templates_PropertiesGeneral.ALREADY_SELECTED.getCode());
 					}
 					else{
 						IsError error = value.setPropertyValue(propValue);
 						if(error!=null){
-							this.getErrorSet().addError(error);
+							this.getErrorSet().add(error);
 							this.setErrno(error.getErrorCode());
 						}
 						value.setInProperties(true);
@@ -159,7 +151,7 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 				}
 			}
 			if(!setOptions.contains(key) && value.propertyIsRequired()){
-				this.getErrorSet().addError(Templates_PropertiesGeneral.MISSING_KEY.getError(this.getAppName(), key));
+				this.getErrorSet().add(Templates_PropertiesGeneral.MISSING_KEY.getError(key));
 				this.setErrno(Templates_PropertiesGeneral.MISSING_KEY.getCode());
 			}
 		}

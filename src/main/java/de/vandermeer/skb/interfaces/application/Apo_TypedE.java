@@ -17,7 +17,7 @@ package de.vandermeer.skb.interfaces.application;
 
 import org.stringtemplate.v4.ST;
 
-import de.vandermeer.skb.interfaces.messagesets.errors.IsError;
+import de.vandermeer.skb.interfaces.messages.errors.IsError;
 
 /**
  * A standard typed environment options.

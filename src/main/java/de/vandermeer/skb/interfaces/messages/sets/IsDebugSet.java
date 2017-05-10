@@ -1,4 +1,4 @@
-/* Copyright 2016 Sven van der Meer <vdmeer.sven@mykolab.com>
+/* Copyright 2017 Sven van der Meer <vdmeer.sven@mykolab.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,52 +13,40 @@
  * limitations under the License.
  */
 
-package de.vandermeer.skb.interfaces.coin;
+package de.vandermeer.skb.interfaces.messages.sets;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
+import de.vandermeer.skb.interfaces.MessageType;
 import de.vandermeer.skb.interfaces.render.DoesRender;
 
 /**
- * A tails (error) coin with a value and errors.
+ * Interface for objects that have a set of debug messages.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
- * @since      v0.0.1
+ * @since      v0.0.3
  */
-public interface TailsErrorWithErrors<R> extends TailsError<R>, IsErrorSet {
+public interface IsDebugSet extends IsMessageSet {
 
 	/**
-	 * Creates a new error coin with given value and errors.
-	 * @param <R> type of the return value
-	 * @param value the actual return value
-	 * @return new error coin
+	 * Creates a new debug set.
+	 * @return new debug set
 	 */
-	static <R, M> TailsErrorWithErrors<R> create(final R value){
-		return new TailsErrorWithErrors<R>() {
-			final Set<DoesRender> errorSet = new LinkedHashSet<>();
+	static IsDebugSet create(){
+		return new IsDebugSet() {
+			Set<DoesRender> messages = new LinkedHashSet<>();
 
 			@Override
 			public Set<DoesRender> getMessages() {
-				return this.errorSet;
-			}
-
-			@Override
-			public R getReturn() {
-				return value;
+				return this.messages;
 			}
 		};
 	}
 
 	@Override
-	default boolean hasErrorReports(){
-		return this.hasMessages();
-	}
-
-	@Override
-	default boolean reportsErrors(){
-		return true;
+	default MessageType getType(){
+		return MessageType.DEBUG;
 	}
 }

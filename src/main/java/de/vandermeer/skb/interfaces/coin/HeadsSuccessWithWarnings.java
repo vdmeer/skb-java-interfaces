@@ -18,9 +18,7 @@ package de.vandermeer.skb.interfaces.coin;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.text.StrBuilder;
-
-import de.vandermeer.skb.interfaces.messagesets.IsWarningSet;
+import de.vandermeer.skb.interfaces.messages.sets.IsWarningSet;
 import de.vandermeer.skb.interfaces.render.DoesRender;
 
 /**
@@ -30,7 +28,7 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
-public interface HeadsSuccessWithWarnings<R, M> extends HeadsSuccess<R>, IsWarningSet<M> {
+public interface HeadsSuccessWithWarnings<R> extends HeadsSuccess<R>, IsWarningSet {
 
 	/**
 	 * Creates a new success coin with given value and warnings.
@@ -39,9 +37,9 @@ public interface HeadsSuccessWithWarnings<R, M> extends HeadsSuccess<R>, IsWarni
 	 * @param value the actual return value
 	 * @return new success coin
 	 */
-	static <R, M> HeadsSuccessWithWarnings<R, M> create(final R value){
-		return new HeadsSuccessWithWarnings<R, M>() {
-			final Set<M> warningSet = new LinkedHashSet<>();
+	static <R, M> HeadsSuccessWithWarnings<R> create(final R value){
+		return new HeadsSuccessWithWarnings<R>() {
+			final Set<DoesRender> warningSet = new LinkedHashSet<>();
 
 			@Override
 			public R getReturn() {
@@ -49,7 +47,7 @@ public interface HeadsSuccessWithWarnings<R, M> extends HeadsSuccess<R>, IsWarni
 			}
 
 			@Override
-			public Set<M> getWarningMessages() {
+			public Set<DoesRender> getMessages() {
 				return this.warningSet;
 			}
 		};
@@ -57,29 +55,7 @@ public interface HeadsSuccessWithWarnings<R, M> extends HeadsSuccess<R>, IsWarni
 
 	@Override
 	default boolean hasWarningReports(){
-		return this.hasWarnings();
-	}
-
-	/**
-	 * Renders the warning set.
-	 * The method uses {@link DoesRender} or simple toString to render warnings.
-	 * Each element in the information set is rendered in a single line, preceded by the type (warning).
-	 * @return rendered object
-	 */
-	@Override
-	default String render() {
-		StrBuilder ret = new StrBuilder(100);
-		for(M m : this.getWarningMessages()){
-			ret.append("warning: ");
-			if(m instanceof DoesRender){
-				ret.append(((DoesRender)m).render());
-			}
-			else{
-				ret.append(m);
-			}
-			ret.appendNewLine();
-		}
-		return ret.toString();
+		return this.hasMessages();
 	}
 
 	@Override

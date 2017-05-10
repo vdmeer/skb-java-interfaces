@@ -14,11 +14,10 @@
  */
 
 /**
- * Collection of basic, simple, standard, hopefully useful interfaces (some with factory methods for default object creation).
- * There is one class ({@link de.vandermeer.skb.interfaces.console.MessageConsole}).
+ * Message sets.
  * 
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
-package de.vandermeer.skb.interfaces;
+package de.vandermeer.skb.interfaces.messages.sets;

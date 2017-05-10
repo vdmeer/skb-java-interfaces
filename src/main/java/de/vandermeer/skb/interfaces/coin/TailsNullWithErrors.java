@@ -18,9 +18,7 @@ package de.vandermeer.skb.interfaces.coin;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.text.StrBuilder;
-
-import de.vandermeer.skb.interfaces.messagesets.IsErrorSet;
+import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
 import de.vandermeer.skb.interfaces.render.DoesRender;
 
 /**
@@ -30,18 +28,19 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
-public interface TailsNullWithErrors<M> extends TailsNull, IsErrorSet<M> {
+public interface TailsNullWithErrors extends TailsNull, IsErrorSet {
 
 	/**
 	 * Creates a new null coin with given value and errors.
 	 * @param <M> the message type for the set
 	 * @return new error coin
 	 */
-	static <M> TailsNullWithErrors<M> create(){
-		return new TailsNullWithErrors<M>() {
-			final Set<M> errorSet = new LinkedHashSet<>();
+	static <M> TailsNullWithErrors create(){
+		return new TailsNullWithErrors() {
+			final Set<DoesRender> errorSet = new LinkedHashSet<>();
+
 			@Override
-			public Set<M> getErrorMessages() {
+			public Set<DoesRender> getMessages() {
 				return this.errorSet;
 			}
 		};
@@ -49,29 +48,7 @@ public interface TailsNullWithErrors<M> extends TailsNull, IsErrorSet<M> {
 
 	@Override
 	default boolean hasErrorReports(){
-		return this.hasErrors();
-	}
-
-	/**
-	 * Renders the error set.
-	 * The method uses {@link DoesRender} or simple toString to render errors.
-	 * Each element in the error set is rendered in a single line, preceded by the type (error).
-	 * @return rendered object
-	 */
-	@Override
-	default String render() {
-		StrBuilder ret = new StrBuilder(100);
-		for(M m : this.getErrorMessages()){
-			ret.append("errors: ");
-			if(m instanceof DoesRender){
-				ret.append(((DoesRender)m).render());
-			}
-			else{
-				ret.append(m);
-			}
-			ret.appendNewLine();
-		}
-		return ret.toString();
+		return this.hasMessages();
 	}
 
 	@Override
