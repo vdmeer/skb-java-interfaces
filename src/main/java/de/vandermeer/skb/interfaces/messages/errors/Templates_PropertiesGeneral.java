@@ -15,8 +15,6 @@
 
 package de.vandermeer.skb.interfaces.messages.errors;
 
-import org.apache.commons.lang3.Validate;
-
 /**
  * Standard Property parsing errors.
  * 
@@ -86,7 +84,7 @@ public enum Templates_PropertiesGeneral implements IsErrorTemplate {
 	 */
 	Templates_PropertiesGeneral(final int code, final String message, final String description){
 		//only for app name, all other validations in test code
-		Validate.validState(message.contains("{}"));
+		//Validate.validState(message.contains("{}"));
 
 		this.code = code;
 		this.message = message;

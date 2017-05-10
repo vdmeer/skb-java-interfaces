@@ -18,7 +18,6 @@ package de.vandermeer.skb.interfaces.antlr;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.Validate;
 import org.stringtemplate.v4.STErrorListener;
 import org.stringtemplate.v4.misc.STMessage;
 
@@ -37,19 +36,11 @@ public interface IsSTErrorListener extends CategoryIs, STErrorListener {
 
 	/**
 	 * Creates a new error listener.
-	 * @param appName the application (or object/class) name for the listener, must not be blank
 	 * @return a new listener
 	 */
-	static IsSTErrorListener create(final String appName){
-		Validate.notBlank(appName);
-
+	static IsSTErrorListener create(){
 		return new IsSTErrorListener() {
 			final Set<IsError> errors = new LinkedHashSet<>();
-
-			@Override
-			public String getAppName() {
-				return appName;
-			}
 
 			@Override
 			public Set<IsError> getErrors() {
@@ -60,14 +51,8 @@ public interface IsSTErrorListener extends CategoryIs, STErrorListener {
 
 	@Override
 	default void compileTimeError(STMessage msg){
-		this.getErrors().add(Templates_STG.ST_COMPILE_TIME.getError(this.getAppName(), msg));
+		this.getErrors().add(Templates_STG.ST_COMPILE_TIME.getError(msg));
 	}
-
-	/**
-	 * Returns the application (or object/class) name the listener is running for.
-	 * @return application name, must not be blank
-	 */
-	String getAppName();
 
 	/**
 	 * Returns the errors the listener has collected.
@@ -77,16 +62,16 @@ public interface IsSTErrorListener extends CategoryIs, STErrorListener {
 
 	@Override
 	default void internalError(STMessage msg){
-		this.getErrors().add(Templates_STG.ST_INTERNAL.getError(this.getAppName(), msg));
+		this.getErrors().add(Templates_STG.ST_INTERNAL.getError(msg));
 	}
 
 	@Override
 	default void IOError(STMessage msg){
-		this.getErrors().add(Templates_STG.ST_IO.getError(this.getAppName(), msg));
+		this.getErrors().add(Templates_STG.ST_IO.getError(msg));
 	}
 
 	@Override
 	default void runTimeError(STMessage msg){
-		this.getErrors().add(Templates_STG.ST_RUNTIME.getError(this.getAppName(), msg));
+		this.getErrors().add(Templates_STG.ST_RUNTIME.getError(msg));
 	}
 }

@@ -132,13 +132,13 @@ public interface IsST extends DoesRender, DoesRenderToWidth, CategoryIs {
 		Map<?,?> formalArgs = this.getST().impl.formalArguments;
 		if(formalArgs==null){
 			for(String s : this.getExpectedArguments()){
-				ret.add(Templates_ST.MISSING_EXPECTED_ARGUMENT_STG.getError("app", this.getGroupName(), this.getST().getName(), s));
+				ret.add(Templates_ST.MISSING_EXPECTED_ARGUMENT_STG.getError(this.getGroupName(), this.getST().getName(), s));
 			}
 		}
 		else{
 			for(String s : this.getExpectedArguments()){
 				if(!formalArgs.containsKey(s)){
-					ret.add(Templates_ST.MISSING_EXPECTED_ARGUMENT_STG.getError("app", this.getGroupName(), this.getST().getName(), s));
+					ret.add(Templates_ST.MISSING_EXPECTED_ARGUMENT_STG.getError(this.getGroupName(), this.getST().getName(), s));
 				}
 			}
 		}

@@ -31,7 +31,7 @@ public class Test_IsStGroup {
 	public void test_BadSTG(){
 		Map<String, String[]> chunks = new HashMap<>();
 		chunks.put("test", new String[]{"arg1", "arg2"});
-		IsSTGroup isStg = IsSTGroup.fromFile("de/vandermeer/skb/interfaces/antlr/bad.stg", chunks, "test-app");
+		IsSTGroup isStg = IsSTGroup.fromFile("de/vandermeer/skb/interfaces/antlr/bad.stg", chunks);
 		Set<IsError> errors = isStg.validate();
 		assertEquals(1, errors.size());
 		for(IsError err : errors){
@@ -43,7 +43,7 @@ public class Test_IsStGroup {
 	public void test_MissingST(){
 		Map<String, String[]> chunks = new HashMap<>();
 		chunks.put("test", new String[]{"arg1", "arg2"});
-		IsSTGroup isStg = IsSTGroup.fromFile("de/vandermeer/skb/interfaces/antlr/missing-st.stg", chunks, "test-app");
+		IsSTGroup isStg = IsSTGroup.fromFile("de/vandermeer/skb/interfaces/antlr/missing-st.stg", chunks);
 		Set<IsError> errors = isStg.validate();
 		assertEquals(1, errors.size());
 		for(IsError err : errors){
@@ -55,7 +55,7 @@ public class Test_IsStGroup {
 	public void test_MissingSTArg(){
 		Map<String, String[]> chunks = new HashMap<>();
 		chunks.put("test", new String[]{"arg1", "arg2"});
-		IsSTGroup isStg = IsSTGroup.fromFile("de/vandermeer/skb/interfaces/antlr/missing-arg.stg", chunks, "test-app");
+		IsSTGroup isStg = IsSTGroup.fromFile("de/vandermeer/skb/interfaces/antlr/missing-arg.stg", chunks);
 		Set<IsError> errors = isStg.validate();
 		assertEquals(2, errors.size());
 		for(IsError err : errors){
@@ -67,7 +67,7 @@ public class Test_IsStGroup {
 	public void test_GoodSTG(){
 		Map<String, String[]> chunks = new HashMap<>();
 		chunks.put("test", new String[]{"arg1", "arg2"});
-		IsSTGroup isStg = IsSTGroup.fromFile("de/vandermeer/skb/interfaces/antlr/good.stg", chunks, "test-app");
+		IsSTGroup isStg = IsSTGroup.fromFile("de/vandermeer/skb/interfaces/antlr/good.stg", chunks);
 		Set<IsError> errors = isStg.validate();
 		assertEquals(0, errors.size());
 	}
