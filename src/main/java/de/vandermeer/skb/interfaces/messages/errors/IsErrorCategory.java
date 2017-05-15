@@ -22,6 +22,7 @@ import org.apache.commons.lang3.Validate;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
 import de.vandermeer.skb.interfaces.categories.has.HasDescription;
+import de.vandermeer.skb.interfaces.categories.has.HasDisplayName;
 
 /**
  * A category for an application error code.
@@ -30,7 +31,7 @@ import de.vandermeer.skb.interfaces.categories.has.HasDescription;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface IsErrorCategory extends HasDescription, CategoryIs {
+public interface IsErrorCategory extends HasDisplayName, HasDescription, CategoryIs {
 
 	/**
 	 * Validates an array of categories for not overlapping in star/end.
@@ -49,12 +50,6 @@ public interface IsErrorCategory extends HasDescription, CategoryIs {
 			}
 		}
 	}
-
-	/**
-	 * Returns the category display name.
-	 * @return display name
-	 */
-	String getDisplayName();
 
 	/**
 	 * Returns the end of the error codes.

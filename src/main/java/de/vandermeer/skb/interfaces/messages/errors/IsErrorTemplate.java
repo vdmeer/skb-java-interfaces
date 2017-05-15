@@ -25,6 +25,7 @@ import org.slf4j.helpers.MessageFormatter;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
 import de.vandermeer.skb.interfaces.categories.has.HasDescription;
+import de.vandermeer.skb.interfaces.categories.has.HasDisplayName;
 
 /**
  * An application error code.
@@ -33,7 +34,7 @@ import de.vandermeer.skb.interfaces.categories.has.HasDescription;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface IsErrorTemplate extends HasDescription, CategoryIs {
+public interface IsErrorTemplate extends HasDisplayName, HasDescription, CategoryIs {
 
 	/**
 	 * Validates an array of templates.
@@ -75,12 +76,6 @@ public interface IsErrorTemplate extends HasDescription, CategoryIs {
 	 * @return error code
 	 */
 	int getCode();
-
-	/**
-	 * Returns the template display name.
-	 * @return display name
-	 */
-	String getDisplayName();
 
 	/**
 	 * Creates a new error message for errors without arguments.

@@ -26,18 +26,12 @@ import de.vandermeer.skb.interfaces.categories.CategoryHas;
  */
 public interface HasDescription extends CategoryHas {
 
-//	/**
-//	 * A default description.
-//	 */
-//	static final String DEFAULT_DESCRIPTION = "##default description##";
-
 	/**
-	 * Returns the description of an object.
+	 * Returns a description.
+	 * Ideally, the description is kept short, e.g. 1 line.
+	 * For any longer  text, a object should have a long description.
 	 * @return description
 	 */
 	String getDescription();
-//	default Object getDescription(){
-//		return HasDescription.DEFAULT_DESCRIPTION;
-//	}
 
 }

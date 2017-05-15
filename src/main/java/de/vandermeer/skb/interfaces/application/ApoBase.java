@@ -22,6 +22,8 @@ import org.stringtemplate.v4.STGroupFile;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
 import de.vandermeer.skb.interfaces.categories.has.HasDescription;
+import de.vandermeer.skb.interfaces.categories.has.HasDisplayName;
+import de.vandermeer.skb.interfaces.categories.has.HasLongDescription;
 
 /**
  * Base for an application option.
@@ -30,16 +32,10 @@ import de.vandermeer.skb.interfaces.categories.has.HasDescription;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
-public interface ApoBase extends CategoryIs, HasDescription {
+public interface ApoBase extends CategoryIs, HasDisplayName, HasDescription, HasLongDescription {
 
 	/** The STG file for long help. */
 	static final String STG_FILE = "de/vandermeer/skb/interfaces/application/long-help.stg";
-
-	/**
-	 * Returns the display name of the option.
-	 * @return display name, must not be blank
-	 */
-	String getDisplayName();
 
 	/**
 	 * Returns help information for the option.
@@ -55,13 +51,6 @@ public interface ApoBase extends CategoryIs, HasDescription {
 		st.add("shortDescr", this.getDescription());
 		return st;
 	}
-
-	/**
-	 * Returns a long description of the option.
-	 * For more complex options, the description should include use case and other information.
-	 * @return long description for the option, blank if not set
-	 */
-	Object getLongDescription();
 
 	/**
 	 * Tests if the option is set.

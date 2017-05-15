@@ -25,6 +25,9 @@ import org.stringtemplate.v4.STGroupFile;
 import de.vandermeer.skb.interfaces.MessageType;
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
 import de.vandermeer.skb.interfaces.categories.has.HasDescription;
+import de.vandermeer.skb.interfaces.categories.has.HasDisplayName;
+import de.vandermeer.skb.interfaces.categories.has.HasName;
+import de.vandermeer.skb.interfaces.categories.has.HasVersion;
 import de.vandermeer.skb.interfaces.messages.HasMessageManager;
 import de.vandermeer.skb.interfaces.messages.errors.Templates_AppStart;
 import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedText;
@@ -36,7 +39,7 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
-public interface IsApplication extends CategoryIs, HasDescription, HasMessageManager {
+public interface IsApplication extends CategoryIs, HasName, HasDisplayName, HasVersion, HasDescription, HasMessageManager {
 
 	/**
 	 * Simple utility to test if a CLI option (short or long) is in an array.
@@ -132,7 +135,7 @@ public interface IsApplication extends CategoryIs, HasDescription, HasMessageMan
 		}
 
 		if(IN_ARGUMENTS(args, this.cliVersionOption())){
-			System.out.println(this.getAppVersion());
+			System.out.println(this.getVersion());
 			this.setErrno(1);
 		}
 		else if(IN_ARGUMENTS(args, this.cliSimpleHelpOption())){
@@ -147,7 +150,7 @@ public interface IsApplication extends CategoryIs, HasDescription, HasMessageMan
 			else if(args.length==2){
 				ApoBase opt = this.getOption(args[1]);
 				if(opt==null){
-					this.getMsgManager().add(Templates_AppStart.HELP_UKNOWN_OPTION.getError(this.getAppName(), args[1]));
+					this.getMsgManager().add(Templates_AppStart.HELP_UKNOWN_OPTION.getError(this.getName(), args[1]));
 					this.setErrno(Templates_AppStart.HELP_UKNOWN_OPTION.getCode());
 				}
 				else{
@@ -193,35 +196,6 @@ public interface IsApplication extends CategoryIs, HasDescription, HasMessageMan
 	}
 
 	/**
-	 * Returns a 1 line description of the application, should not be null.
-	 * @return 1-line application description, mainly used in default help screen implementation
-	 */
-	String getAppDescription();
-
-	/**
-	 * Returns the display name of the application.
-	 * This display name will be used for documentation and general user interaction.
-	 * The default is the original application name.
-	 * @return the application's display name, default is the application name returned by {@link #getAppName()}, must not be blank
-	 */
-	default String getAppDisplayName(){
-		return this.getAppName();
-	}
-
-	/**
-	 * Returns the name of the application, which is the name of the executable object for instance a script.
-	 * This application name will be used for information and error messages and user interactions.
-	 * @return application name, must not be blank
-	 */
-	String getAppName();
-
-	/**
-	 * Returns version information of the application for command line processing of the version option.
-	 * @return application version, should not be null
-	 */
-	String getAppVersion();
-
-	/**
 	 * Returns the CLI parser.
 	 * @return the CLI parser, must not be null
 	 */
@@ -233,11 +207,6 @@ public interface IsApplication extends CategoryIs, HasDescription, HasMessageMan
 	 */
 	default int getConsoleWidth(){
 		return 80;
-	}
-
-	@Override
-	default String getDescription(){
-		return this.getAppDescription();
 	}
 
 	/**
@@ -307,10 +276,10 @@ public interface IsApplication extends CategoryIs, HasDescription, HasMessageMan
 	default void helpScreen(){
 		STGroupFile stg = new STGroupFile("de/vandermeer/skb/interfaces/application/help.stg");
 		ST st = stg.getInstanceOf("usage");
-		st.add("appName", this.getAppName());
-		st.add("appDisplayName", this.getAppDisplayName());
-		st.add("appVersion", this.getAppVersion());
-		st.add("appDescription", Text_To_FormattedText.left(this.getAppDescription(), this.getConsoleWidth()));
+		st.add("appName", this.getName());
+		st.add("appDisplayName", this.getDisplayName());
+		st.add("appVersion", this.getVersion());
+		st.add("appDescription", Text_To_FormattedText.left(this.getDescription(), this.getConsoleWidth()));
 		st.add("requiredCliOptions", this.getCliParser().getOptions().getRequired());
 
 		for(StrBuilder sb : this.getCliParser().usage(this.getConsoleWidth())){
@@ -366,10 +335,10 @@ public interface IsApplication extends CategoryIs, HasDescription, HasMessageMan
 	 * @throws IllegalStateException if the validation failed
 	 */
 	default void validate(){
-		Validate.validState(!StringUtils.isBlank(this.getAppName()), "application name must be set");
+		Validate.validState(!StringUtils.isBlank(this.getName()), "application name must be set");
 		Validate.validState(!StringUtils.isBlank(this.getDescription()), "description must be not blank");
-		Validate.validState(!StringUtils.isBlank(this.getAppDisplayName()), "application display name must be not blank");
-		Validate.validState(!StringUtils.isBlank(this.getAppVersion()), "application version must be not blank");
+		Validate.validState(!StringUtils.isBlank(this.getDisplayName()), "application display name must be not blank");
+		Validate.validState(!StringUtils.isBlank(this.getVersion()), "application version must be not blank");
 
 		Validate.validState(this.getMsgManager()!=null, "MessageManager must not be null");
 

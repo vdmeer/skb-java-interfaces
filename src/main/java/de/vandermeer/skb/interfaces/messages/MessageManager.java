@@ -360,10 +360,10 @@ public interface MessageManager {
 		List<String> ret = new ArrayList<>();
 		for(Entry<DoesRender, MessageType> entry : this.getMessages().entrySet()){
 			if(type==null || type==MessageType.ALL){
-				ret.add(MessageConsole.conMessage(entry.getValue(), entry.getKey().render()));
+				ret.add(MessageConsole.generateMessage(entry.getValue(), entry.getKey().render()));
 			}
 			else if(entry.getValue()==type){
-				ret.add(MessageConsole.conMessage(entry.getValue(), entry.getKey().render()));
+				ret.add(MessageConsole.generateMessage(entry.getValue(), entry.getKey().render()));
 			}
 		}
 		return ret;

@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrBuilder;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -77,84 +78,6 @@ public final class MessageConsole {
 	private static transient String DEBUG_PREFIX = " ===> ";
 
 	/**
-	 * Sets an application name as prefix for messages.
-	 * @param appName new application name, null or blank of none required
-	 */
-	public static void setApplicationName(String appName){
-		if(StringUtils.isBlank(appName)){
-			APPLICATION_NAME = "";
-		}
-		else{
-			APPLICATION_NAME = appName + ": ";
-		}
-	}
-
-	/**
-	 * Sets an error prefix for messages.
-	 * @param appName new prefix, null or blank of none required
-	 */
-	public static void setErrorPrefix(String prefix){
-		if(StringUtils.isBlank(prefix)){
-			ERROR_PREFIX = "";
-		}
-		else{
-			ERROR_PREFIX = prefix + " ";
-		}
-	}
-
-	/**
-	 * Sets an warning prefix for messages.
-	 * @param appName new prefix, null or blank of none required
-	 */
-	public static void setWarningPrefix(String prefix){
-		if(StringUtils.isBlank(prefix)){
-			WARNING_PREFIX = "";
-		}
-		else{
-			WARNING_PREFIX = prefix + " ";
-		}
-	}
-
-	/**
-	 * Sets an info prefix for messages.
-	 * @param appName new prefix, null or blank of none required
-	 */
-	public static void setInfoPrefix(String prefix){
-		if(StringUtils.isBlank(prefix)){
-			INFO_PREFIX = "";
-		}
-		else{
-			INFO_PREFIX = prefix + " ";
-		}
-	}
-
-	/**
-	 * Sets an trace prefix for messages.
-	 * @param appName new prefix, null or blank of none required
-	 */
-	public static void setTracePrefix(String prefix){
-		if(StringUtils.isBlank(prefix)){
-			TRACE_PREFIX = "";
-		}
-		else{
-			TRACE_PREFIX = prefix + " ";
-		}
-	}
-
-	/**
-	 * Sets an debug prefix for messages.
-	 * @param appName new prefix, null or blank of none required
-	 */
-	public static void setDebugPrefix(String prefix){
-		if(StringUtils.isBlank(prefix)){
-			DEBUG_PREFIX = "";
-		}
-		else{
-			DEBUG_PREFIX = prefix + " ";
-		}
-	}
-
-	/**
 	 * Activate a particular message type.
 	 * For instance, to activate trace messages use `TRACE`.
 	 * @param type the type to activate, ignored if null
@@ -183,7 +106,68 @@ public final class MessageConsole {
 		if(type==null){
 			return;
 		}
-		con(type, msg.render());
+		print(type, msg.render(), true);
+	}
+
+	/**
+	 * Prints a message of given type.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param msg the message, nothing done if null
+	 * @param newline true for a newline after the message, false otherwise
+	 */
+	public static void con(MessageType type, DoesRender msg, boolean newline){
+		if(type==null){
+			return;
+		}
+		print(type, msg.render(), newline);
+	}
+
+	/**
+	 * Prints a message of given type.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param messages the messages, nothing done if null
+	 */
+	public static void con(MessageType type, Set<DoesRender> messages){
+		if(type==null){
+			return;
+		}
+		for(DoesRender dr : messages){
+			print(type, dr.render(), true);
+		}
+	}
+
+	/**
+	 * Prints a message of given type.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param messages the messages, nothing done if null
+	 * @param newline true for a newline after the message, false otherwise
+	 */
+	public static void con(MessageType type, Set<DoesRender> messages, boolean newline){
+		if(type==null){
+			return;
+		}
+		for(DoesRender dr : messages){
+			print(type, dr.render(), newline);
+		}
+	}
+
+	/**
+	 * Prints a message of given type.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param msg the message, nothing done if null
+	 */
+	public static void con(MessageType type, StrBuilder msg){
+		print(type, msg.build(), true);
+	}
+
+	/**
+	 * Prints a message of given type.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param msg the message, nothing done if null
+	 * @param newline true for a newline after the message, false otherwise
+	 */
+	public static void con(MessageType type, StrBuilder msg, boolean newline){
+		print(type, msg.build(), newline);
 	}
 
 	/**
@@ -192,18 +176,48 @@ public final class MessageConsole {
 	 * @param msg the message, nothing done if null
 	 */
 	public static void con(MessageType type, String msg){
-		if(type==null || !isActive(type.getFlag())){
-			return;
-		}
-		String message = conMessage(type, msg);
-		if(msg!=null){
-			if(type==MessageType.ERROR){
-				System.err.println(message);
-			}
-			else{
-				System.out.println(message);
-			}
-		}
+		print(type, msg, true);
+	}
+
+	/**
+	 * Prints a message of given type.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param msg the message, nothing done if null
+	 * @param newline true for a newline after the message, false otherwise
+	 */
+	public static void con(MessageType type, String msg, boolean newline){
+		print(type, msg, newline);
+	}
+
+	/**
+	 * Prints a message using a {@link FormattingTuple}.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param msg message to print, nothing printed if null
+	 * @param args arguments for the message
+	 */
+	public static void con(MessageType type, String msg, Object ... args){
+		print(type, MessageFormatter.arrayFormat(msg, args).getMessage(), true);
+	}
+
+	/**
+	 * Prints a message using a {@link FormattingTuple}.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param newline true for a newline after the message, false otherwise
+	 * @param msg message to print, nothing printed if null
+	 * @param args arguments for the message
+	 */
+	public static void con(MessageType type, boolean newline, String msg, Object ... args){
+		print(type, MessageFormatter.arrayFormat(msg, args).getMessage(), newline);
+	}
+
+	/**
+	 * Deactivate a particular message type.
+	 * Use the defined static flags.
+	 * For instance, to activate trace messages use `TRACE`.
+	 * @param type the type to de-activate
+	 */
+	public static void deActivate(int type){
+		PRINT = PRINT & ~type;
 	}
 
 	/**
@@ -212,8 +226,8 @@ public final class MessageConsole {
 	 * @param msg the message, nothing done if null
 	 * @return built message string, null if type or msg where null
 	 */
-	public static String conMessage(MessageType type, String msg){
-		if(type!=null && msg!=null){
+	public static String generateMessage(MessageType type, String msg){
+		if(type!=null && !StringUtils.isBlank(msg)){
 			switch(type){
 				case DEBUG:
 					return APPLICATION_NAME + DEBUG_PREFIX + msg;
@@ -232,43 +246,6 @@ public final class MessageConsole {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Prints a message of given type.
-	 * @param type the type, noting done if null or {@link MessageType#NONE}
-	 * @param messages the messages, nothing done if null
-	 */
-	public static void con(MessageType type, Set<DoesRender> messages){
-		if(type==null){
-			return;
-		}
-		for(DoesRender dr : messages){
-			con(type, dr.render());
-		}
-	}
-
-
-	/**
-	 * Prints a message using a {@link FormattingTuple}.
-	 * @param type the type, noting done if null or {@link MessageType#NONE}
-	 * @param msg message to print, nothing printed if null
-	 * @param args arguments for the message
-	 */
-	public static void con(MessageType type, String msg, Object ... args){
-		if(isActive(WARNING.getFlag()) && msg!=null){
-			con(type, MessageFormatter.arrayFormat(msg, args).getMessage());
-		}
-	}
-
-	/**
-	 * Deactivate a particular message type.
-	 * Use the defined static flags.
-	 * For instance, to activate trace messages use `TRACE`.
-	 * @param type the type to de-activate
-	 */
-	public static void deActivate(int type){
-		PRINT = PRINT & ~type;
 	}
 
 	/**
@@ -307,6 +284,87 @@ public final class MessageConsole {
 	}
 
 	/**
+	 * Prints a message of given type.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param msg the message, nothing done if null
+	 * @param newline true for a newline after the message, false otherwise
+	 * @return the printed message
+	 */
+	private static void print(MessageType type, String msg, boolean newline){
+		if(type==null || !isActive(type.getFlag())){
+			return;
+		}
+		String message = generateMessage(type, msg);
+		if(msg!=null){
+			if(type==MessageType.ERROR){
+				System.err.print(message);
+				if(newline){
+					System.err.println();
+				}
+			}
+			else{
+				System.out.print(message);
+				if(newline){
+					System.out.println();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Sets an application name as prefix for messages.
+	 * @param appName new application name, null or blank of none required
+	 */
+	public static void setApplicationName(String appName){
+		if(StringUtils.isBlank(appName)){
+			APPLICATION_NAME = "";
+		}
+		else{
+			APPLICATION_NAME = appName + ": ";
+		}
+	}
+
+
+	/**
+	 * Sets an debug prefix for messages.
+	 * @param appName new prefix, null or blank of none required
+	 */
+	public static void setDebugPrefix(String prefix){
+		if(StringUtils.isBlank(prefix)){
+			DEBUG_PREFIX = "";
+		}
+		else{
+			DEBUG_PREFIX = prefix + " ";
+		}
+	}
+
+	/**
+	 * Sets an error prefix for messages.
+	 * @param appName new prefix, null or blank of none required
+	 */
+	public static void setErrorPrefix(String prefix){
+		if(StringUtils.isBlank(prefix)){
+			ERROR_PREFIX = "";
+		}
+		else{
+			ERROR_PREFIX = prefix + " ";
+		}
+	}
+
+	/**
+	 * Sets an info prefix for messages.
+	 * @param appName new prefix, null or blank of none required
+	 */
+	public static void setInfoPrefix(String prefix){
+		if(StringUtils.isBlank(prefix)){
+			INFO_PREFIX = "";
+		}
+		else{
+			INFO_PREFIX = prefix + " ";
+		}
+	}
+
+	/**
 	 * Sets the print bitmap to the given value.
 	 * To activate all messages use {@link MessageType#ALL}.
 	 * To set a particular combination, use any of the defined message flags with a logical `or`.
@@ -316,6 +374,32 @@ public final class MessageConsole {
 	public static int setPrint(int print){
 		PRINT = print;
 		return PRINT;
+	}
+
+	/**
+	 * Sets an trace prefix for messages.
+	 * @param appName new prefix, null or blank of none required
+	 */
+	public static void setTracePrefix(String prefix){
+		if(StringUtils.isBlank(prefix)){
+			TRACE_PREFIX = "";
+		}
+		else{
+			TRACE_PREFIX = prefix + " ";
+		}
+	}
+
+	/**
+	 * Sets an warning prefix for messages.
+	 * @param appName new prefix, null or blank of none required
+	 */
+	public static void setWarningPrefix(String prefix){
+		if(StringUtils.isBlank(prefix)){
+			WARNING_PREFIX = "";
+		}
+		else{
+			WARNING_PREFIX = prefix + " ";
+		}
 	}
 
 	/**

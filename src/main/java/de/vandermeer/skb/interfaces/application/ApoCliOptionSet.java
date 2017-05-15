@@ -239,7 +239,7 @@ public interface ApoCliOptionSet {
 
 	/**
 	 * Returns the set of simple CLI options.
-	 * @return set of simple options, empty if none set
+	 * @return set of simple options, must not be null, empty if none set
 	 */
 	default Set<Apo_SimpleC> getSimpleSet(){
 		return this.getSimpleMap().keySet();
@@ -268,14 +268,12 @@ public interface ApoCliOptionSet {
 		if(option==null){
 			return false;
 		}
-		if(option.getClass().isInstance(ApoBaseC.class)){
-			ApoBaseC opt = (ApoBaseC)option;
-			if(opt.getCliShort()!=null && this.getSetString().contains(opt.getCliShort().toString())){
-				return true;
-			}
-			if(opt.getCliLong()!=null && this.getSetString().contains(opt.getCliLong())){
-				return true;
-			}
+		ApoBaseC opt = (ApoBaseC)option;
+		if(opt.getCliShort()!=null && this.getSetString().contains(opt.getCliShort().toString())){
+			return true;
+		}
+		if(opt.getCliLong()!=null && this.getSetString().contains(opt.getCliLong())){
+			return true;
 		}
 		return false;
 	}
@@ -311,9 +309,6 @@ public interface ApoCliOptionSet {
 
 	/**
 	 * Returns a sorted collection of CLI options.
-	 * @param list option list to sort
-	 * @param numberShort number of arguments with short command
-	 * @param numberLong number of arguments with long command
 	 * @return sorted collection
 	 */
 	default Collection<ApoBaseC> sortedList(){
@@ -322,9 +317,6 @@ public interface ApoCliOptionSet {
 
 	/**
 	 * Returns a sorted map of CLI options, the mapping is the sort string to the CLI option.
-	 * @param list option list to sort
-	 * @param numberShort number of arguments with short command
-	 * @param numberLong number of arguments with long command
 	 * @return sorted map
 	 */
 	default TreeMap<String, ApoBaseC> sortedMap(){

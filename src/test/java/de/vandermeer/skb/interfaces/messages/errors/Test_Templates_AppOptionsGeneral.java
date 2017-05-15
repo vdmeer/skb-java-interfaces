@@ -15,12 +15,7 @@
 
 package de.vandermeer.skb.interfaces.messages.errors;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
-
-import de.vandermeer.skb.interfaces.messages.errors.IsErrorTemplate;
-import de.vandermeer.skb.interfaces.messages.errors.Templates_AppOptionsGeneral;
 
 public class Test_Templates_AppOptionsGeneral {
 
@@ -37,7 +32,7 @@ public class Test_Templates_AppOptionsGeneral {
 
 	@Test
 	public void test_SomeErrors(){
-		String msg;
+//		String msg;
 
 //		msg = Templates_AppOptionsGeneral.DIR_NOT_SET.getError().getErrorMessageString();
 //		assertTrue(StringUtils.isNotBlank(msg));
