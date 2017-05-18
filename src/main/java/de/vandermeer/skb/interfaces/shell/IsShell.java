@@ -103,7 +103,7 @@ public interface IsShell extends CategoryIs, HasName, HasDisplayName, HasVersion
 	 * Runs the shell using a non-blocking standard input reader.
 	 */
 	default void runShell(){
-		BufferedReader sysin = NonBlockingReader.getNbReader(this.getName(), 1, 500, this);
+		BufferedReader sysin = NonBlockingReader.getNbReader(1, 500, this);
 		this.runShell(sysin);
 	}
 
