@@ -59,15 +59,7 @@ public interface ApoCliParser extends HasErrorSet {
 	static ApoCliParser defaultParser(){
 		return new ApoCliParser() {
 			protected final transient ApoCliOptionSet options = ApoCliOptionSet.setApacheOptions();
-
 			protected final transient IsErrorSet errorSet = IsErrorSet.create();
-
-			protected transient int errNo;
-
-			@Override
-			public int getErrNo() {
-				return this.errNo;
-			}
 
 			@Override
 			public IsErrorSet getErrorSet() {
@@ -96,23 +88,18 @@ public interface ApoCliParser extends HasErrorSet {
 				}
 				catch(AlreadySelectedException ase){
 					this.getErrorSet().add(Templates_CliGeneral.ALREADY_SELECTED.getError(ase.getMessage()));
-					this.errNo = Templates_CliGeneral.ALREADY_SELECTED.getCode();
 				}
 				catch(MissingArgumentException mae){
 					this.getErrorSet().add(Templates_CliGeneral.MISSING_ARGUMENT.getError(mae.getMessage()));
-					this.errNo = Templates_CliGeneral.MISSING_ARGUMENT.getCode();
 				}
 				catch(MissingOptionException moe){
 					this.getErrorSet().add(Templates_CliGeneral.MISSING_OPTION.getError(moe.getMessage()));
-					this.errNo = Templates_CliGeneral.MISSING_OPTION.getCode();
 				}
 				catch(UnrecognizedOptionException uoe){
 					this.getErrorSet().add(Templates_CliGeneral.UNRECOGNIZED_OPTION.getError(uoe.getMessage()));
-					this.errNo = Templates_CliGeneral.UNRECOGNIZED_OPTION.getCode();
 				}
 				catch (ParseException ex) {
 					this.getErrorSet().add(Templates_CliGeneral.PARSE_EXCEPTION.getError(ex.getMessage()));
-					this.errNo = Templates_CliGeneral.PARSE_EXCEPTION.getCode();
 				}
 
 				if(cmdLine!=null){
@@ -125,7 +112,6 @@ public interface ApoCliParser extends HasErrorSet {
 							IsError error = typed.setCliValue(cmdLine.getOptionValue((typed.getCliShort()==null)?typed.getCliLong():typed.getCliShort().toString()));
 							if(error!=null){
 								this.errorSet.add(error);
-								this.errNo = error.getErrorCode();
 							}
 						}
 					}
@@ -138,7 +124,9 @@ public interface ApoCliParser extends HasErrorSet {
 	 * Returns the number of the last error, 0 if none occurred.
 	 * @return last error number
 	 */
-	int getErrNo();
+	default int getErrNo(){
+		return this.getErrorSet().getErrNo();
+	}
 
 	/**
 	 * Returns the parser's option set.

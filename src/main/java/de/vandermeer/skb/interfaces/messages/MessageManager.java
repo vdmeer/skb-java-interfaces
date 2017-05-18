@@ -29,8 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.helpers.FormattingTuple;
 import org.stringtemplate.v4.ST;
 
+import de.vandermeer.skb.interfaces.FormattingTupleWrapper;
 import de.vandermeer.skb.interfaces.MessageType;
 import de.vandermeer.skb.interfaces.antlr.IsST;
+import de.vandermeer.skb.interfaces.categories.has.HasErrNo;
 import de.vandermeer.skb.interfaces.console.MessageConsole;
 import de.vandermeer.skb.interfaces.messages.errors.IsError;
 import de.vandermeer.skb.interfaces.messages.sets.HasDebugSet;
@@ -38,6 +40,7 @@ import de.vandermeer.skb.interfaces.messages.sets.HasErrorSet;
 import de.vandermeer.skb.interfaces.messages.sets.HasInfoSet;
 import de.vandermeer.skb.interfaces.messages.sets.HasTraceSet;
 import de.vandermeer.skb.interfaces.messages.sets.HasWarningSet;
+import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
 import de.vandermeer.skb.interfaces.messages.sets.IsMessageSet;
 import de.vandermeer.skb.interfaces.render.DoesRender;
 
@@ -48,7 +51,67 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface MessageManager {
+public interface MessageManager extends HasErrNo {
+
+	/**
+	 * Creates a new message manager.
+	 * @return message manager
+	 */
+	static MessageManager create(){
+		Map<MessageType, Integer> count = new HashMap<>();
+		count.put(MessageType.ALL, 0);
+		count.put(MessageType.DEBUG, 0);
+		count.put(MessageType.ERROR, 0);
+		count.put(MessageType.INFO, 0);
+		count.put(MessageType.NONE, 0);
+		count.put(MessageType.TRACE, 0);
+		count.put(MessageType.WARNING, 0);
+
+		Map<MessageType, Integer> maxCount = new HashMap<>();
+		count.put(MessageType.ALL, 100);
+		count.put(MessageType.DEBUG, 100);
+		count.put(MessageType.ERROR, 100);
+		count.put(MessageType.INFO, 100);
+		count.put(MessageType.NONE, 100);
+		count.put(MessageType.TRACE, 100);
+		count.put(MessageType.WARNING, 100);
+
+		return new MessageManager() {
+			protected Map<MessageType, Logger> loggers = new HashMap<>();
+			protected Map<DoesRender, MessageType> messages = new LinkedHashMap<>();
+			protected int errno;
+
+			@Override
+			public Map<DoesRender, MessageType> getMessages() {
+				return this.messages;
+			}
+
+			@Override
+			public Map<MessageType, Integer> getMsgCount() {
+				return count;
+			}
+
+			@Override
+			public Map<MessageType, Logger> getMsgLoggers() {
+				return this.loggers;
+			}
+
+			@Override
+			public Map<MessageType, Integer> getMsgMaxCount() {
+				return maxCount;
+			}
+
+			@Override
+			public int getErrNo() {
+				return this.errno;
+			}
+
+			@Override
+			public void setErrNo(int number) {
+				this.errno = number;
+			}
+		};
+	}
 
 	/**
 	 * Adds messages.
@@ -71,6 +134,7 @@ public interface MessageManager {
 			for(DoesRender message : set.getErrorSet().getMessages()){
 				this.add(MessageType.ERROR, message);
 			}
+			this.setErrNo(set.getErrorSet().getErrNo());
 		}
 	}
 
@@ -119,6 +183,7 @@ public interface MessageManager {
 			FormattingTuple ft = error.getErrorMessage();
 			if(ft!=null){
 				this.process(MessageType.ERROR, FormattingTupleWrapper.create(ft));
+				this.setErrNo(error.getErrNo());
 			}
 		}
 	}
@@ -177,6 +242,9 @@ public interface MessageManager {
 			for(DoesRender dr : messages.getMessages()){
 				this.process(messages.getType(), dr);
 			}
+			if(messages.getClass().isInstance(IsErrorSet.class)){
+				this.setErrNo(((IsErrorSet)messages).getErrNo());
+			}
 		}
 	}
 
@@ -198,23 +266,22 @@ public interface MessageManager {
 	 * @param type the message type, nothing added if null
 	 * @param messages the iterable messages, nothing added if null
 	 */
-	default void addAll(Iterable<IsError> messages){
-		if(messages!=null){
+	default void addAll(MessageType type, Iterable<DoesRender> messages){
+		if(type!=null && messages!=null){
 			for(DoesRender dr : messages){
-				this.process(MessageType.ERROR, dr);
+				this.process(type, dr);
 			}
 		}
 	}
 
 	/**
-	 * Adds new messages.
-	 * @param type the message type, nothing added if null
-	 * @param messages the iterable messages, nothing added if null
+	 * Adds new error messages.
+	 * @param messages the iterable error messages, nothing added if null
 	 */
-	default void addAll(MessageType type, Iterable<DoesRender> messages){
-		if(type!=null && messages!=null){
-			for(DoesRender dr : messages){
-				this.process(type, dr);
+	default void addAll(Iterable<IsError> messages){
+		if(messages!=null){
+			for(IsError error : messages){
+				this.add(error);
 			}
 		}
 	}
@@ -288,6 +355,7 @@ public interface MessageManager {
 		this.add(MessageType.TRACE, message);
 	}
 
+
 	/**
 	 * Adds a new warning message.
 	 * @param what the what part of the message (what has happened)
@@ -302,7 +370,6 @@ public interface MessageManager {
 		this.add(MessageType.WARNING, message);
 	}
 
-
 	/**
 	 * Clears all messages, removes them.
 	 */
@@ -311,14 +378,6 @@ public interface MessageManager {
 			entry.setValue(0);
 		}
 		this.getMessages().clear();
-	}
-
-	/**
-	 * Returns all information messages.
-	 * @return list of messages in the order they were added
-	 */
-	default List<String> geInfos(){
-		return this.getMessagesRendered(MessageType.INFO);
 	}
 
 	/**
@@ -335,6 +394,14 @@ public interface MessageManager {
 	 */
 	default List<String> getErrors(){
 		return this.getMessagesRendered(MessageType.ERROR);
+	}
+
+	/**
+	 * Returns all information messages.
+	 * @return list of messages in the order they were added
+	 */
+	default List<String> getInfos(){
+		return this.getMessagesRendered(MessageType.INFO);
 	}
 
 	/**
@@ -555,51 +622,17 @@ public interface MessageManager {
 	}
 
 	/**
-	 * Creates a new message manager.
-	 * @return message manager
+	 * Sets the error number if available.
+	 * @param number error number
 	 */
-	static MessageManager create(){
-		Map<MessageType, Integer> count = new HashMap<>();
-		count.put(MessageType.ALL, 0);
-		count.put(MessageType.DEBUG, 0);
-		count.put(MessageType.ERROR, 0);
-		count.put(MessageType.INFO, 0);
-		count.put(MessageType.NONE, 0);
-		count.put(MessageType.TRACE, 0);
-		count.put(MessageType.WARNING, 0);
+	void setErrNo(int number);
 
-		Map<MessageType, Integer> maxCount = new HashMap<>();
-		count.put(MessageType.ALL, 100);
-		count.put(MessageType.DEBUG, 100);
-		count.put(MessageType.ERROR, 100);
-		count.put(MessageType.INFO, 100);
-		count.put(MessageType.NONE, 100);
-		count.put(MessageType.TRACE, 100);
-		count.put(MessageType.WARNING, 100);
-
-		return new MessageManager() {
-			Map<MessageType, Logger> loggers = new HashMap<>();
-			Map<DoesRender, MessageType> messages = new LinkedHashMap<>();
-
-			@Override
-			public Map<MessageType, Integer> getMsgMaxCount() {
-				return maxCount;
-			}
-
-			@Override
-			public Map<MessageType, Logger> getMsgLoggers() {
-				return this.loggers;
-			}
-
-			@Override
-			public Map<MessageType, Integer> getMsgCount() {
-				return count;
-			}
-
-			@Override
-			public Map<DoesRender, MessageType> getMessages() {
-				return this.messages;
-			}
-		};
+	/**
+	 * Prints all messages in chronological order to the console using {@link MessageConsole}
+	 */
+	default void printMessagesConsole(){
+		for(Entry<DoesRender, MessageType> entry : this.getMessages().entrySet()){
+			MessageConsole.con(entry.getValue(), entry.getKey());
+		}
 	}
 }

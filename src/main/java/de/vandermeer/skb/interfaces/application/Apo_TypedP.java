@@ -68,4 +68,9 @@ public interface Apo_TypedP<T> extends ApoBaseP, ApoBaseTyped<T> {
 	 */
 	IsError setPropertyValue(final String value);
 
+	/**
+	 * Returns the type of the value of the command.
+	 * @return type of value, must not be null
+	 */
+	String valueType();
 }

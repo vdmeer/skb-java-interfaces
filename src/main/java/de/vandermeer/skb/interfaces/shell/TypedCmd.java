@@ -27,6 +27,12 @@ import de.vandermeer.skb.interfaces.messages.errors.IsError;
 public interface TypedCmd<T> extends CmdBase {
 
 	/**
+	 * Flag for required arguments.
+	 * @return true if required, false otherwise
+	 */
+	boolean argIsRequired();
+
+	/**
 	 * Returns a description of the argument.
 	 * @return argument description, must not be blank
 	 */
@@ -90,4 +96,10 @@ public interface TypedCmd<T> extends CmdBase {
 	 * @return null on success, an error message on error
 	 */
 	IsError setCmdValue(final String value);
+
+	/**
+	 * Returns the type of the value of the command.
+	 * @return type of value, must not be null
+	 */
+	String valueType();
 }

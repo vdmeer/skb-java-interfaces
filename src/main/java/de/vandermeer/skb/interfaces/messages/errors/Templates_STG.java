@@ -25,6 +25,16 @@ package de.vandermeer.skb.interfaces.messages.errors;
 public enum Templates_STG implements IsErrorTemplate {
 
 	/**
+	 * A required String Template Group was null.
+	 * Arguments: none.
+	 */
+	STG_NULL(
+			-400,
+			"a required STG was null",
+			"A required String Template Group was null."
+	),
+
+	/**
 	 * An STGroup did run into a compile time error.
 	 * Arguments: error message.
 	 */
@@ -65,33 +75,43 @@ public enum Templates_STG implements IsErrorTemplate {
 	),
 
 	/**
-	 * A loaded STGroup tried to load template (ST) but resulting ST was null.
+	 * A loaded STGroup tried to load template ST but resulting ST was null.
 	 * Arguments: STG name, template name.
 	 */
 	ST_IS_NULL(
 			-409,
 			"STGroup <{}> tried to load template <{}> but as null",
-			"A loaded STGroup tried to load template (ST) but resulting ST was null."
+			"A loaded STGroup tried to load template ST but resulting ST was null."
 	),
 
 	/**
-	 * A loaded STGroup does not define a template (ST) that was expected to be defined.
+	 * A loaded STGroup does not define a template ST that was expected to be defined.
 	 * Arguments: STG name, template name.
 	 */
 	MISSING_EXPECTED_ST(
 			-410,
 			"STGroup <{}> does not define expected template <{}>",
-			"A loaded STGroup does not define a template (ST) that was expected to be defined."
+			"A loaded STGroup does not define a template ST that was expected to be defined."
 	),
 
 	/**
-	 * A loaded STGroup found errors with a defined template (ST), detailed errors should follow.
+	 * A loaded STGroup does define an unexpected template ST.
+	 * Arguments: STG name, template name.
+	 */
+	EXTRA_ST(
+			-411,
+			"STGroup <{}> does define unexpected template <{}>",
+			"A loaded STGroup does define an unexpected template ST."
+	),
+
+	/**
+	 * A loaded STGroup found errors with a defined template ST, detailed errors should follow.
 	 * Arguments: STG name, template name.
 	 */
 	MISSING_ST_ARG_ERRORS(
-			-411,
+			-412,
 			"STGroup <{}> found problems with template <{}>",
-			"A loaded STGroup found errors with a defined template (ST), detailed errors should follow."
+			"A loaded STGroup found errors with a defined template ST, detailed errors should follow."
 	),
 
 	;

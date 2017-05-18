@@ -109,4 +109,9 @@ public interface Apo_TypedC<T> extends ApoBaseTyped<T>, ApoBaseC {
 		Validate.validState(!StringUtils.isBlank(this.getCliArgumentDescription()), "Apo: CLI argDescr cannot be blank");
 	}
 
+	/**
+	 * Returns the type of the value of the command.
+	 * @return type of value, must not be null
+	 */
+	String valueType();
 }

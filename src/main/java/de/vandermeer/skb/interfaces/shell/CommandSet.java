@@ -56,17 +56,9 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 
 			protected final transient Map<String, TypedCmd<?>> typedCommands = new HashMap<>();
 
+			protected final transient Map<String, LongTypedCmd> longTypedCommands = new HashMap<>();
+
 			protected final transient Map<String, ComplexCmd> complexCommands = new HashMap<>();
-
-			@Override
-			public Map<String, ComplexCmd> getComplexMap() {
-				return this.complexCommands;
-			}
-
-			@Override
-			public Map<String, SimpleCmd> getSimpleMap() {
-				return this.simpleCommands;
-			}
 
 			@Override
 			public CommandSet addCommand(Object command) throws IllegalStateException {
@@ -89,6 +81,14 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 					);
 					this.typedCommands.put(cmd.getName(), cmd);
 				}
+				else if(ClassUtils.isAssignable(command.getClass(), LongTypedCmd.class)){
+					LongTypedCmd cmd = (LongTypedCmd)command;
+					Validate.validState(
+							!this.hasCommand(cmd.getName()),
+							"CommandParser: long typed command <" + cmd.getName() + "> already in use"
+					);
+					this.longTypedCommands.put(cmd.getName(), cmd);
+				}
 				else if(ClassUtils.isAssignable(command.getClass(), ComplexCmd.class)){
 					ComplexCmd cmd = (ComplexCmd)command;
 					Validate.validState(
@@ -101,18 +101,8 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 			}
 
 			@Override
-			public Map<String, TypedCmd<?>> getTypedMap() {
-				return this.typedCommands;
-			}
-
-			@Override
-			public String getName() {
-				return name;
-			}
-
-			@Override
-			public String getDisplayName() {
-				return displayName;
+			public Map<String, ComplexCmd> getComplexMap() {
+				return this.complexCommands;
 			}
 
 			@Override
@@ -121,8 +111,33 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 			}
 
 			@Override
+			public String getDisplayName() {
+				return displayName;
+			}
+
+			@Override
+			public String getName() {
+				return name;
+			}
+
+			@Override
+			public Map<String, SimpleCmd> getSimpleMap() {
+				return this.simpleCommands;
+			}
+
+			@Override
+			public Map<String, TypedCmd<?>> getTypedMap() {
+				return this.typedCommands;
+			}
+
+			@Override
 			public String getVersion() {
 				return version;
+			}
+
+			@Override
+			public Map<String, LongTypedCmd> getLongTypedMap() {
+				return this.longTypedCommands;
 			}
 
 		};
@@ -166,20 +181,48 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 */
 	CommandSet addCommand(Object command) throws IllegalStateException;
 
-//	/**
-//	 * Returns a command for a given command name.
-//	 * @param name the command name
-//	 * @return null on error, a command on success
-//	 */
-//	default CmdBase getCommand(String name){
-//		if(this.getSimpleMap().containsKey(name)){
-//			return this.getSimpleMap().get(name);
-//		}
-//		else if(this.getTypedMap().containsKey(name)){
-//			return this.getTypedMap().get(name);
-//		}
-//		return this.getComplexMap().get(name);
-//	}
+	/**
+	 * Clears all values of typed and complex commands in preparation for a new command line parse.
+	 */
+	default void clearCmdValues(){
+		for(TypedCmd<?> command : this.getTypedMap().values()){
+			command.resetCmdValue();
+		}
+		for(LongTypedCmd command : this.getLongTypedMap().values()){
+			for(LongTypedArgument<?> argmument : command.getArguments()){
+				argmument.resetCmdValue();
+			}
+		}
+		for(ComplexCmd command : this.getComplexMap().values()){
+			for(ComplexArgument<?> argmument : command.getArguments()){
+				argmument.resetCmdValue();
+			}
+		}
+	}
+
+	/**
+	 * Returns a command for a given command name.
+	 * @param name the command name
+	 * @return null on error, a command on success
+	 */
+	default CmdBase getCommand(String name){
+		if(this.getSimpleMap().containsKey(name)){
+			return this.getSimpleMap().get(name);
+		}
+		else if(this.getTypedMap().containsKey(name)){
+			return this.getTypedMap().get(name);
+		}
+		else if(this.getLongTypedMap().containsKey(name)){
+			return this.getLongTypedMap().get(name);
+		}
+		return this.getComplexMap().get(name);
+	}
+
+	/**
+	 * Returns the complex commands.
+	 * @return complex commands, must not be null, empty if no typed command added
+	 */
+	Map<String, ComplexCmd> getComplexMap();
 
 	/**
 	 * Returns the simple commands.
@@ -194,25 +237,10 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	Map<String, TypedCmd<?>> getTypedMap();
 
 	/**
-	 * Returns the complex commands.
-	 * @return complex commands, must not be null, empty if no typed command added
+	 * Returns the long typed commands.
+	 * @return long typed commands, must not be null, empty if no typed commands added
 	 */
-	Map<String, ComplexCmd> getComplexMap();
-
-//	/**
-//	 * Tests if a command is already added to the parser.
-//	 * @param command the command to test for
-//	 * @return true if parser has the command, false otherwise (command was `null` or not an instance of {@link CmdBase}
-//	 */
-//	default boolean hasCommand(CmdBase command){
-//		if(command==null){
-//			return false;
-//		}
-//		return this.getSimpleMap().keySet().contains(command.getName())
-//				|| this.getTypedMap().keySet().contains(command.getName())
-//				|| this.getComplexMap().keySet().contains(command.getName())
-//		;
-//	}
+	Map<String, LongTypedCmd> getLongTypedMap();
 
 	/**
 	 * Tests if a command name is already in the set.
@@ -222,6 +250,7 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	default boolean hasCommand(String name){
 		return this.getSimpleMap().keySet().contains(name)
 				|| this.getTypedMap().keySet().contains(name)
+				|| this.getLongTypedMap().keySet().contains(name)
 				|| this.getComplexMap().keySet().contains(name)
 		;
 	}
@@ -231,7 +260,11 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 * @return number of commands, 0 if none added
 	 */
 	default int size(){
-		return this.getSimpleMap().size() + this.getTypedMap().size() + this.getComplexMap().size();
+		return this.getSimpleMap().size()
+				+ this.getLongTypedMap().size()
+				+ this.getTypedMap().size()
+				+ this.getComplexMap().size()
+		;
 	}
 
 	/**
@@ -254,23 +287,12 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 		for(CmdBase opt : getTypedMap().values()){
 			ret.put(opt.getName(), opt);
 		}
+		for(CmdBase opt : getLongTypedMap().values()){
+			ret.put(opt.getName(), opt);
+		}
 		for(CmdBase opt : getComplexMap().values()){
 			ret.put(opt.getName(), opt);
 		}
 		return ret;
-	}
-
-	/**
-	 * Clears all values of typed and complex commands in preparation for a new command line parse.
-	 */
-	default void clearCmdValues(){
-		for(TypedCmd<?> command : this.getTypedMap().values()){
-			command.resetCmdValue();
-		}
-		for(ComplexCmd command : this.getComplexMap().values()){
-			for(CmdArgument<?> argmument : command.getArguments()){
-				argmument.resetCmdValue();
-			}
-		}
 	}
 }

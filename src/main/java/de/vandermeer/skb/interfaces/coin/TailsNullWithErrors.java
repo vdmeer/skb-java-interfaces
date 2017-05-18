@@ -37,11 +37,22 @@ public interface TailsNullWithErrors extends TailsNull, IsErrorSet {
 	 */
 	static <M> TailsNullWithErrors create(){
 		return new TailsNullWithErrors() {
-			final Set<DoesRender> errorSet = new LinkedHashSet<>();
+			final protected Set<DoesRender> errorSet = new LinkedHashSet<>();
+			protected int errno;
 
 			@Override
 			public Set<DoesRender> getMessages() {
 				return this.errorSet;
+			}
+
+			@Override
+			public void setErrNo(int number) {
+				this.errno = number;
+			}
+
+			@Override
+			public int getErrNo() {
+				return this.errno;
 			}
 		};
 	}

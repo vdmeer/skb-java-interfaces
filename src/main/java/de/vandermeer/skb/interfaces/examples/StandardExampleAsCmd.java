@@ -17,6 +17,7 @@ package de.vandermeer.skb.interfaces.examples;
 
 import de.vandermeer.skb.interfaces.categories.has.HasDescription;
 import de.vandermeer.skb.interfaces.categories.has.HasDisplayName;
+import de.vandermeer.skb.interfaces.categories.has.HasLongDescription;
 import de.vandermeer.skb.interfaces.categories.has.HasName;
 
 /**
@@ -26,7 +27,7 @@ import de.vandermeer.skb.interfaces.categories.has.HasName;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
-public interface StandardExampleAsCmd extends StandardExample, HasName, HasDisplayName, HasDescription {
+public interface StandardExampleAsCmd extends StandardExample, HasName, HasDisplayName, HasDescription, HasLongDescription {
 
 	@Override
 	default String getDisplayName(){

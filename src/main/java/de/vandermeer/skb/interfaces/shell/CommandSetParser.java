@@ -15,6 +15,9 @@
 
 package de.vandermeer.skb.interfaces.shell;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
@@ -48,7 +51,7 @@ public interface CommandSetParser {
 		Validate.validState(clk!=null, "tokenized commandline was null");
 		Validate.validState(set!=null, "command set for parsing was null");
 		set.clearCmdValues();
-		Validate.validState(clk.head().size()!=0, "nothing command found in command line");
+		Validate.validState(clk.head().size()!=0, "no command found in command line");
 
 		CmdBase ret = null;
 		String command = clk.head().get(0);
@@ -57,12 +60,29 @@ public interface CommandSetParser {
 			ret = set.getSimpleMap().get(command);
 		}
 		else if(set.getTypedMap().keySet().contains(command)){
-			Validate.validState(clk.head().size()==2, "found typed command with too many/few arguments");
+			Validate.validState(clk.tail().size()<3, "found typed command with too many arguments");
 			Validate.validState(clk.tail().size()==0, "found typed command with complex arguments");
 
 			TypedCmd<?> tc = set.getTypedMap().get(command);
-			tc.setCmdValue(clk.head().get(1));
+			if(tc.argIsRequired()){
+				Validate.validState(clk.head().size()==2, "found typed command with required argument but no argument in command line");
+			}
+			else if(clk.head().size()==2){
+				tc.setCmdValue(clk.head().get(1));
+			}
 			ret = tc;
+		}
+		else if(set.getLongTypedMap().keySet().contains(command)){
+			Validate.validState(clk.tail().size()==0, "found long typed command with complex arguments");
+			LongTypedCmd ltc = set.getLongTypedMap().get(command);
+
+			List<String> clArgs = new ArrayList<>(clk.head());
+			clArgs.remove(0);
+			Validate.validState(clArgs.size()==ltc.getArguments().length, "long typed command <" + command + "> expected <" + ltc.getArguments().length + "> arguments, found <" + clArgs.size() + ">");
+			for(int i=0; i<clArgs.size(); i++){
+				ltc.getArguments()[i].setCmdValue(clArgs.get(i));
+			}
+			ret = ltc;
 		}
 		else if(set.getComplexMap().keySet().contains(command)){
 			Validate.validState(clk.head().size()==1, "found complex command with too many/few arguments");
@@ -70,7 +90,7 @@ public interface CommandSetParser {
 
 			ComplexCmd cc = set.getComplexMap().get(command);
 			for(Pair<String, String> pair : clk.tail()){
-				for(CmdArgument<?> cmdArg : cc.getArguments()){
+				for(ComplexArgument<?> cmdArg : cc.getArguments()){
 					if(cmdArg.getName().equals(pair.getKey())){
 						cmdArg.setCmdValue(pair.getValue());
 					}
@@ -79,7 +99,7 @@ public interface CommandSetParser {
 					}
 				}
 			}
-			for(CmdArgument<?> cmdArg : cc.getArguments()){
+			for(ComplexArgument<?> cmdArg : cc.getArguments()){
 				if(cmdArg.argIsRequired() && cmdArg.getCmdValue()==null){
 					throw new IllegalStateException("missing required argument <" + cmdArg.getName() + "> for command <" + command + ">");
 				}

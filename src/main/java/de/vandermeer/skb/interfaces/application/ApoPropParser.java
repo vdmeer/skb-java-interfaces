@@ -50,14 +50,7 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 	static ApoPropParser create(final boolean unknownKeyIsError){
 		return new ApoPropParser() {
 			protected final transient ApoPropOptions options = ApoPropOptions.create();
-
 			protected final transient IsErrorSet errorSet = IsErrorSet.create();
-
-			protected transient int errNo;
-			@Override
-			public int getErrNo() {
-				return this.errNo;
-			}
 
 			@Override
 			public IsErrorSet getErrorSet() {
@@ -70,22 +63,11 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 			}
 
 			@Override
-			public void setErrno(int errorNumber) {
-				this.errNo = errorNumber;
-			}
-
-			@Override
 			public boolean unknownKeyIsError(){
 				return unknownKeyIsError;
 			}
 		};
 	}
-
-	/**
-	 * Returns the number of the last error, 0 if none occurred.
-	 * @return last error number
-	 */
-	int getErrNo();
 
 	/**
 	 * Returns all options added to the parser.
@@ -122,7 +104,6 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 					String key = names.nextElement().toString();
 					if(!this.getOptions().getMap().keySet().contains(key)){
 						this.getErrorSet().add(Templates_PropertiesGeneral.UNRECOGNIZED_KEY.getError(key));
-						this.setErrno(Templates_PropertiesGeneral.UNRECOGNIZED_KEY.getCode());
 					}
 				}
 			}
@@ -137,13 +118,11 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 				if(propValue!=null){
 					if(setOptions.contains(key)){
 						this.getErrorSet().add(Templates_PropertiesGeneral.ALREADY_SELECTED.getError(key));
-						this.setErrno(Templates_PropertiesGeneral.ALREADY_SELECTED.getCode());
 					}
 					else{
 						IsError error = value.setPropertyValue(propValue);
 						if(error!=null){
 							this.getErrorSet().add(error);
-							this.setErrno(error.getErrorCode());
 						}
 						value.setInProperties(true);
 						setOptions.add(key);
@@ -152,7 +131,6 @@ public interface ApoPropParser extends ApoParser<Apo_TypedP<?>, ApoPropOptions> 
 			}
 			if(!setOptions.contains(key) && value.propertyIsRequired()){
 				this.getErrorSet().add(Templates_PropertiesGeneral.MISSING_KEY.getError(key));
-				this.setErrno(Templates_PropertiesGeneral.MISSING_KEY.getCode());
 			}
 		}
 

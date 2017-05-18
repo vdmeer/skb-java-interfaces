@@ -245,6 +245,9 @@ public final class MessageConsole {
 					return null;
 			}
 		}
+		else if(StringUtils.isBlank(msg)){
+			return "";
+		}
 		return null;
 	}
 

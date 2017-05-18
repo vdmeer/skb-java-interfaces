@@ -29,4 +29,12 @@ public interface HasErrorSet extends HasMessageSet {
 	 * @return set of error messages
 	 */
 	IsErrorSet getErrorSet();
+
+	/**
+	 * Returns the error number from the error set.
+	 * @return error number
+	 */
+	default int getErrNo(){
+		return this.getErrorSet().getErrNo();
+	}
 }

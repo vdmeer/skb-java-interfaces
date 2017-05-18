@@ -17,6 +17,7 @@ package de.vandermeer.skb.interfaces.transformers;
 
 import java.util.Collection;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ClassUtils;
 
 /**
@@ -145,6 +146,7 @@ public interface Object_To_Target<T> extends IsTransformer<Object, T> {
 	 *       ** If {@link #getClazzT()} is an instance of `Boolean` and value is `true` or `on` (case insensitive), then return `Boolean(true)`
 	 *       ** If {@link #getClazzT()} is an instance of `Boolean` and value is `false` or `off` (case insensitive), then return `Boolean(false)`
 	 *       ** If {@link #getClazzT()} is an instance of `Integer` then try to return `Integer.valueOf(value.toString)`
+	 *       ** If {@link #getClazzT()} is an instance of `Character` then try to return `value.toString().charat(0)`
 	 *       ** If {@link #getClazzT()} is an instance of `Double` then try to return `Double.valueOf(value.toString)`
 	 *       ** If {@link #getClazzT()} is an instance of `Long` then try to return `Long.valueOf(value.toString)`
 	 *     * The last option is to return `valueFalse` to indicate that no test was successful
@@ -189,10 +191,16 @@ public interface Object_To_Target<T> extends IsTransformer<Object, T> {
 		}
 
 		if(this.getClazzT().isInstance(new Boolean(true))){
-			Object ret = String_To_Boolean.create().transform(obj.toString());
+			Object ret = BooleanUtils.toBooleanObject(obj.toString());
 			if(ret!=null){
 				return (T) ret;
 			}
+		}
+		if(this.getClazzT().isInstance(new Character(' '))){
+			try{
+				return (T)new Character(obj.toString().charAt(0));
+			}
+			catch(Exception ignore){}
 		}
 		if(this.getClazzT().isInstance(new Integer(0))){
 			try{

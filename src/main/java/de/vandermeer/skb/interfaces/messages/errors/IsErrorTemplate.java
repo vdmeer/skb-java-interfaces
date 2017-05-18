@@ -103,7 +103,7 @@ public interface IsErrorTemplate extends HasDisplayName, HasDescription, Categor
 			}
 
 			@Override
-			public int getErrorCode() {
+			public int getErrNo() {
 				return getCode();
 			}
 

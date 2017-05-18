@@ -26,6 +26,7 @@ import de.vandermeer.skb.interfaces.MessageType;
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
 import de.vandermeer.skb.interfaces.categories.has.HasDescription;
 import de.vandermeer.skb.interfaces.categories.has.HasDisplayName;
+import de.vandermeer.skb.interfaces.categories.has.HasErrNo;
 import de.vandermeer.skb.interfaces.categories.has.HasName;
 import de.vandermeer.skb.interfaces.categories.has.HasVersion;
 import de.vandermeer.skb.interfaces.messages.HasMessageManager;
@@ -39,7 +40,7 @@ import de.vandermeer.skb.interfaces.transformers.textformat.Text_To_FormattedTex
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.2
  */
-public interface IsApplication extends CategoryIs, HasName, HasDisplayName, HasVersion, HasDescription, HasMessageManager {
+public interface IsApplication extends CategoryIs, HasName, HasDisplayName, HasVersion, HasDescription, HasMessageManager, HasErrNo {
 
 	/**
 	 * Simple utility to test if a CLI option (short or long) is in an array.
@@ -136,26 +137,25 @@ public interface IsApplication extends CategoryIs, HasName, HasDisplayName, HasV
 
 		if(IN_ARGUMENTS(args, this.cliVersionOption())){
 			System.out.println(this.getVersion());
-			this.setErrno(1);
+			this.getMsgManager().setErrNo(1);
 		}
 		else if(IN_ARGUMENTS(args, this.cliSimpleHelpOption())){
 			this.helpScreen();
-			this.setErrno(1);
+			this.getMsgManager().setErrNo(1);
 		}
 		else if(IN_ARGUMENTS(args, this.cliTypedHelpOption())){
 			if(args.length==1){
 				this.helpScreen();
-				this.setErrno(1);
+				this.getMsgManager().setErrNo(1);
 			}
 			else if(args.length==2){
 				ApoBase opt = this.getOption(args[1]);
 				if(opt==null){
 					this.getMsgManager().add(Templates_AppStart.HELP_UKNOWN_OPTION.getError(this.getName(), args[1]));
-					this.setErrno(Templates_AppStart.HELP_UKNOWN_OPTION.getCode());
 				}
 				else{
 					this.helpScreen(opt);
-					this.setErrno(1);
+					this.getMsgManager().setErrNo(1);
 				}
 			}
 			else{
@@ -167,11 +167,10 @@ public interface IsApplication extends CategoryIs, HasName, HasDisplayName, HasV
 			return;
 		}
 
-		this.setErrno(0);
+		this.getMsgManager().setErrNo(0);
 		this.getCliParser().parse(args);
 		if(this.getCliParser().getErrNo()!=0){
-			this.getMsgManager().addAll(MessageType.ERROR, this.getCliParser().getErrorSet().getMessages());
-			this.setErrno(this.getCliParser().getErrNo());
+			this.getMsgManager().add(this.getCliParser());
 		}
 
 		if(this.getErrNo()<0){
@@ -185,14 +184,15 @@ public interface IsApplication extends CategoryIs, HasName, HasDisplayName, HasV
 		else{
 			this.getEnvironmentParser().parse();
 			if(this.getEnvironmentParser().getErrNo()<0){
-				this.setErrno(this.getEnvironmentParser().getErrNo());
-				this.getMsgManager().addAll(MessageType.ERROR, this.getEnvironmentParser().getErrorSet().getMessages());
+				this.getMsgManager().add(this.getEnvironmentParser());
 			}
 		}
 
 		if(this.getErrNo()==0){
 			this.runApplication();
 		}
+
+		this.getMsgManager().printMessagesConsole();
 	}
 
 	/**
@@ -219,7 +219,9 @@ public interface IsApplication extends CategoryIs, HasName, HasDisplayName, HasV
 	 * Returns the number of the last error, 0 if none occurred.
 	 * @return last error number
 	 */
-	int getErrNo();
+	default int getErrNo(){
+		return this.getMsgManager().getErrNo();
+	}
 
 	/**
 	 * Finds and returns an option by name from CLI, property, and environment options.
@@ -316,12 +318,6 @@ public interface IsApplication extends CategoryIs, HasName, HasDisplayName, HasV
 	 * The main method for the application, called after {@link #executeApplication(String[])} is finished
 	 */
 	void runApplication();
-
-	/**
-	 * Sets an error number.
-	 * @param errorNumber the new number for the error
-	 */
-	void setErrno(int errorNumber);
 
 	/**
 	 * Translates an option's long help object into a string.

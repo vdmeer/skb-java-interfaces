@@ -15,7 +15,8 @@
 
 package de.vandermeer.skb.interfaces.application;
 
-import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
+import de.vandermeer.skb.interfaces.categories.has.HasErrNo;
+import de.vandermeer.skb.interfaces.messages.sets.HasErrorSet;
 
 /**
  * An application parser.
@@ -24,30 +25,17 @@ import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface ApoParser<O extends ApoBase, S extends ApoParserOptionSet<O>> {
+public interface ApoParser<O extends ApoBase, S extends ApoParserOptionSet<O>> extends HasErrorSet, HasErrNo {
 
-	/**
-	 * Returns the number of the last error, 0 if none occurred.
-	 * @return last error number
-	 */
-	int getErrNo();
-
-	/**
-	 * Returns the parser's error set.
-	 * @return parser's error set
-	 */
-	IsErrorSet getErrorSet();
+	@Override
+	default int getErrNo(){
+		return this.getErrorSet().getErrNo();
+	}
 
 	/**
 	 * Returns the option set of the parser.
 	 * @return parser option set, must not be null, empty if no options added
 	 */
 	ApoParserOptionSet<O> getOptions();
-
-	/**
-	 * Sets an error number.
-	 * @param errorNumber the new number for the error
-	 */
-	void setErrno(int errorNumber);
 
 }

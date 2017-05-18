@@ -18,10 +18,12 @@ package de.vandermeer.skb.interfaces.messages.sets;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.text.StrBuilder;
 import org.slf4j.helpers.FormattingTuple;
 
+import de.vandermeer.skb.interfaces.FormattingTupleWrapper;
 import de.vandermeer.skb.interfaces.MessageType;
-import de.vandermeer.skb.interfaces.messages.FormattingTupleWrapper;
+import de.vandermeer.skb.interfaces.categories.has.HasErrNo;
 import de.vandermeer.skb.interfaces.messages.errors.IsError;
 import de.vandermeer.skb.interfaces.render.DoesRender;
 
@@ -32,7 +34,7 @@ import de.vandermeer.skb.interfaces.render.DoesRender;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.1
  */
-public interface IsErrorSet extends IsMessageSet {
+public interface IsErrorSet extends IsMessageSet, HasErrNo {
 
 	/**
 	 * Creates a new error set.
@@ -40,11 +42,22 @@ public interface IsErrorSet extends IsMessageSet {
 	 */
 	static IsErrorSet create(){
 		return new IsErrorSet() {
-			Set<DoesRender> messages = new LinkedHashSet<>();
+			protected Set<DoesRender> messages = new LinkedHashSet<>();
+			protected int errno;
 
 			@Override
 			public Set<DoesRender> getMessages() {
 				return this.messages;
+			}
+
+			@Override
+			public int getErrNo() {
+				return this.errno;
+			}
+
+			@Override
+			public void setErrNo(int number) {
+				this.errno = number;
 			}
 		};
 	}
@@ -58,6 +71,7 @@ public interface IsErrorSet extends IsMessageSet {
 			FormattingTuple ft = error.getErrorMessage();
 			if(ft!=null){
 				this.getMessages().add(FormattingTupleWrapper.create(ft));
+				this.setErrNo(error.getErrNo());
 			}
 		}
 	}
@@ -67,4 +81,37 @@ public interface IsErrorSet extends IsMessageSet {
 		return MessageType.ERROR;
 	}
 
+	/**
+	 * Convenience method to render all errors into a single line.
+	 * @return single line string
+	 */
+	default String renderToString(){
+		return new StrBuilder().appendWithSeparators(this.renderAsCollection(), ", ").build();
+	}
+
+	/**
+	 * Sets the error number if available.
+	 * @param number error number
+	 */
+	void setErrNo(int number);
+
+	/**
+	 * Clears all messages and sets `errno` to `0`.
+	 */
+	@Override
+	default void clearMessages(){
+		this.getMessages().clear();
+		this.setErrNo(0);
+	}
+
+	/**
+	 * Adds all errors from another error set.
+	 * @param errors set to add errors from, ignored if null or of different type
+	 */
+	default void addAll(IsErrorSet errors){
+		if(errors!=null){
+			this.getMessages().addAll(errors.getMessages());
+			this.setErrNo(errors.getErrNo());
+		}
+	}
 }

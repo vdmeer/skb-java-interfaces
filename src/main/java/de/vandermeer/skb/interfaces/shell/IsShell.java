@@ -69,6 +69,7 @@ public interface IsShell extends CategoryIs, HasName, HasDisplayName, HasVersion
 					}
 					catch(IllegalStateException isex){
 						MessageConsole.con(MessageType.ERROR, isex.getMessage());
+//						isex.printStackTrace();
 					}
 				}
 			}

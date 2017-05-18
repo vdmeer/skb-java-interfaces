@@ -51,13 +51,6 @@ public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 
 			protected final transient IsErrorSet errorSet = IsErrorSet.create();
 
-			protected transient int errNo;
-
-			@Override
-			public int getErrNo() {
-				return this.errNo;
-			}
-
 			@Override
 			public IsErrorSet getErrorSet() {
 				return this.errorSet;
@@ -66,11 +59,6 @@ public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 			@Override
 			public ApoParserOptionSet<Apo_TypedE<?>> getOptions() {
 				return this.options;
-			}
-
-			@Override
-			public void setErrno(int errorNumber) {
-				this.errNo = errorNumber;
 			}
 		};
 	}
@@ -87,12 +75,10 @@ public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 		}
 		catch(SecurityException se){
 			this.getErrorSet().add(Templates_EnvironmentGeneral.SECURITY_EXCEPTION.getError(se.getMessage()));
-			this.setErrno(Templates_EnvironmentGeneral.SECURITY_EXCEPTION.getCode());
 			return;
 		}
 		if(envSettings==null){
 			this.getErrorSet().add(Templates_EnvironmentGeneral.SYSTEM_NO_ENV.getError());
-			this.setErrno(Templates_EnvironmentGeneral.SYSTEM_NO_ENV.getCode());
 			return;
 		}
 
@@ -102,23 +88,19 @@ public interface ApoEnvParser extends ApoParser<Apo_TypedE<?>, ApoEnvOptions> {
 			Apo_TypedE<?> value = entry.getValue();
 			if(!envSettings.keySet().contains(key) && value.environmentIsRequired()){
 				this.getErrorSet().add(Templates_EnvironmentGeneral.MISSING_KEY.getError(key));
-				this.setErrno(Templates_EnvironmentGeneral.MISSING_KEY.getCode());
 			}
 			else if(StringUtils.isBlank(envSettings.get(key))){
 				if(value.environmentIsRequired()){
 					this.getErrorSet().add(Templates_EnvironmentGeneral.MISSING_ARGUMENT.getError(key));
-					this.setErrno(Templates_EnvironmentGeneral.MISSING_ARGUMENT.getCode());
 				}
 			}
 			else if(setOptions.contains(key)){
 				this.getErrorSet().add(Templates_EnvironmentGeneral.ALREADY_SELECTED.getError(key));
-				this.setErrno(Templates_EnvironmentGeneral.ALREADY_SELECTED.getCode());
 			}
 			else{
 				IsError error = value.setEnvironmentValue(envSettings.get(key));
 				if(error!=null){
 					this.getErrorSet().add(error);
-					this.setErrno(error.getErrorCode());
 				}
 				value.setInEnvironment(true);
 				setOptions.add(key);

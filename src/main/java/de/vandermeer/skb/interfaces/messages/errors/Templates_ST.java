@@ -25,23 +25,53 @@ package de.vandermeer.skb.interfaces.messages.errors;
 public enum Templates_ST implements IsErrorTemplate {
 
 	/**
-	 * A compiled template (ST) does not define an expected argument.
-	 * Arguments: ST name, argument.
+	 * A required String Template was null.
+	 * Arguments: none.
 	 */
-	MISSING_EXPECTED_ARGUMENT(
+	ST_NULL(
 			-460,
-			"ST <{}> does not define expected argument <{}>",
-			"A compiled template (ST) does not define an expected argument."
+			"a required ST was null",
+			"A required String Template was null."
 	),
 
 	/**
-	 * A compiled template (ST) defined in an named STgroup does not define an expected argument.
+	 * A compiled template ST does not define an expected argument.
+	 * Arguments: ST name, argument.
+	 */
+	MISSING_EXPECTED_ARGUMENT(
+			-461,
+			"ST <{}> does not define expected argument <{}>",
+			"A compiled template ST does not define an expected argument."
+	),
+
+	/**
+	 * A compiled template ST in a named group STG does not define an expected argument.
 	 * Arguments: STG name, ST name, argument.
 	 */
 	MISSING_EXPECTED_ARGUMENT_STG(
-			-461,
-			"in STG <{}> - ST <{}> does not define expected argument <{}>",
-			"A compiled template (ST) defined in an named STgroup does not define an expected argument."
+			-462,
+			"STG <>{}: ST <{}> does not define expected argument <{}>",
+			"A compiled template ST in a named group STG does not define an expected argument."
+	),
+
+	/**
+	 * A compiled template ST does define an unexpected argument.
+	 * Arguments: ST name, argument.
+	 */
+	EXTRA_ARGUMENT(
+			-463,
+			"ST <{}> does define an extra, not expected argument <{}>",
+			"A compiled template ST does define an unexpected argument."
+	),
+
+	/**
+	 * A compiled template ST in a named group STG does define an unexpected argument.
+	 * Arguments: STG name, ST name, argument.
+	 */
+	EXTRA_ARGUMENT_STG(
+			-464,
+			"STG <>{}: ST <{}> does define an extra, not expected argument <{}>",
+			"A compiled template ST in a named group STG does define an unexpected argument."
 	),
 
 	;

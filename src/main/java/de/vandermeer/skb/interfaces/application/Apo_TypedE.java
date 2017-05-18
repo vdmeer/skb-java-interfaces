@@ -68,4 +68,9 @@ public interface Apo_TypedE<T> extends ApoBaseE, ApoBaseTyped<T> {
 	 */
 	IsError setEnvironmentValue(final String value);
 
+	/**
+	 * Returns the type of the value of the command.
+	 * @return type of value, must not be null
+	 */
+	String valueType();
 }

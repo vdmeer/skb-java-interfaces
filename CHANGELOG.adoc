@@ -18,6 +18,8 @@
 * fixed javadoc errors
 * changed internals of some interfaces to remove bugs and static code errors (findbugs and PMD)
 * started to remove `NullPointerException` from validations, substitute with `IllegalStateExeception`
+* added `shell` package
+* moved examples to its own package
 
 
 === v0.0.2 - update - 2017-05-02

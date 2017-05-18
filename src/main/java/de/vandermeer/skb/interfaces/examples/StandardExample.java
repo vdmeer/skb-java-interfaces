@@ -15,8 +15,6 @@
 
 package de.vandermeer.skb.interfaces.examples;
 
-import org.apache.commons.lang3.text.StrBuilder;
-
 /**
  * A standard example with show (example output) and source (example code as quine).
  *
@@ -36,7 +34,7 @@ public interface StandardExample {
 	 * Returns the original source code of the example.
 	 * @return source code
 	 */
-	StrBuilder getSource();
+	String getSource();
 
 	/**
 	 * Shows the output of the example.

@@ -23,10 +23,10 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.stringtemplate.v4.ST;
 
+import de.vandermeer.skb.interfaces.FormattingTupleWrapper;
 import de.vandermeer.skb.interfaces.MessageType;
 import de.vandermeer.skb.interfaces.antlr.IsST;
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
-import de.vandermeer.skb.interfaces.messages.FormattingTupleWrapper;
 import de.vandermeer.skb.interfaces.render.DoesRender;
 import de.vandermeer.skb.interfaces.render.RendersToCluster;
 
@@ -147,6 +147,14 @@ public interface IsMessageSet extends CategoryIs, RendersToCluster {
 	 */
 	default boolean hasMessages(){
 		return (this.getMessages().size()==0)?false:true;
+	}
+
+	/**
+	 * Returns the size of the message set, number of messages
+	 * @return number of messages
+	 */
+	default int size(){
+		return this.getMessages().size();
 	}
 
 	@Override

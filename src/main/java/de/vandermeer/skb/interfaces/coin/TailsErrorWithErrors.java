@@ -38,7 +38,8 @@ public interface TailsErrorWithErrors<R> extends TailsError<R>, IsErrorSet {
 	 */
 	static <R, M> TailsErrorWithErrors<R> create(final R value){
 		return new TailsErrorWithErrors<R>() {
-			final Set<DoesRender> errorSet = new LinkedHashSet<>();
+			final protected Set<DoesRender> errorSet = new LinkedHashSet<>();
+			protected int errno;
 
 			@Override
 			public Set<DoesRender> getMessages() {
@@ -48,6 +49,16 @@ public interface TailsErrorWithErrors<R> extends TailsError<R>, IsErrorSet {
 			@Override
 			public R getReturn() {
 				return value;
+			}
+
+			@Override
+			public void setErrNo(int number) {
+				this.errno = number;
+			}
+
+			@Override
+			public int getErrNo() {
+				return this.errno;
 			}
 		};
 	}

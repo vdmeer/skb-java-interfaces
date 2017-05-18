@@ -15,22 +15,15 @@
 
 package de.vandermeer.skb.interfaces.antlr;
 
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang3.Validate;
 import org.stringtemplate.v4.ST;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
-import de.vandermeer.skb.interfaces.messages.errors.IsError;
-import de.vandermeer.skb.interfaces.messages.errors.Templates_ST;
 import de.vandermeer.skb.interfaces.render.DoesRender;
 import de.vandermeer.skb.interfaces.render.DoesRenderToWidth;
 
 /**
- * Interface for objects that represent String Template (ST) objects
- * (for which one can check chunks etc).
+ * Interface for objects that represent string Template ST objects.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
@@ -84,7 +77,7 @@ public interface IsST extends DoesRender, DoesRenderToWidth, CategoryIs {
 	 * Returns the arguments expected to be defined in the ST object.
 	 * @return expected arguments as set of argument names
 	 */
-	String[] getExpectedArguments();;
+	String[] getExpectedArguments();
 
 	/**
 	 * The name of the ST Group in which the template was defined.
@@ -114,34 +107,5 @@ public interface IsST extends DoesRender, DoesRenderToWidth, CategoryIs {
 			return "";
 		}
 		return this.getST().render(width);
-	}
-
-	/**
-	 * Validates the ST for expected arguments.
-	 * @return a set of error messages, empty if no errors found, null if no expected arguments where set or no ST was set
-	 */
-	default Set<IsError> validate(){
-		if(this.getExpectedArguments()==null){
-			return null;
-		}
-		if(this.getST()==null){
-			return null;
-		}
-
-		Set<IsError> ret = new LinkedHashSet<>();
-		Map<?,?> formalArgs = this.getST().impl.formalArguments;
-		if(formalArgs==null){
-			for(String s : this.getExpectedArguments()){
-				ret.add(Templates_ST.MISSING_EXPECTED_ARGUMENT_STG.getError(this.getGroupName(), this.getST().getName(), s));
-			}
-		}
-		else{
-			for(String s : this.getExpectedArguments()){
-				if(!formalArgs.containsKey(s)){
-					ret.add(Templates_ST.MISSING_EXPECTED_ARGUMENT_STG.getError(this.getGroupName(), this.getST().getName(), s));
-				}
-			}
-		}
-		return ret;
 	}
 }
