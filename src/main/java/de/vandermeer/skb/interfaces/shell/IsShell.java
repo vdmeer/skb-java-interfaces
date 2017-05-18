@@ -114,7 +114,7 @@ public interface IsShell extends CategoryIs, HasName, HasDisplayName, HasVersion
 	boolean isRunning();
 
 	/**
-	 * Sets the flag for a shell that has an active thread, automatically done when using {@link #start(Object)}.
+	 * Sets the flag for a shell that is running (for instance in a separate thread).
 	 * @param running new flag, true if shell is running, false otherwise
 	 */
 	void setIsRunning(boolean running);

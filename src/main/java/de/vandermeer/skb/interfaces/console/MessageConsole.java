@@ -81,6 +81,7 @@ public final class MessageConsole {
 	 * Activate a particular message type.
 	 * For instance, to activate trace messages use `TRACE`.
 	 * @param type the type to activate, ignored if null
+	 * @return the new flag
 	 */
 	public static int activate(MessageType type){
 		if(type!=null){
@@ -91,6 +92,7 @@ public final class MessageConsole {
 
 	/**
 	 * Activates all messages: errors, warnings, information, trace, and debug.
+	 * @return the new flag
 	 */
 	public static int activateAll(){
 		PRINT = ALL.getFlag();
@@ -330,7 +332,7 @@ public final class MessageConsole {
 
 	/**
 	 * Sets an debug prefix for messages.
-	 * @param appName new prefix, null or blank of none required
+	 * @param prefix new prefix, null or blank of none required
 	 */
 	public static void setDebugPrefix(String prefix){
 		if(StringUtils.isBlank(prefix)){
@@ -343,7 +345,7 @@ public final class MessageConsole {
 
 	/**
 	 * Sets an error prefix for messages.
-	 * @param appName new prefix, null or blank of none required
+	 * @param prefix new prefix, null or blank of none required
 	 */
 	public static void setErrorPrefix(String prefix){
 		if(StringUtils.isBlank(prefix)){
@@ -356,7 +358,7 @@ public final class MessageConsole {
 
 	/**
 	 * Sets an info prefix for messages.
-	 * @param appName new prefix, null or blank of none required
+	 * @param prefix new prefix, null or blank of none required
 	 */
 	public static void setInfoPrefix(String prefix){
 		if(StringUtils.isBlank(prefix)){
@@ -373,6 +375,7 @@ public final class MessageConsole {
 	 * To set a particular combination, use any of the defined message flags with a logical `or`.
 	 * For instance, to activate error and debug messages use `ERRORS | DEBUG`.
 	 * @param print the print bitmap to set
+	 * @return the new flag
 	 */
 	public static int setPrint(int print){
 		PRINT = print;
@@ -381,7 +384,7 @@ public final class MessageConsole {
 
 	/**
 	 * Sets an trace prefix for messages.
-	 * @param appName new prefix, null or blank of none required
+	 * @param prefix new prefix, null or blank of none required
 	 */
 	public static void setTracePrefix(String prefix){
 		if(StringUtils.isBlank(prefix)){
@@ -394,7 +397,7 @@ public final class MessageConsole {
 
 	/**
 	 * Sets an warning prefix for messages.
-	 * @param appName new prefix, null or blank of none required
+	 * @param prefix new prefix, null or blank of none required
 	 */
 	public static void setWarningPrefix(String prefix){
 		if(StringUtils.isBlank(prefix)){

@@ -124,9 +124,11 @@ public interface STGValidator extends IsValidator {
 
 	/**
 	 * Returns the name of the STGroup object (file name, source name, or group directory name).
-	 * @return STGroup name, null if {@link #getSTGroup()} was null or if no name was found
+	 * @param stg the group to get the name from, must not be null
+	 * @return STGroup name, null if input was null or if no name was found
 	 */
 	default String getGroupName(STGroup stg){
+		Validate.notNull(stg);
 		String ret = null;
 
 		if(stg instanceof STGroupFile){

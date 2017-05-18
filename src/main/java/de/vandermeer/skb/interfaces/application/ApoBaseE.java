@@ -56,7 +56,7 @@ public interface ApoBaseE extends ApoBase {
 
 	/**
 	 * Sets the option flag for being in a the environment.
-	 * @param true if in a environment,  false otherwise
+	 * @param inEnv true if in a environment,  false otherwise
 	 */
 	void setInEnvironment(boolean inEnv);
 

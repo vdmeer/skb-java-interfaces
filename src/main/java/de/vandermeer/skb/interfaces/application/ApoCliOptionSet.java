@@ -197,7 +197,6 @@ public interface ApoCliOptionSet {
 
 	/**
 	 * Returns all required options, taking short or long CLI argument.
-	 * @param list input option list
 	 * @return all required options
 	 */
 	default Set<String> getRequired(){

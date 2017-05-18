@@ -56,7 +56,7 @@ public interface ApoBaseP extends ApoBase {
 
 	/**
 	 * Sets the option flag for being in a properties.
-	 * @param true if in a properties, false otherwise
+	 * @param inProp true if in a properties, false otherwise
 	 */
 	void setInProperties(boolean inProp);
 

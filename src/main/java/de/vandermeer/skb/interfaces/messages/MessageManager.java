@@ -472,7 +472,7 @@ public interface MessageManager extends HasErrNo {
 
 	/**
 	 * Returns the status of debug messages.
-	 * @return true if messages have been added (count > 0), false otherwise
+	 * @return true if messages have been added (count larger 0), false otherwise
 	 */
 	default boolean hasDebug(){
 		return this.hasMessages(MessageType.DEBUG);
@@ -480,7 +480,7 @@ public interface MessageManager extends HasErrNo {
 
 	/**
 	 * Returns the status of error messages.
-	 * @return true if messages have been added (count > 0), false otherwise
+	 * @return true if messages have been added (count larger 0), false otherwise
 	 */
 	default boolean hasErrors(){
 		return this.hasMessages(MessageType.ERROR);
@@ -488,7 +488,7 @@ public interface MessageManager extends HasErrNo {
 
 	/**
 	 * Returns the status of information messages.
-	 * @return true if messages have been added (count > 0), false otherwise
+	 * @return true if messages have been added (count larger 0), false otherwise
 	 */
 	default boolean hasInfos(){
 		return this.hasMessages(MessageType.INFO);
@@ -497,7 +497,7 @@ public interface MessageManager extends HasErrNo {
 	/**
 	 * Returns the status of messages of a given type.
 	 * @param type the message type, return of false if null
-	 * @return true if messages have been added for the type (count > 0), false otherwise
+	 * @return true if messages have been added for the type (count larger 0), false otherwise
 	 */
 	default boolean hasMessages(MessageType type){
 		if(type!=null){
@@ -509,7 +509,7 @@ public interface MessageManager extends HasErrNo {
 
 	/**
 	 * Returns the status of trace messages.
-	 * @return true if messages have been added (count > 0), false otherwise
+	 * @return true if messages have been added (count larger 0), false otherwise
 	 */
 	default boolean hasTraces(){
 		return this.hasMessages(MessageType.TRACE);
@@ -517,7 +517,7 @@ public interface MessageManager extends HasErrNo {
 
 	/**
 	 * Returns the status of warning messages.
-	 * @return true if messages have been added (count > 0), false otherwise
+	 * @return true if messages have been added (count larger 0), false otherwise
 	 */
 	default boolean hasWarnings(){
 		return this.hasMessages(MessageType.WARNING);

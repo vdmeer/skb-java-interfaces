@@ -66,7 +66,7 @@ public interface ApoBaseC extends ApoBase {
 
 	/**
 	 * Sets the option flag for being in a command line.
-	 * @param true if in a command line, false otherwise
+	 * @param inCli true if in a command line, false otherwise
 	 */
 	void setInCLi(boolean inCli);
 

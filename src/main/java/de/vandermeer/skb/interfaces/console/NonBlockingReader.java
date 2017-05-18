@@ -84,17 +84,17 @@ public interface NonBlockingReader {
 	 * @param emptyPrint a printout to realize on an empty readline string, for prompts, set null if not required
 	 * @return new reader with parameterized readline() method
 	 */
-	static BufferedReader getNbReader(String logID, int tries, int timeout, HasPrompt emptyPrint){
+	static BufferedReader getNbReader(int tries, int timeout, HasPrompt emptyPrint){
 		return NonBlockingReader.getNbReader(MessageConsole.getStdIn(), tries, timeout, emptyPrint);
 	}
 
 	/**
-	 * Returns a new BufferedReader that uses tries and timeout for readline().
-	 * @param reader original reader to extend, use in combination with {@link MessageConsole#getStdIn(String)} for standard in
+	 * Returns a new BufferedReader that uses tries and timeout for readline.
+	 * @param reader original reader to extend, use in combination with {@link MessageConsole} for standard in
 	 * @param tries number of tries for read calls, use one as default
 	 * @param timeout milliseconds for read timeout
 	 * @param emptyPrint a printout to realize on an empty readline string, for prompts, set null if not required
-	 * @return new reader with parameterized readline() method
+	 * @return new reader with parameterized readline method
 	 */
 	static BufferedReader getNbReader(BufferedReader reader, int tries, int timeout, HasPrompt emptyPrint){
 		if(reader==null){

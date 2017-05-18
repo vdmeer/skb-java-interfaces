@@ -35,7 +35,7 @@ public interface CmdCategory extends HasName, HasDisplayName, HasDescription {
 	 * @param name category name, must not be blank
 	 * @param displayName category display name, must not be blank
 	 * @param description category description, must not be blank
-	 * @return
+	 * @return the new category
 	 */
 	static CmdCategory create(final String name, final String displayName, final String description){
 		Validate.notNull(name);

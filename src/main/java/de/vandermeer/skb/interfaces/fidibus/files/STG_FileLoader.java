@@ -37,6 +37,7 @@ public interface STG_FileLoader extends FileLoader {
 	 * Start and end delimiters are set to default.
 	 * No validation of the STG will be done.
 	 * @param filename the STG filename, must not be blank
+	 * @param expectedChunks chunks expected in the STG, null means no validation will be done
 	 * @return a new file loader
 	 */
 	static STG_FileLoader create(String filename, Map<String, String[]> expectedChunks){
@@ -48,6 +49,8 @@ public interface STG_FileLoader extends FileLoader {
 	 * Start and end delimiters are set to default.
 	 * No validation of the STG will be done.
 	 * @param filename the STG filename, must not be blank
+	 * @param expectedChunks chunks expected in the STG, null means no validation will be done
+	 * @param unknownChunkIsError flag for STG chunk validation, use true to have unexpected chunks marked as error, false otherwise
 	 * @return a new file loader
 	 */
 	static STG_FileLoader create(String filename, Map<String, String[]> expectedChunks, boolean unknownChunkIsError){

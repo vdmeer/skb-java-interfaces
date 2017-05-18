@@ -36,7 +36,7 @@ public interface TailsErrorWithErrors<R> extends TailsError<R>, IsErrorSet {
 	 * @param value the actual return value
 	 * @return new error coin
 	 */
-	static <R, M> TailsErrorWithErrors<R> create(final R value){
+	static <R> TailsErrorWithErrors<R> create(final R value){
 		return new TailsErrorWithErrors<R>() {
 			final protected Set<DoesRender> errorSet = new LinkedHashSet<>();
 			protected int errno;

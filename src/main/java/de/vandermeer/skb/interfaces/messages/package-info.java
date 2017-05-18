@@ -41,11 +41,11 @@
  * 
  * The package provides a set of classes for creating and processing messages:
  * <ul>
- * 		<li>{@link de.vandermeer.skb.interfaces.messages.base.message.Message5WH} - the actual message object with all the parts introduced above.</li>
- * 		<li>{@link de.vandermeer.skb.interfaces.messages.base.message.Message5WH_Builder} - a builder object that is used to create a message object.</li>
- * 		<li>{@link de.vandermeer.skb.O_MessageRenderer.managers.MessageRenderer} - a renderer object that is used to render a message before printing or storing.</li>
- * 		<li>{@link de.vandermeer.skb.base.message.E_MessageType} - an enumerate for the supported message types, e.g. info, warning, error.</li>
- * 		<li>{@link de.vandermeer.skb.interfaces.FormattingTupleWrapper} - a wrapper to create SLF4J formatting tuples and convert them into strings when needed.
+ * 		<li>Message5WH - the actual message object with all the parts introduced above.</li>
+ * 		<li>Message5WH_Builder - a builder object that is used to create a message object.</li>
+ * 		<li>MessageRenderer - a renderer object that is used to render a message before printing or storing.</li>
+ * 		<li>E_MessageType - an enumerate for the supported message types, e.g. info, warning, error.</li>
+ * 		<li>FormattingTupleWrapper - a wrapper to create SLF4J formatting tuples and convert them into strings when needed.
  * 			The wrapper creates a new formatting tuple and uses its getMessage() method in toString().
  * 		</li>
  * </ul>
@@ -94,7 +94,7 @@
  * 
  * <h3>Changing the render output</h3>
  * <p>
- * 		Changing the render output requires to create a new class inheriting from the {@link de.vandermeer.skb.interfaces.messages.base.message.Message5WH} class and overwriting the {@code render()} method.
+ * 		Changing the render output requires to create a new class inheriting from the Message5WH class and overwriting the render method.
  * 		Alternatively, one can implement a message renderer with any required functionality.
  * 		The package 'managers' does exactly that: implement a message renderer that uses string templates and provides many options to render single messages, collections of messages and some classes that use message objects.
  * </p>

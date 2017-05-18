@@ -32,10 +32,9 @@ public interface TailsNullWithErrors extends TailsNull, IsErrorSet {
 
 	/**
 	 * Creates a new null coin with given value and errors.
-	 * @param <M> the message type for the set
 	 * @return new error coin
 	 */
-	static <M> TailsNullWithErrors create(){
+	static TailsNullWithErrors create(){
 		return new TailsNullWithErrors() {
 			final protected Set<DoesRender> errorSet = new LinkedHashSet<>();
 			protected int errno;
