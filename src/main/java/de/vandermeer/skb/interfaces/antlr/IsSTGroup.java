@@ -25,7 +25,6 @@ import org.stringtemplate.v4.STGroupFile;
 import org.stringtemplate.v4.STGroupString;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
-import de.vandermeer.skb.interfaces.validators.STGValidator;
 
 /**
  * Interface for objects that represent String Template Group (STG) objects.
@@ -85,55 +84,6 @@ public interface IsSTGroup extends CategoryIs {
 		return fromDir(dirname, '<', '>', null);
 	}
 
-//	/**
-//	 * Creates a new object from an STG file.
-//	 * @param filename the file name, must not be blank
-//	 * @param delimiterStartChar the start delimiter
-//	 * @param delimiterStopChar the end delimiter
-//	 * @param expectedChunks the expected chunks, null if not required
-//	 * @return new object
-//	 */
-//	static IsSTGroup fromFile(final String filename, final char delimiterStartChar, final char delimiterStopChar, final Map<String, String[]> expectedChunks){
-//		if(expectedChunks!=null){
-//			Validate.noNullElements(expectedChunks.keySet());
-//			Validate.noNullElements(expectedChunks.values());
-//		}
-//
-//		final STGroupFile stg = new STGroupFile(filename, delimiterStartChar, delimiterStopChar);
-//		STGValidator.create().validate(stg, expectedChunks);
-//
-//		return new IsSTGroup() {
-//			@Override
-//			public Map<String, String[]> getExpectedChunks() {
-//				return expectedChunks;
-//			}
-//
-//			@Override
-//			public STGroup getSTGroup() {
-//				return stg;
-//			}
-//		};
-//	}
-
-//	/**
-//	 * Creates a new object from an STG file with default delimiters.
-//	 * @param filename the file name, must not be blank
-//	 * @param expectedChunks the expected STG chunks, null if none required, no null elements otherwise
-//	 * @return new object
-//	 */
-//	static IsSTGroup fromFile(final String filename, final Map<String, String[]> expectedChunks){
-//		return fromFile(filename, '<', '>', expectedChunks);
-//	}
-
-//	/**
-//	 * Creates a new object from an STG file with default delimiters and no expected chunks.
-//	 * @param filename the file name, must not be blank
-//	 * @return new object
-//	 */
-//	static IsSTGroup fromFile(final String filename){
-//		return fromFile(filename, '<', '>', null);
-//	}
-
 	/**
 	 * Creates a new object from a string.
 	 * @param sourceName the source name, must not be blank
@@ -187,11 +137,6 @@ public interface IsSTGroup extends CategoryIs {
 	static IsSTGroup fromString(final String sourceName, final String text){
 		return fromString(sourceName, text, '<', '>', null);
 	}
-
-	//TODO
-	//STGroupFile(String fullyQualifiedFileName, String encoding) 
-	//STGroupFile(String fullyQualifiedFileName, String encoding, char delimiterStartChar, char delimiterStopChar) 
-	//STGroupFile(URL url, String encoding, char delimiterStartChar, char delimiterStopChar)
 
 	/**
 	 * Returns the chunks expected to be defined in the STGroup object.

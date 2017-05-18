@@ -91,6 +91,7 @@ public interface FileInfo extends HasErrorSet {
 						}
 						break;
 					case RESOURCE:
+						tried.appendSeparator(", ").append(location.getDisplayName());
 						ClassLoader loader = Thread.currentThread().getContextClassLoader();
 						URL url = loader.getResource(filename);
 						if(url==null){
@@ -146,26 +147,70 @@ public interface FileInfo extends HasErrorSet {
 	 */
 	void setURL(URL url);
 
+	/**
+	 * Returns the extension of a validated file.
+	 * @return file extension, null if none there
+	 */
+	default String fnExtension(){
+		if(this.getPath()!=null){
+			return StringUtils.substringAfterLast(this.getPath().toString(), ".");
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the basename of a validated file.
+	 * @return basename, null if none there
+	 */
+	default String fnBasename(){
+		if(this.getPath()!=null){
+			String name = this.getPath().getName(this.getPath().getNameCount()-1).toString();
+			if(name.contains(".")){
+				return StringUtils.substringBeforeLast(name, ".");
+			}
+			else{
+				return name;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the file name of a validated file.
+	 * @return file name, null if none there
+	 */
+	default String fnName(){
+		if(this.getPath()!=null){
+			return this.getPath().getFileName().toString();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the path of a validated file.
+	 * @return path, null if none there
+	 */
+	default String fnPath(){
+		if(this.getPath()!=null && this.getPath().getNameCount()>1){
+			return this.getPath().getParent().toString();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the absolute path of a validated file.
+	 * @return absolute path, null if none there
+	 */
+	default String fnAbsolutePath(){
+		if(this.getPath()!=null && this.getPath().getNameCount()>1){
+			return this.getPath().toAbsolutePath().toString();
+		}
+		return null;
+	}
+
 }
 
-
 /*
-
-As string returns the absolute path of the file source.
-AS_STRING_ABSOLUTE_PATH,
-
-As string returns the absolute name of the file source.
-AS_STRING_ABSOLUTE_NAME,
-
-As string returns the full file name of the file source.
-AS_STRING_FULL_FILE_NAME,
-
-As string returns the base name of the file of the file source.
-AS_STRING_BASE_FILE_NAME,
-
-As string returns the file extension of the file source.
-AS_STRING__FILE_EXTENSION,
-
 As string returns the root path of the file source.
 AS_STRING_ROOT_PATH,
 
@@ -174,5 +219,4 @@ AS_STRING_SET_ROOT_PATH,
 
 As string returns the set-root name of the file source.
 AS_STRING_SET_ROOT_NAME,
-
 */

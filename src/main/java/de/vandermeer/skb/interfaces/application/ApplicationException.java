@@ -45,11 +45,10 @@ public class ApplicationException extends Exception {
 	/**
 	 * Creates a new exception.
 	 * @param template the exception error template
-	 * @param appName the application name for the error message
 	 * @param objects the objects required to create the error message for the template
 	 */
-	public ApplicationException(IsErrorTemplate template, String appName, Object ... objects){
-		super(template.getError(appName, objects).getErrorMessage().getMessage());
+	public ApplicationException(IsErrorTemplate template, Object ... objects){
+		super(template.getError(objects).getErrorMessage().getMessage());
 		this.errorCode = template.getCode();
 	}
 

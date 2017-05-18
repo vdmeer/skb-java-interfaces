@@ -16,6 +16,8 @@
 package de.vandermeer.skb.interfaces.console;
 
 import static de.vandermeer.skb.interfaces.MessageType.ALL;
+import static de.vandermeer.skb.interfaces.MessageType.DEBUG;
+import static de.vandermeer.skb.interfaces.MessageType.NONE;
 import static de.vandermeer.skb.interfaces.MessageType.ERROR;
 import static de.vandermeer.skb.interfaces.MessageType.INFO;
 import static de.vandermeer.skb.interfaces.MessageType.WARNING;
@@ -96,6 +98,46 @@ public final class MessageConsole {
 	 */
 	public static int activateAll(){
 		PRINT = ALL.getFlag();
+		return PRINT;
+	}
+
+	/**
+	 * Prints a message using a {@link FormattingTuple}.
+	 * @param type the type, noting done if null or {@link MessageType#NONE}
+	 * @param newline true for a newline after the message, false otherwise
+	 * @param msg message to print, nothing printed if null
+	 * @param args arguments for the message
+	 */
+	public static void con(MessageType type, boolean newline, String msg, Object ... args){
+		print(type, MessageFormatter.arrayFormat(msg, args).getMessage(), newline);
+	}
+
+	/**
+	 * Prints an exception as error message and the stack trace as debug message.
+	 * @param exception the exception to print, ignored if null
+	 */
+	public static void con(Exception exception){
+		if(exception!=null){
+			con(ERROR, "catched exception {} with message: {}", exception.getClass().getSimpleName(), exception.getLocalizedMessage());
+			if(exception.getCause()!=null){
+				con(ERROR, " -> cause: " + exception.getCause().getLocalizedMessage());
+			}
+			if(exception.getStackTrace()!=null && isActive(DEBUG)){
+				con(ERROR, " -> stack trace (interal classes and commons): ");
+				for(StackTraceElement trace : exception.getStackTrace()){
+					if(trace.toString().contains("vandermeer") || trace.toString().contains("apache")){
+						con(DEBUG, trace.toString());
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns the current message flag
+	 * @return current message flag
+	 */
+	public static int getMessageFlag(){
 		return PRINT;
 	}
 
@@ -202,24 +244,26 @@ public final class MessageConsole {
 	}
 
 	/**
-	 * Prints a message using a {@link FormattingTuple}.
-	 * @param type the type, noting done if null or {@link MessageType#NONE}
-	 * @param newline true for a newline after the message, false otherwise
-	 * @param msg message to print, nothing printed if null
-	 * @param args arguments for the message
-	 */
-	public static void con(MessageType type, boolean newline, String msg, Object ... args){
-		print(type, MessageFormatter.arrayFormat(msg, args).getMessage(), newline);
-	}
-
-	/**
 	 * Deactivate a particular message type.
 	 * Use the defined static flags.
 	 * For instance, to activate trace messages use `TRACE`.
 	 * @param type the type to de-activate
+	 * @return the new flag
 	 */
-	public static void deActivate(int type){
-		PRINT = PRINT & ~type;
+	public static int deActivate(MessageType type){
+		if(type!=null){
+			PRINT = PRINT & ~type.getFlag();
+		}
+		return PRINT;
+	}
+
+	/**
+	 * Deactivates all messages: errors, warnings, information, trace, and debug.
+	 * @return the new flag
+	 */
+	public static int deActivateAll(){
+		PRINT = NONE.getFlag();
+		return PRINT;
 	}
 
 	/**
@@ -284,8 +328,11 @@ public final class MessageConsole {
 	 * @param type the type
 	 * @return true if message type is activated, false otherwise
 	 */
-	public static boolean isActive(int type){
-		return ((PRINT & type) == type);
+	public static boolean isActive(MessageType type){
+		if(type!=null){
+			return ((PRINT & type.getFlag()) == type.getFlag());
+		}
+		return false;
 	}
 
 	/**
@@ -296,7 +343,7 @@ public final class MessageConsole {
 	 * @return the printed message
 	 */
 	private static void print(MessageType type, String msg, boolean newline){
-		if(type==null || !isActive(type.getFlag())){
+		if(type==null || !isActive(type)){
 			return;
 		}
 		String message = generateMessage(type, msg);

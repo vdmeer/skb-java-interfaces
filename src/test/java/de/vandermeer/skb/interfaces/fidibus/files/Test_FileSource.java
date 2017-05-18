@@ -15,6 +15,12 @@
 
 package de.vandermeer.skb.interfaces.fidibus.files;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 /**
@@ -27,189 +33,63 @@ import org.junit.Test;
 public class Test_FileSource {
 
 	@Test
-	public void testValOption(){
-//		FileSource fsn = new FileSource((File)null);
-//		assertEquals(FiDiValidationOption.AS_SOURCE, fsn.valOption());
+	public void test_FromFile(){
+		FileSource source = FileSource.fromFilesystem("src/test/resources/de/vandermeer/skb/interfaces/fidibus/files/test.properties");
+		source.validateSource();
+		assertTrue(source.isValid());
 	}
 
 	@Test
-	public void testConstructorSuccessCase_File(){
-//		FileSource fsn;
-//
-//		fsn = new FileSource(new File("src/test/resources/de/vandermeer/skb/interfaces/fidibus/loaders/test.properties"));
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource(new File("src/test/resources/de/vandermeer/skb/interfaces/fidibus/loaders", "test.properties"));
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
+	public void test_FromResource(){
+		FileSource source = FileSource.fromResource("de/vandermeer/skb/interfaces/fidibus/files/test.properties");
+		source.validateSource();
+		assertTrue(source.isValid());
 	}
 
 	@Test
-	public void testConstructorSuccessCase_DirFn(){
-//		FileSource fsn;
-//
-//		fsn = new FileSource("de/vandermeer/skb/interfaces/fidibus/loaders/", "test.properties");
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("de/vandermeer/skb/interfaces/fidibus/loaders/", "test.properties", InfoLocationOptions.RESOURCE_ONLY);
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("de/vandermeer/skb/interfaces/fidibus/loaders", "test.properties");
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("de/vandermeer/skb/interfaces/fidibus/loaders", "test.properties", InfoLocationOptions.RESOURCE_ONLY);
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("src/test/resources/de/vandermeer/skb/interfaces/fidibus/loaders/", "test.properties");
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("src/test/resources/de/vandermeer/skb/interfaces/fidibus/loaders/", "test.properties", InfoLocationOptions.FILESYSTEM_ONLY);
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("src/test/resources/de/vandermeer/skb/interfaces/fidibus/loaders", "test.properties");
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("src/test/resources/de/vandermeer/skb/interfaces/fidibus/loaders", "test.properties", InfoLocationOptions.FILESYSTEM_ONLY);
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
+	public void test_FnExtension(){
+		FileSource source = FileSource.fromResource("de/vandermeer/skb/interfaces/fidibus/files/test.properties");
+		source.validateSource();
+		assertTrue(source.isValid());
+
+		assertEquals("properties", source.fnExtension());
 	}
 
 	@Test
-	public void testConstructorSuccessCase_Fn(){
-//		FileSource fsn;
-//
-//		fsn = new FileSource("de/vandermeer/skb/interfaces/fidibus/loaders/test.properties");
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("de/vandermeer/skb/interfaces/fidibus/loaders/test.properties", InfoLocationOptions.RESOURCE_ONLY);
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("src/test/resources/de/vandermeer/skb/interfaces/fidibus/loaders/test.properties");
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
-//
-//		fsn = new FileSource("src/test/resources/de/vandermeer/skb/interfaces/fidibus/loaders/test.properties", InfoLocationOptions.FILESYSTEM_ONLY);
-//		assertEquals(0, fsn.getInitError().getMessages().size());
-//		assertTrue(fsn.isValid());
+	public void test_FnBasename(){
+		FileSource source = FileSource.fromResource("de/vandermeer/skb/interfaces/fidibus/files/test.properties");
+		source.validateSource();
+		assertTrue(source.isValid());
+		assertEquals("test", source.fnBasename());
+
+		source = FileSource.fromFilesystem("src/test/resources/de/vandermeer/skb/interfaces/fidibus/files/noext");
+		source.validateSource();
+		assertTrue(source.isValid());
+		assertEquals("noext", source.fnBasename());
 	}
 
 	@Test
-	public void testConstructorErrorCases_Fn(){
-//		FileSource fsn;
-//
-//		//fileName null means error
-//		fsn = new FileSource((String)null);
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//blank fileName means error
-//		fsn = new FileSource("");
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//nothing on FS nor RES is error
-//		fsn = new FileSource("src/main/test.test");
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//nothing on FS is error
-//		fsn = new FileSource("src/main/test.test", InfoLocationOptions.FILESYSTEM_ONLY);
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//nothing on RES is error
-//		fsn = new FileSource("src/main/test.test", InfoLocationOptions.RESOURCE_ONLY);
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//valid as RES only, but requested as FS
-//		fsn = new FileSource("de/vandermeer/skb/interfaces/fidibus/loaders/test.properties", InfoLocationOptions.FILESYSTEM_ONLY);
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//valid as FS only, but requested as RES
-//		fsn = new FileSource("src/test/resources/de/vandermeer/skb/interfaces/fidibus/loaders/test.properties", InfoLocationOptions.RESOURCE_ONLY);
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
+	public void test_FnPath(){
+		FileSource source = FileSource.fromResource("de/vandermeer/skb/interfaces/fidibus/files/test.properties");
+		source.validateSource();
+		assertTrue(source.isValid());
+
+		assertEquals(StringUtils.replace("de/vandermeer/skb/interfaces/fidibus/files", "/", File.separator), source.fnPath());
 	}
 
 	@Test
-	public void testConstructorErrorCases_DirFn(){
-//		FileSource fsn;
-//
-//		//directory null means error
-//		fsn = new FileSource((String)null, "test");
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//fileName null means error
-//		fsn = new FileSource("test", (String)null);
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//blank directory means error
-//		fsn = new FileSource("", "test");
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//blank fileName means error
-//		fsn = new FileSource("test", "");
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//nothing on FS nor RES is error
-//		fsn = new FileSource("src/main/", "test.test");
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//nothing on FS is error
-//		fsn = new FileSource("src/main/", "test.test", InfoLocationOptions.FILESYSTEM_ONLY);
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//nothing on RES is error
-//		fsn = new FileSource("src/main/", "test.test", InfoLocationOptions.RESOURCE_ONLY);
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
+	public void test_FnAbsolutePath(){
+		FileSource source = FileSource.fromResource("de/vandermeer/skb/interfaces/fidibus/files/test.properties");
+		source.validateSource();
+		assertTrue(source.isValid());
 	}
 
 	@Test
-	public void testConstructorErrorCases_File(){
-//		FileSource fsn;
-//
-//		//null file means error
-//		fsn = new FileSource((File)null);
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//non accessible file means error
-//		fsn = new FileSource(new File("src/main/test.test"));
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
-//
-//		//non accessible file means error
-//		fsn = new FileSource(new File("src/main/", "test.test"));
-//		assertTrue(fsn.getInitError().getMessages().size()!=0);
-//		assertFalse(fsn.isValid());
+	public void test_FnName(){
+		FileSource source = FileSource.fromResource("de/vandermeer/skb/interfaces/fidibus/files/test.properties");
+		source.validateSource();
+		assertTrue(source.isValid());
+
+		assertEquals("test.properties", source.fnName());
 	}
-
-//	@Test
-//	public void testSetRoot(){
-//		FileSource fsn;
-//
-//		fsn = new FileSource("de/vandermeer/skb/interfaces/fidibus/loaders/test.properties");
-//		assertTrue(fsn.getInitError().getErrors().size()==0);
-//		System.err.println(fsn.getOriginalFilename());
-//	}
-
 }
