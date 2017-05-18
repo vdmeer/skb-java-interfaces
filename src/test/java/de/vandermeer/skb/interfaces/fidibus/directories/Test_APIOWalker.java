@@ -20,11 +20,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.junit.Test;
 
-import de.vandermeer.skb.interfaces.fidibus.directories.APIOWalker;
+import de.vandermeer.skb.interfaces.fidibus.FileSystemFilters;
 import de.vandermeer.skb.interfaces.fidibus.files.FileSource;
 
 /**
@@ -38,14 +36,10 @@ public class Test_APIOWalker {
 
 	@Test
 	public void testWalkJavaSource(){
-		IOFileFilter fileFilter = new WildcardFileFilter(new String[]{
-				"*.java"
-		});
-
 		APIOWalker walker = APIOWalker.create(
 				"src/main/java/de/vandermeer/skb/interfaces/fidibus",
 				DirectoryFileFilter.INSTANCE,
-				fileFilter
+				FileSystemFilters.WILDECARD("java")
 		);
 
 		assertFalse(walker.hasErrors());
@@ -53,7 +47,7 @@ public class Test_APIOWalker {
 		FileSource[] result = walker.read();
 		assertFalse(walker.hasErrors());
 
-		int checkSize = 35;//TODO update this if java files change in fidibus source folder
+		int checkSize = 34;//TODO update this if java files change in fidibus source folder
 
 		assertTrue(result!=null);
 		assertEquals(checkSize, result.length);

@@ -18,6 +18,10 @@ package de.vandermeer.skb.interfaces.fidibus;
 import java.io.File;
 import java.io.FileFilter;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.Validate;
+
 /**
  * Filters for file system operations.
  *
@@ -26,6 +30,26 @@ import java.io.FileFilter;
  * @since      v0.0.3
  */
 public interface FileSystemFilters {
+
+	/**
+	 * Returns a new IO filter for wildecards on file extensions.
+	 * @param extension the file extension, no leading wildecard and dot, must not be blank
+	 * @return new IO filter
+	 */
+	static IOFileFilter WILDECARD(String extension){
+		Validate.notBlank(extension);
+		return new WildcardFileFilter(new String[]{"*." + extension});
+	}
+
+	/**
+	 * Returns a new IO filter for wildecards.
+	 * @param extensions the wildecards, full regular expressions as required, must not be null members
+	 * @return new IO filter
+	 */
+	static IOFileFilter WILDECARD(String[] extensions){
+		Validate.noNullElements(extensions);
+		return new WildcardFileFilter(extensions);
+	}
 
 	/**
 	 * A simple filter for directories.

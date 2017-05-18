@@ -15,12 +15,16 @@
 
 package de.vandermeer.skb.interfaces.fidibus.files;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.Validate;
 
+import de.vandermeer.skb.interfaces.messages.errors.Templates_InputFile;
 import de.vandermeer.skb.interfaces.messages.sets.IsErrorSet;
 
 /**
@@ -84,29 +88,32 @@ public interface StringFileLoader extends FileLoader {
 		return ret;
 	}
 
-	@SuppressWarnings("resource")
 	@Override
-	default String read() {
-		String ret = null;
+	default List<String> read() {
 		this.getErrorSet().clearMessages();;
 		if(this.validateSource()==false){
 			//no valid source
-			return ret;
+			return null;
 		}
 
-		Scanner s = null;
-		try{
-			s = new Scanner(this.getSource().getPath().toUri().toURL().openStream()).useDelimiter("\\Z");
-			ret = s.next();
-			s.close();
+		ArrayList<String> ret = new ArrayList<>();
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(this.getSource().getFilename()));
+			String str;
+			while((str=in.readLine()) != null){
+				ret.add(str);
+			}
+			in.close();
 		}
-		catch(FileNotFoundException ex){
-			this.getErrorSet().add("{}: unexpected file not found exception - {}", "string file loader", ex.getMessage());
-			return ret;
-		} catch (IOException exio) {
+		catch(FileNotFoundException e){
+			this.getErrorSet().add(Templates_InputFile.FILE_NOT_FOUND.getError("plain SVG input", this.getSource().getFilename(), e.getMessage()));
+			return null;
+		}
+		catch (IOException exio) {
 			this.getErrorSet().add("{}: unexpected IO not found exception - {}", "string file loader", exio.getMessage());
-			return ret;
+			return null;
 		}
+
 		return ret;
 	}
 

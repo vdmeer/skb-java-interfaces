@@ -60,14 +60,14 @@ public interface CommandSetParser {
 			ret = set.getSimpleMap().get(command);
 		}
 		else if(set.getTypedMap().keySet().contains(command)){
-			Validate.validState(clk.tail().size()<3, "found typed command with too many arguments");
+			Validate.validState(clk.head().size()<3, "found typed command with too many arguments");
 			Validate.validState(clk.tail().size()==0, "found typed command with complex arguments");
 
 			TypedCmd<?> tc = set.getTypedMap().get(command);
 			if(tc.argIsRequired()){
 				Validate.validState(clk.head().size()==2, "found typed command with required argument but no argument in command line");
 			}
-			else if(clk.head().size()==2){
+			if(clk.head().size()==2){
 				tc.setCmdValue(clk.head().get(1));
 			}
 			ret = tc;

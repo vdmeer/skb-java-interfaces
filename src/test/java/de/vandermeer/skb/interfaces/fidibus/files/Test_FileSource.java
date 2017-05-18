@@ -78,6 +78,15 @@ public class Test_FileSource {
 	}
 
 	@Test
+	public void test_FnPathStart(){
+		FileSource source = FileSource.fromResource("de/vandermeer/skb/interfaces/fidibus/files/test.properties");
+		source.validateSource();
+		assertTrue(source.isValid());
+
+		assertEquals(StringUtils.replace("skb/interfaces/fidibus/files", "/", File.separator), source.fnPath("vandermeer"));
+	}
+
+	@Test
 	public void test_FnAbsolutePath(){
 		FileSource source = FileSource.fromResource("de/vandermeer/skb/interfaces/fidibus/files/test.properties");
 		source.validateSource();

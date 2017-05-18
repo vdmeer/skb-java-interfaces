@@ -22,11 +22,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.junit.Test;
 
-import de.vandermeer.skb.interfaces.fidibus.directories.CommonsWalker;
+import de.vandermeer.skb.interfaces.fidibus.FileSystemFilters;
 import de.vandermeer.skb.interfaces.fidibus.files.FileSource;
 
 /**
@@ -40,14 +38,10 @@ public class Test_CommonsWalker {
 
 	@Test
 	public void testWalkJavaSource() throws IOException{
-		IOFileFilter fileFilter = new WildcardFileFilter(new String[]{
-				"*.java"
-		});
-
-		CommonsWalker walker = new CommonsWalker(DirectoryFileFilter.INSTANCE, fileFilter);
+		CommonsWalker walker = new CommonsWalker(DirectoryFileFilter.INSTANCE, FileSystemFilters.WILDECARD("java"));
 		List<FileSource> result = walker.load("src/main/java/de/vandermeer/skb/interfaces/fidibus");
 
-		int checkSize = 35;//TODO update this if java files change in fidibus source folder
+		int checkSize = 34;//TODO update this if java files change in fidibus source folder
 
 		assertNotNull(result);
 		assertEquals(checkSize, result.size());

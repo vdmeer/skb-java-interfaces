@@ -15,12 +15,14 @@
 
 package de.vandermeer.skb.interfaces.fidibus.files;
 
+import java.io.File;
 import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.text.StrBuilder;
 
 import de.vandermeer.skb.interfaces.messages.sets.HasErrorSet;
@@ -208,15 +210,20 @@ public interface FileInfo extends HasErrorSet {
 		return null;
 	}
 
+	/**
+	 * Returns the path and the name of a validated file from a given start pint.
+	 * @param start the start path, must not be blank
+	 * @return path and filename, null if none there (for instance start was not part of the path)
+	 */
+	default String fnPath(String start){
+		Validate.notBlank(start);
+		if(this.getPath()!=null && this.getPath().getNameCount()>1){
+			String ret = StringUtils.substringBetween(this.getPath().toString(), StringUtils.replace(start, "/", File.separator), this.fnName());
+			ret = StringUtils.removeStart(ret, File.separator);
+			ret = StringUtils.removeEnd(ret, File.separator);
+			return ret;
+		}
+		return null;
+	}
+
 }
-
-/*
-As string returns the root path of the file source.
-AS_STRING_ROOT_PATH,
-
-As string returns the set-root path of the file source.
-AS_STRING_SET_ROOT_PATH,
-
-As string returns the set-root name of the file source.
-AS_STRING_SET_ROOT_NAME,
-*/
