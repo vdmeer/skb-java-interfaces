@@ -18,6 +18,7 @@ package de.vandermeer.skb.interfaces.validators;
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;

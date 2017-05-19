@@ -30,20 +30,20 @@ public interface IsMultiShell extends IsShell {
 	 * Returns the commands the shell provides.
 	 * @return shell commands, must not be null
 	 */
-	CommandMultiSet getCommands();
+	Sh_CommandMultiSet getCommands();
 
 	@Override
 	default int runCommand(String commandline){
-		CommandLineTokens clk = CommandLineTokens.create(commandline);
+		Sh_CommandLineTokens clk = Sh_CommandLineTokens.create(commandline);
 		Validate.validState(clk.head().size()>1, "found less heads than expected");
 		String setName = clk.head().remove(0);
 		if(!this.getCommands().hasSet(setName)){
 			throw new IllegalStateException("unknown command set <" + setName + ">");
 		}
 
-		CommandSet set = this.getCommands().getSet(setName);
-		CommandSetParser parser = CommandSetParser.create();
-		CmdBase command = parser.parse(clk, set);
+		Sh_CommandSet set = this.getCommands().getSet(setName);
+		Sh_CommandSetParser parser = Sh_CommandSetParser.create();
+		Sh_CmdBase command = parser.parse(clk, set);
 		if(command==null){
 			//just in case, parser should have handled this already
 			throw new IllegalStateException("no command found");

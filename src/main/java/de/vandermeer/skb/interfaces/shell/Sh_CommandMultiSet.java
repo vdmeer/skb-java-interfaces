@@ -34,7 +34,7 @@ import de.vandermeer.skb.interfaces.categories.has.HasVersion;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, HasDescription {
+public interface Sh_CommandMultiSet extends HasName, HasDisplayName, HasVersion, HasDescription {
 
 	/**
 	 * Creates a new command multi-set.
@@ -44,14 +44,14 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 * @param description the description of the set, must not be blank
 	 * @return a new command multi-set on success
 	 */
-	static CommandMultiSet create(String name, String displayName, String version, String description){
+	static Sh_CommandMultiSet create(String name, String displayName, String version, String description){
 		Validate.notBlank(name);
 		Validate.notBlank(displayName);
 		Validate.notBlank(version);
 		Validate.notBlank(description);
 
-		return new CommandMultiSet() {
-			protected Map<String, CommandSet> map = new HashMap<>();
+		return new Sh_CommandMultiSet() {
+			protected Map<String, Sh_CommandSet> map = new HashMap<>();
 
 			@Override
 			public String getDescription() {
@@ -74,7 +74,7 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 			}
 			
 			@Override
-			public Map<String, CommandSet> getMultiMap() {
+			public Map<String, Sh_CommandSet> getMultiMap() {
 				return this.map;
 			}
 		};
@@ -84,7 +84,7 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 * Returns the collection of added command sets.
 	 * @return collection of added command sets, must not be null
 	 */
-	default Collection<CommandSet> getMultiCollection(){
+	default Collection<Sh_CommandSet> getMultiCollection(){
 		return this.getMultiMap().values();
 	}
 
@@ -102,7 +102,7 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 * @param name the command set name
 	 * @return null on error, a command set on success
 	 */
-	default CommandSet getSet(String name){
+	default Sh_CommandSet getSet(String name){
 		return this.getMultiMap().get(name);
 	}
 
@@ -110,7 +110,7 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 * Returns the command sets as mapping of command set to name.
 	 * @return command sets, must not be null, empty if no command set was added
 	 */
-	Map<String, CommandSet> getMultiMap();
+	Map<String, Sh_CommandSet> getMultiMap();
 
 	/**
 	 * Adds all command sets to the multi-set.
@@ -118,9 +118,9 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the command set is already in use
 	 */
-	default CommandMultiSet addAllSets(Iterable<CommandSet> sets) throws IllegalStateException{
+	default Sh_CommandMultiSet addAllSets(Iterable<Sh_CommandSet> sets) throws IllegalStateException{
 		if(sets!=null){
-			for(CommandSet cs : sets){
+			for(Sh_CommandSet cs : sets){
 				this.addSet(cs);
 			}
 		}
@@ -133,9 +133,9 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the command set is already in use
 	 */
-	default CommandMultiSet addAllSets(CommandSet[] sets) throws IllegalStateException{
+	default Sh_CommandMultiSet addAllSets(Sh_CommandSet[] sets) throws IllegalStateException{
 		if(sets!=null){
-			for(CommandSet cs : sets){
+			for(Sh_CommandSet cs : sets){
 				this.addSet(cs);
 			}
 		}
@@ -148,7 +148,7 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the command is already in use
 	 */
-	default CommandMultiSet addSet(CommandSet set) throws IllegalStateException {
+	default Sh_CommandMultiSet addSet(Sh_CommandSet set) throws IllegalStateException {
 		if(set!=null){
 			Validate.validState(!this.getMultiMap().keySet().contains(set.getName()), "set <" + set.getName() +"> allready in use");
 			this.getMultiMap().put(set.getName(), set);
@@ -168,7 +168,7 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 * Returns a sorted collection of command sets.
 	 * @return sorted collection
 	 */
-	default Collection<CommandSet> sortedList(){
+	default Collection<Sh_CommandSet> sortedList(){
 		return sortedMap().values();
 	}
 
@@ -176,9 +176,9 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 * Returns a sorted map of command sets, the mapping is the sort string to the command set.
 	 * @return sorted map
 	 */
-	default TreeMap<String, CommandSet> sortedMap(){
-		TreeMap<String, CommandSet> ret = new TreeMap<>();
-		for(CommandSet set : this.getMultiCollection()){
+	default TreeMap<String, Sh_CommandSet> sortedMap(){
+		TreeMap<String, Sh_CommandSet> ret = new TreeMap<>();
+		for(Sh_CommandSet set : this.getMultiCollection()){
 			ret.put(set.getName(), set);
 		}
 		return ret;

@@ -21,13 +21,13 @@ import de.vandermeer.skb.interfaces.categories.has.HasName;
 import de.vandermeer.skb.interfaces.messages.errors.IsError;
 
 /**
- * An argument for a {@link ComplexCmd}.
+ * An argument for a {@link Sh_ComplexCmd}.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface ComplexArgument<T> extends HasName, HasDisplayName, HasDescription {
+public interface Sh_ComplexArgument<T> extends HasName, HasDisplayName, HasDescription {
 
 	/**
 	 * Tests if the argument is required meaning it must be used in the command.

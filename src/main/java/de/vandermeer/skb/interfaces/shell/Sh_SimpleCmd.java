@@ -16,18 +16,12 @@
 package de.vandermeer.skb.interfaces.shell;
 
 /**
- * A complex command: name plus set of key/value pairs.
+ * A typed command: name only.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.2.0 build 170404 (04-Apr-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface ComplexCmd extends CmdBase {
-
-	/**
-	 * Returns the arguments of the command.
-	 * @return command arguments, must have at least one member, no null members
-	 */
-	ComplexArgument<?>[] getArguments();
+public interface Sh_SimpleCmd extends Sh_CmdBase {
 
 }

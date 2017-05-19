@@ -21,13 +21,13 @@ import de.vandermeer.skb.interfaces.categories.has.HasName;
 import de.vandermeer.skb.interfaces.messages.errors.IsError;
 
 /**
- * An argument for a {@link LongTypedCmd}.
+ * An argument for a {@link Sh_LongTypedCmd}.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface LongTypedArgument<T> extends HasName, HasDisplayName, HasDescription {
+public interface Sh_LongTypedArgument<T> extends HasName, HasDisplayName, HasDescription {
 
 	/**
 	 * Returns the command value.

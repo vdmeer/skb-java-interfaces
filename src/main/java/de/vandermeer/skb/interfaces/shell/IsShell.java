@@ -90,7 +90,7 @@ public interface IsShell extends CategoryIs, HasName, HasDisplayName, HasVersion
 	/**
 	 * Parse a command line and execute command if possible.
 	 * @param commandline the command line
-	 * @return the return of the command execution as per {@link CmdBase#executeCommand()}
+	 * @return the return of the command execution as per {@link Sh_CmdBase#executeCommand()}
 	 */
 	int runCommand(String commandline);
 

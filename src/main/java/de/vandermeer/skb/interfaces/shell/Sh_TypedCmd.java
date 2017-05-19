@@ -24,7 +24,7 @@ import de.vandermeer.skb.interfaces.messages.errors.IsError;
  * @version    v0.2.0 build 170404 (04-Apr-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface TypedCmd<T> extends CmdBase {
+public interface Sh_TypedCmd<T> extends Sh_CmdBase {
 
 	/**
 	 * Flag for required arguments.

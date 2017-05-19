@@ -35,7 +35,7 @@ import de.vandermeer.skb.interfaces.categories.has.HasVersion;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDescription {
+public interface Sh_CommandSet extends HasName, HasDisplayName, HasVersion, HasDescription {
 
 	/**
 	 * Creates a new command set.
@@ -45,52 +45,52 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 * @param description the description of the set, must not be blank
 	 * @return a new command set on success
 	 */
-	static CommandSet create(String name, String displayName, String version, String description){
+	static Sh_CommandSet create(String name, String displayName, String version, String description){
 		Validate.notBlank(name);
 		Validate.notBlank(displayName);
 		Validate.notBlank(version);
 		Validate.notBlank(description);
 
-		return new CommandSet() {
-			protected final transient Map<String, SimpleCmd> simpleCommands = new HashMap<>();
+		return new Sh_CommandSet() {
+			protected final transient Map<String, Sh_SimpleCmd> simpleCommands = new HashMap<>();
 
-			protected final transient Map<String, TypedCmd<?>> typedCommands = new HashMap<>();
+			protected final transient Map<String, Sh_TypedCmd<?>> typedCommands = new HashMap<>();
 
-			protected final transient Map<String, LongTypedCmd> longTypedCommands = new HashMap<>();
+			protected final transient Map<String, Sh_LongTypedCmd> longTypedCommands = new HashMap<>();
 
-			protected final transient Map<String, ComplexCmd> complexCommands = new HashMap<>();
+			protected final transient Map<String, Sh_ComplexCmd> complexCommands = new HashMap<>();
 
 			@Override
-			public CommandSet addCommand(Object command) throws IllegalStateException {
+			public Sh_CommandSet addCommand(Object command) throws IllegalStateException {
 				if(command==null){
 					return this;
 				}
-				if(ClassUtils.isAssignable(command.getClass(), SimpleCmd.class)){
-					SimpleCmd cmd = (SimpleCmd)command;
+				if(ClassUtils.isAssignable(command.getClass(), Sh_SimpleCmd.class)){
+					Sh_SimpleCmd cmd = (Sh_SimpleCmd)command;
 					Validate.validState(
 							!this.hasCommand(cmd.getName()),
 							"CommandParser: simple command <" + cmd.getName() + "> already in use"
 					);
 					this.simpleCommands.put(cmd.getName(), cmd);
 				}
-				else if(ClassUtils.isAssignable(command.getClass(), TypedCmd.class)){
-					TypedCmd<?> cmd = (TypedCmd<?>)command;
+				else if(ClassUtils.isAssignable(command.getClass(), Sh_TypedCmd.class)){
+					Sh_TypedCmd<?> cmd = (Sh_TypedCmd<?>)command;
 					Validate.validState(
 							!this.hasCommand(cmd.getName()),
 							"CommandParser: typed command <" + cmd.getName() + "> already in use"
 					);
 					this.typedCommands.put(cmd.getName(), cmd);
 				}
-				else if(ClassUtils.isAssignable(command.getClass(), LongTypedCmd.class)){
-					LongTypedCmd cmd = (LongTypedCmd)command;
+				else if(ClassUtils.isAssignable(command.getClass(), Sh_LongTypedCmd.class)){
+					Sh_LongTypedCmd cmd = (Sh_LongTypedCmd)command;
 					Validate.validState(
 							!this.hasCommand(cmd.getName()),
 							"CommandParser: long typed command <" + cmd.getName() + "> already in use"
 					);
 					this.longTypedCommands.put(cmd.getName(), cmd);
 				}
-				else if(ClassUtils.isAssignable(command.getClass(), ComplexCmd.class)){
-					ComplexCmd cmd = (ComplexCmd)command;
+				else if(ClassUtils.isAssignable(command.getClass(), Sh_ComplexCmd.class)){
+					Sh_ComplexCmd cmd = (Sh_ComplexCmd)command;
 					Validate.validState(
 							!this.hasCommand(cmd.getName()),
 							"CommandParser: complex command <" + cmd.getName() + "> already in use"
@@ -101,7 +101,7 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 			}
 
 			@Override
-			public Map<String, ComplexCmd> getComplexMap() {
+			public Map<String, Sh_ComplexCmd> getComplexMap() {
 				return this.complexCommands;
 			}
 
@@ -121,12 +121,12 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 			}
 
 			@Override
-			public Map<String, SimpleCmd> getSimpleMap() {
+			public Map<String, Sh_SimpleCmd> getSimpleMap() {
 				return this.simpleCommands;
 			}
 
 			@Override
-			public Map<String, TypedCmd<?>> getTypedMap() {
+			public Map<String, Sh_TypedCmd<?>> getTypedMap() {
 				return this.typedCommands;
 			}
 
@@ -136,7 +136,7 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 			}
 
 			@Override
-			public Map<String, LongTypedCmd> getLongTypedMap() {
+			public Map<String, Sh_LongTypedCmd> getLongTypedMap() {
 				return this.longTypedCommands;
 			}
 
@@ -149,7 +149,7 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the command is already in use
 	 */
-	default CommandSet addAllCommands(Iterable<?> commands) throws IllegalStateException{
+	default Sh_CommandSet addAllCommands(Iterable<?> commands) throws IllegalStateException{
 		if(commands!=null){
 			for(Object opt : commands){
 				this.addCommand(opt);
@@ -164,7 +164,7 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the command is already in use
 	 */
-	default CommandSet addAllCommands(Object[] commands) throws IllegalStateException{
+	default Sh_CommandSet addAllCommands(Object[] commands) throws IllegalStateException{
 		if(commands!=null){
 			for(Object opt : commands){
 				this.addCommand(opt);
@@ -179,22 +179,22 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 * @return self to allow chaining
 	 * @throws IllegalStateException if the command is already in use
 	 */
-	CommandSet addCommand(Object command) throws IllegalStateException;
+	Sh_CommandSet addCommand(Object command) throws IllegalStateException;
 
 	/**
 	 * Clears all values of typed and complex commands in preparation for a new command line parse.
 	 */
 	default void clearCmdValues(){
-		for(TypedCmd<?> command : this.getTypedMap().values()){
+		for(Sh_TypedCmd<?> command : this.getTypedMap().values()){
 			command.resetCmdValue();
 		}
-		for(LongTypedCmd command : this.getLongTypedMap().values()){
-			for(LongTypedArgument<?> argmument : command.getArguments()){
+		for(Sh_LongTypedCmd command : this.getLongTypedMap().values()){
+			for(Sh_LongTypedArgument<?> argmument : command.getArguments()){
 				argmument.resetCmdValue();
 			}
 		}
-		for(ComplexCmd command : this.getComplexMap().values()){
-			for(ComplexArgument<?> argmument : command.getArguments()){
+		for(Sh_ComplexCmd command : this.getComplexMap().values()){
+			for(Sh_ComplexArgument<?> argmument : command.getArguments()){
 				argmument.resetCmdValue();
 			}
 		}
@@ -205,7 +205,7 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 * @param name the command name
 	 * @return null on error, a command on success
 	 */
-	default CmdBase getCommand(String name){
+	default Sh_CmdBase getCommand(String name){
 		if(this.getSimpleMap().containsKey(name)){
 			return this.getSimpleMap().get(name);
 		}
@@ -222,25 +222,25 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 * Returns the complex commands.
 	 * @return complex commands, must not be null, empty if no typed command added
 	 */
-	Map<String, ComplexCmd> getComplexMap();
+	Map<String, Sh_ComplexCmd> getComplexMap();
 
 	/**
 	 * Returns the simple commands.
 	 * @return simple commands, must not be null, empty if no simple commands added
 	 */
-	Map<String, SimpleCmd> getSimpleMap();
+	Map<String, Sh_SimpleCmd> getSimpleMap();
 
 	/**
 	 * Returns the typed commands.
 	 * @return typed commands, must not be null, empty if no typed commands added
 	 */
-	Map<String, TypedCmd<?>> getTypedMap();
+	Map<String, Sh_TypedCmd<?>> getTypedMap();
 
 	/**
 	 * Returns the long typed commands.
 	 * @return long typed commands, must not be null, empty if no typed commands added
 	 */
-	Map<String, LongTypedCmd> getLongTypedMap();
+	Map<String, Sh_LongTypedCmd> getLongTypedMap();
 
 	/**
 	 * Tests if a command name is already in the set.
@@ -271,7 +271,7 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 * Returns a sorted collection of commands.
 	 * @return sorted collection
 	 */
-	default Collection<CmdBase> sortedList(){
+	default Collection<Sh_CmdBase> sortedList(){
 		return sortedMap().values();
 	}
 
@@ -279,18 +279,18 @@ public interface CommandSet extends HasName, HasDisplayName, HasVersion, HasDesc
 	 * Returns a sorted map of commands, the mapping is the sort string to the command.
 	 * @return sorted map
 	 */
-	default TreeMap<String, CmdBase> sortedMap(){
-		TreeMap<String, CmdBase> ret = new TreeMap<>();
-		for(CmdBase opt : getSimpleMap().values()){
+	default TreeMap<String, Sh_CmdBase> sortedMap(){
+		TreeMap<String, Sh_CmdBase> ret = new TreeMap<>();
+		for(Sh_CmdBase opt : getSimpleMap().values()){
 			ret.put(opt.getName(), opt);
 		}
-		for(CmdBase opt : getTypedMap().values()){
+		for(Sh_CmdBase opt : getTypedMap().values()){
 			ret.put(opt.getName(), opt);
 		}
-		for(CmdBase opt : getLongTypedMap().values()){
+		for(Sh_CmdBase opt : getLongTypedMap().values()){
 			ret.put(opt.getName(), opt);
 		}
-		for(CmdBase opt : getComplexMap().values()){
+		for(Sh_CmdBase opt : getComplexMap().values()){
 			ret.put(opt.getName(), opt);
 		}
 		return ret;

@@ -32,7 +32,7 @@ import org.apache.commons.lang3.tuple.Pair;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface CommandLineTokens {
+public interface Sh_CommandLineTokens {
 
 	/**
 	 * Returns the separators (characters) for complex arguments.
@@ -92,7 +92,7 @@ public interface CommandLineTokens {
 	 * @return tokenized command
 	 * @throws IllegalStateException for all problems
 	 */
-	static CommandLineTokens create(String commandLine){
+	static Sh_CommandLineTokens create(String commandLine){
 		return create(commandLine, new char[]{':', '='});
 	}
 
@@ -103,7 +103,7 @@ public interface CommandLineTokens {
 	 * @return tokenized command
 	 * @throws IllegalStateException for all problems
 	 */
-	static CommandLineTokens create(String commandLine, char[] separators){
+	static Sh_CommandLineTokens create(String commandLine, char[] separators){
 		Validate.validState(StringUtils.isNotBlank(commandLine), "command line must not be blank");
 		Validate.notNull(separators);
 
@@ -148,7 +148,7 @@ public interface CommandLineTokens {
 			}
 		}
 
-		return new CommandLineTokens() {
+		return new Sh_CommandLineTokens() {
 			@Override
 			public List<Pair<String, String>> tail() {
 				return tail;

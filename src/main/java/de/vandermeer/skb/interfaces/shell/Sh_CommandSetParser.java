@@ -29,14 +29,14 @@ import org.apache.commons.lang3.tuple.Pair;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface CommandSetParser {
+public interface Sh_CommandSetParser {
 
 	/**
 	 * Creates a new command set parser.
 	 * @return new command set parser
 	 */
-	static CommandSetParser create(){
-		return new CommandSetParser() {};
+	static Sh_CommandSetParser create(){
+		return new Sh_CommandSetParser() {};
 	}
 
 	/**
@@ -47,13 +47,13 @@ public interface CommandSetParser {
 	 * @return the command found, all possible arguments in the command set
 	 * @throws IllegalStateException for all problems
 	 */
-	default CmdBase parse(CommandLineTokens clk, CommandSet set){
+	default Sh_CmdBase parse(Sh_CommandLineTokens clk, Sh_CommandSet set){
 		Validate.validState(clk!=null, "tokenized commandline was null");
 		Validate.validState(set!=null, "command set for parsing was null");
 		set.clearCmdValues();
 		Validate.validState(clk.head().size()!=0, "no command found in command line");
 
-		CmdBase ret = null;
+		Sh_CmdBase ret = null;
 		String command = clk.head().get(0);
 		if(set.getSimpleMap().keySet().contains(command)){
 			Validate.validState(clk.head().size()==1 || clk.tail().size()==0, "found simple command with arguments");
@@ -63,7 +63,7 @@ public interface CommandSetParser {
 			Validate.validState(clk.head().size()<3, "found typed command with too many arguments");
 			Validate.validState(clk.tail().size()==0, "found typed command with complex arguments");
 
-			TypedCmd<?> tc = set.getTypedMap().get(command);
+			Sh_TypedCmd<?> tc = set.getTypedMap().get(command);
 			if(tc.argIsRequired()){
 				Validate.validState(clk.head().size()==2, "found typed command with required argument but no argument in command line");
 			}
@@ -74,7 +74,7 @@ public interface CommandSetParser {
 		}
 		else if(set.getLongTypedMap().keySet().contains(command)){
 			Validate.validState(clk.tail().size()==0, "found long typed command with complex arguments");
-			LongTypedCmd ltc = set.getLongTypedMap().get(command);
+			Sh_LongTypedCmd ltc = set.getLongTypedMap().get(command);
 
 			List<String> clArgs = new ArrayList<>(clk.head());
 			clArgs.remove(0);
@@ -88,9 +88,9 @@ public interface CommandSetParser {
 			Validate.validState(clk.head().size()==1, "found complex command with too many/few arguments");
 			Validate.validState(clk.tail().size()>0, "found complex command with no arguments");
 
-			ComplexCmd cc = set.getComplexMap().get(command);
+			Sh_ComplexCmd cc = set.getComplexMap().get(command);
 			for(Pair<String, String> pair : clk.tail()){
-				for(ComplexArgument<?> cmdArg : cc.getArguments()){
+				for(Sh_ComplexArgument<?> cmdArg : cc.getArguments()){
 					if(cmdArg.getName().equals(pair.getKey())){
 						cmdArg.setCmdValue(pair.getValue());
 					}
@@ -99,7 +99,7 @@ public interface CommandSetParser {
 					}
 				}
 			}
-			for(ComplexArgument<?> cmdArg : cc.getArguments()){
+			for(Sh_ComplexArgument<?> cmdArg : cc.getArguments()){
 				if(cmdArg.argIsRequired() && cmdArg.getCmdValue()==null){
 					throw new IllegalStateException("missing required argument <" + cmdArg.getName() + "> for command <" + command + ">");
 				}
@@ -120,10 +120,10 @@ public interface CommandSetParser {
 	 * @return the command found, all possible arguments in the command set
 	 * @throws IllegalStateException for all problems
 	 */
-	default CmdBase parse(String commandline, CommandSet set){
+	default Sh_CmdBase parse(String commandline, Sh_CommandSet set){
 		Validate.validState(StringUtils.isNotBlank(commandline), "command line must not be blank");
 		Validate.validState(set!=null, "set for parsing must not be null");
-		CommandLineTokens clk = CommandLineTokens.create(commandline);
+		Sh_CommandLineTokens clk = Sh_CommandLineTokens.create(commandline);
 		return this.parse(clk, set);
 	}
 

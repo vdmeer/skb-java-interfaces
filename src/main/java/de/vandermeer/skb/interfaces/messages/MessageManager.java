@@ -58,7 +58,7 @@ public interface MessageManager extends HasErrNo {
 	 * @return message manager
 	 */
 	static MessageManager create(){
-		Map<MessageType, Integer> count = new HashMap<>();
+		final Map<MessageType, Integer> count = new HashMap<>();
 		count.put(MessageType.ALL, 0);
 		count.put(MessageType.DEBUG, 0);
 		count.put(MessageType.ERROR, 0);
@@ -67,14 +67,14 @@ public interface MessageManager extends HasErrNo {
 		count.put(MessageType.TRACE, 0);
 		count.put(MessageType.WARNING, 0);
 
-		Map<MessageType, Integer> maxCount = new HashMap<>();
-		count.put(MessageType.ALL, 100);
-		count.put(MessageType.DEBUG, 100);
-		count.put(MessageType.ERROR, 100);
-		count.put(MessageType.INFO, 100);
-		count.put(MessageType.NONE, 100);
-		count.put(MessageType.TRACE, 100);
-		count.put(MessageType.WARNING, 100);
+		final Map<MessageType, Integer> maxCount = new HashMap<>();
+		maxCount.put(MessageType.ALL, 100);
+		maxCount.put(MessageType.DEBUG, 100);
+		maxCount.put(MessageType.ERROR, 100);
+		maxCount.put(MessageType.INFO, 100);
+		maxCount.put(MessageType.NONE, 100);
+		maxCount.put(MessageType.TRACE, 100);
+		maxCount.put(MessageType.WARNING, 100);
 
 		return new MessageManager() {
 			protected Map<MessageType, Logger> loggers = new HashMap<>();

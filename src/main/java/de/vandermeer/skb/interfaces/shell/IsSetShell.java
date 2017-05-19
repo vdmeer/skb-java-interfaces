@@ -28,12 +28,12 @@ public interface IsSetShell extends IsShell {
 	 * Returns the commands the shell provides.
 	 * @return shell commands, must not be null
 	 */
-	CommandSet getCommands();
+	Sh_CommandSet getCommands();
 
 	@Override
 	default int runCommand(String commandline){
-		CommandSetParser parser = CommandSetParser.create();
-		CmdBase command = parser.parse(commandline, this.getCommands());
+		Sh_CommandSetParser parser = Sh_CommandSetParser.create();
+		Sh_CmdBase command = parser.parse(commandline, this.getCommands());
 		if(command==null){
 			//just in case, parser should have handled this already
 			throw new IllegalStateException("no command found");

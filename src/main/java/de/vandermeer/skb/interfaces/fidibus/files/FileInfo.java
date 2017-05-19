@@ -112,6 +112,7 @@ public interface FileInfo extends HasErrorSet {
 			}
 			catch(Exception ex){
 				this.getErrorSet().add("file: catched unpredicted exception: " + ex.getMessage());
+				ex.printStackTrace();
 				break;
 			}
 			if(this.getPath()!=null){

@@ -15,48 +15,30 @@
 
 package de.vandermeer.skb.interfaces.shell;
 
-import org.apache.commons.lang3.Validate;
-
 import de.vandermeer.skb.interfaces.categories.has.HasDescription;
 import de.vandermeer.skb.interfaces.categories.has.HasDisplayName;
+import de.vandermeer.skb.interfaces.categories.has.HasLongDescription;
 import de.vandermeer.skb.interfaces.categories.has.HasName;
 
 /**
- * A category for shell commands.
+ * Base API of a command.
  *
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
  * @since      v0.0.3
  */
-public interface CmdCategory extends HasName, HasDisplayName, HasDescription {
+public interface Sh_CmdBase extends HasName, HasDisplayName, HasDescription, HasLongDescription {
 
 	/**
-	 * Creates a new category.
-	 * @param name category name, must not be blank
-	 * @param displayName category display name, must not be blank
-	 * @param description category description, must not be blank
-	 * @return the new category
+	 * Executes the command.
+	 * @return a return value: 0 for success, negative integer for an error, positive integer for a command that requires the shell to stop/exit
 	 */
-	static CmdCategory create(final String name, final String displayName, final String description){
-		Validate.notNull(name);
-		Validate.notNull(displayName);
-		Validate.notNull(description);
+	int executeCommand();
 
-		return new CmdCategory() {
-			@Override
-			public String getDescription() {
-				return description;
-			}
+	/**
+	 * Returns a category the command belongs to, useful for grouping commands for example in help screens.
+	 * @return the category of the command, can be null
+	 */
+	Sh_CmdCategory getCategory();
 
-			@Override
-			public String getDisplayName() {
-				return displayName;
-			}
-
-			@Override
-			public String getName() {
-				return name;
-			}
-		};
-	}
 }
