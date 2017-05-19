@@ -105,15 +105,17 @@ public interface DirectoryValidator extends IsValidator {
 					}
 					else{
 						Path parent = path.getParent();
-						File parentFile = parent.toFile();
-						if(!parentFile.exists()){
-							this.getErrorSet().add("cannot delete directory <{}>, parent does not exist", path);
-						}
-						else if(!parentFile.isDirectory()){
-							this.getErrorSet().add("cannot delete directory <{}>, parent is not a directory", path);
-						}
-						else if(!parent.toFile().canWrite()){
-							this.getErrorSet().add("cannot delete directory <{}>, parent is not writable", path);
+						if(parent!=null){
+							File parentFile = parent.toFile();
+							if(!parentFile.exists()){
+								this.getErrorSet().add("cannot delete directory <{}>, parent does not exist", path);
+							}
+							else if(!parentFile.isDirectory()){
+								this.getErrorSet().add("cannot delete directory <{}>, parent is not a directory", path);
+							}
+							else if(!parent.toFile().canWrite()){
+								this.getErrorSet().add("cannot delete directory <{}>, parent is not writable", path);
+							}
 						}
 					}
 					break;

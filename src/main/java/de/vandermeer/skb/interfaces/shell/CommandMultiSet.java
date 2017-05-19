@@ -150,7 +150,7 @@ public interface CommandMultiSet extends HasName, HasDisplayName, HasVersion, Ha
 	 */
 	default CommandMultiSet addSet(CommandSet set) throws IllegalStateException {
 		if(set!=null){
-			Validate.validState(!this.getMultiMap().values().contains(set.getName()), "set <" + set.getName() +"> allready in use");
+			Validate.validState(!this.getMultiMap().keySet().contains(set.getName()), "set <" + set.getName() +"> allready in use");
 			this.getMultiMap().put(set.getName(), set);
 		}
 		return this;

@@ -539,7 +539,8 @@ public interface MessageManager extends HasErrNo {
 
 			Logger logger = this.getMsgLoggers().get(type);
 			String maxc = null;
-			if(this.getMsgMaxCount().get(type)==this.getMsgCount().get(type)){
+			int maxCount = this.getMsgMaxCount().get(type);
+			if(maxCount==this.getMsgCount().get(type)){
 				maxc = "found more than " + this.getMsgMaxCount().get(type) + type.name().toLowerCase() + " messages";
 			}
 			if(maxc!=null){

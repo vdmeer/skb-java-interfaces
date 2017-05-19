@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
 import de.vandermeer.skb.interfaces.categories.CategoryIs;
@@ -95,24 +94,7 @@ public interface IsErrorTemplate extends HasDisplayName, HasDescription, Categor
 	default IsError getError(final Object ... args){
 		Validate.noNullElements(args);
 		Validate.validState(args.length==this.expectedArguments());
-
-		return new IsError() {
-			@Override
-			public IsErrorCategory getCategory() {
-				return getCategory();
-			}
-
-			@Override
-			public int getErrNo() {
-				return getCode();
-			}
-
-			@Override
-			public FormattingTuple getErrorMessage() {
-				return MessageFormatter.arrayFormat(getMessage(), args);
-			}
-		};
-
+		return IsError.create(this.getCode(), this.getCategory(), MessageFormatter.arrayFormat(getMessage(), args));
 	}
 
 	/**
