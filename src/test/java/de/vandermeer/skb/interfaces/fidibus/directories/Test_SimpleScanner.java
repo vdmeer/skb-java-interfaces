@@ -41,7 +41,7 @@ public class Test_SimpleScanner {
 		FileSource[] files = scanner.read();
 		assertFalse(scanner.hasErrors());
 
-		int checkSize = 34;//TODO update this if java files in src/main are have been removed or added
+		int checkSize = 36;//TODO update this if java files in src/main are have been removed or added
 
 		assertTrue(files!=null);
 		assertEquals(checkSize, files.length);

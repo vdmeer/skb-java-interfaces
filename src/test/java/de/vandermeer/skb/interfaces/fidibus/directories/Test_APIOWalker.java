@@ -47,7 +47,7 @@ public class Test_APIOWalker {
 		FileSource[] result = walker.read();
 		assertFalse(walker.hasErrors());
 
-		int checkSize = 34;//TODO update this if java files change in fidibus source folder
+		int checkSize = 36;//TODO update this if java files change in fidibus source folder
 
 		assertTrue(result!=null);
 		assertEquals(checkSize, result.length);

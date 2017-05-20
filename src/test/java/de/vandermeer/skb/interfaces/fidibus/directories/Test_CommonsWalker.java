@@ -41,7 +41,7 @@ public class Test_CommonsWalker {
 		CommonsWalker walker = new CommonsWalker(DirectoryFileFilter.INSTANCE, FileSystemFilters.WILDECARD("java"));
 		List<FileSource> result = walker.load("src/main/java/de/vandermeer/skb/interfaces/fidibus");
 
-		int checkSize = 34;//TODO update this if java files change in fidibus source folder
+		int checkSize = 36;//TODO update this if java files change in fidibus source folder
 
 		assertNotNull(result);
 		assertEquals(checkSize, result.size());
