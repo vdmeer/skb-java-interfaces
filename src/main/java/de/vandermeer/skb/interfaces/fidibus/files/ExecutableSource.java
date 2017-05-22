@@ -103,9 +103,9 @@ public interface ExecutableSource extends FileInfo, FileSource {
 	}
 
 	/**
-	 * Cannot execute a URL, so this method is not implement
+	 * Cannot execute a URL, so this method is not implement.
 	 * @return nothing
-	 * @throws NotImplementedException
+	 * @throws NotImplementedException always thrown since the metohod is not implemented
 	 */
 	@Override
 	default URL getURL() {
@@ -113,9 +113,9 @@ public interface ExecutableSource extends FileInfo, FileSource {
 	}
 
 	/**
-	 * Cannot execute a URL, so this method is not implement
+	 * Cannot execute a URL, so this method is not implement.
 	 * @param url ignored
-	 * @throws NotImplementedException
+	 * @throws NotImplementedException always thrown since the metohod is not implemented
 	 */
 	@Override
 	default void setURL(URL url) {

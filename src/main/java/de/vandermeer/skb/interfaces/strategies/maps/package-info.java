@@ -15,6 +15,26 @@
 
 /**
  * Things that represent a map strategy.
+ * Strategies are defined for a number of standard Java map types:
+ * 
+ * * Abstract Map
+ *   ** Enum Map {@link java.util.EnumMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.EnumMapStrategy}
+ *   ** Hash Map {@link java.util.HashMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.HashMapStrategy}
+ *   ** Identity Hash Map {@link java.util.IdentityHashMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.IdentityHashMapStrategy}
+ *   ** Linked Hash Map {@link java.util.LinkedHashMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.LinkedHashMapStrategy}
+ *   ** Weak Hash Map {@link java.util.WeakHashMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.WeakHashMapStrategy}
+ * * Concurrent Map
+ *   ** Concurrent Hash Map {@link java.util.concurrent.ConcurrentHashMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.ConcurrentHashMapStrategy}
+ *   ** Concurrent Skip List Map {@link java.util.concurrent.ConcurrentSkipListMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.concurrentmap.ConcurrentSkipListMapStrategy}
+ * * Hash Table
+ *   ** Hash Table {@link java.util.Hashtable} -> {@link de.vandermeer.skb.interfaces.strategies.maps.HashtableStrategy}
+ *   ** Properties {@link java.util.Properties} -> {@link de.vandermeer.skb.interfaces.strategies.maps.PropertiesStrategy}
+ * * Navigable Map
+ *   ** Concurrent Skip List Map {@link java.util.concurrent.ConcurrentSkipListMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.navigablemap.ConcurrentSkipListMapStrategy}
+ *   ** Tree Map {@link java.util.TreeMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.navigablemap.TreeMapStrategy}
+ * * Sorted Map
+ *   ** Concurrent Skip List Map {@link java.util.concurrent.ConcurrentSkipListMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.ConcurrentSkipListMapStrategy}
+ *   ** Tree Map {@link TreeMap} -> {@link de.vandermeer.skb.interfaces.strategies.maps.TreeMapStrategy}
  * 
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8

@@ -35,7 +35,7 @@ public interface IsError extends HasErrNo, DoesRender {
 	 * @param errNo the error number
 	 * @param category the error category, must not null
 	 * @param message the error message, must not be null
-	 * @return
+	 * @return a new error object
 	 */
 	static IsError create(final int errNo, final IsErrorCategory category, final FormattingTuple message){
 		Validate.notNull(category);

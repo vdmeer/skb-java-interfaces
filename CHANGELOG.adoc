@@ -8,6 +8,7 @@
   ** moved to `st` package
   ** added error listener
   ** changed `STGroup` to fully load group with error messages
+  ** validators are now in the `validators` package
 * changed `messagesets`
   ** added more error handling, including error templates and categories
   ** added default error categories and templates
@@ -18,8 +19,10 @@
 * fixed javadoc errors
 * changed internals of some interfaces to remove bugs and static code errors (findbugs and PMD)
 * started to remove `NullPointerException` from validations, substitute with `IllegalStateExeception`
-* added `shell` package
+* added `shell` package (from skb-base)
 * moved examples to its own package
+* added `translators` package for character translation (from char-translation)
+* refactored map and set strategies, moving interfaces into single packages
 
 
 === v0.0.2 - update - 2017-05-02

@@ -15,6 +15,15 @@
 
 /**
  * Things that represent a collection strategy for sets.
+ * Strategies are defined for a number of standard Java map types:
+ * 
+ * * Set
+ *   ** Hash Set {@link java.util.HashSet} -> {@link de.vandermeer.skb.interfaces.strategies.collections.set.HashSetStrategy}
+ *   ** Linked Hash Set {@link java.util.LinkedHashSet} -> {@link de.vandermeer.skb.interfaces.strategies.collections.set.LinkedHashSetStrategy}
+ * 
+ * * Sorted Set
+ *   ** Concurrent Skip Set {@link java.util.concurrent.ConcurrentSkipListSet} -> {@link de.vandermeer.skb.interfaces.strategies.collections.set.ConcurrentSkipSetStrategy}
+ *   ** Tree Set {@link java.util.TreeSet} -> {@link de.vandermeer.skb.interfaces.strategies.collections.set.TreeSetStrategy}
  * 
  * @author     Sven van der Meer &lt;vdmeer.sven@mykolab.com&gt;
  * @version    v0.0.2 build 170502 (02-May-17) for Java 1.8
